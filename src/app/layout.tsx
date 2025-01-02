@@ -3,12 +3,11 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/organisms/footer/footer";
 import Navbar from "@/components/organisms/navbar/navbar";
-import { ThemeProviderWrapper } from "@/components/atoms/theme-provider-wrapper/theme-provider-wrapper";
+import { ThemeProviderWrapper } from "@/components/molecules/theme-provider-wrapper/theme-provider-wrapper";
 import { Organization, WithContext } from "schema-dts";
-import ThemeToggleButton from "@/components/molecules/theme-toggle-button/theme-toggle-button";
+import ThemeToggleButton from "@/components/organisms/theme-toggle-button/theme-toggle-button";
 import Script from "next/script";
 import ScrollContextProvider from "@/context/scroll-context";
-import ScrollLayout from "@/components/atoms/scroll-layout/scroll-layout";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -105,15 +104,13 @@ export default function RootLayout({
       </head>
       <body className={`${montserrat.variable}`}>
         <ThemeProviderWrapper>
-          <ScrollContextProvider>
-            <ScrollLayout>
-              <div className="flex flex-row justify-between py-10">
-                <Navbar />
-                <ThemeToggleButton />
-              </div>
-              {children}
-              <Footer />
-            </ScrollLayout>
+          <ScrollContextProvider className="container flex min-h-screen flex-col">
+            <div className="flex flex-row justify-between py-10">
+              <Navbar />
+              <ThemeToggleButton />
+            </div>
+            {children}
+            <Footer />
           </ScrollContextProvider>
         </ThemeProviderWrapper>
       </body>

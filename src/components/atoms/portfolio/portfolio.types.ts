@@ -15,9 +15,7 @@ export type Size = "small" | "default" | "large" | "xl";
 
 export type PortfolioThumbnailsProps = {
   images: Array<TImage>;
-  size?: "small" | "default";
-  selectedImage?: TImage;
-  onImageClick: (image: TImage, images: Array<TImage>) => void;
+  size?: Exclude<Size, "large" | "xl">;
 };
 
 export type PortfolioImageProps = {

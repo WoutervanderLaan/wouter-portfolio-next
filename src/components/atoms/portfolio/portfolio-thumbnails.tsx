@@ -1,33 +1,34 @@
-import Button from "../button/button";
-import Portfolio from "./portfolio";
+"use client";
+
+import ModalTrigger from "@/components/molecules/modal-trigger/modal-trigger";
+import PortfolioImage from "./portfolio-image";
 import { PortfolioThumbnailsProps } from "./portfolio.types";
+import Dialog from "../dialog/dialog";
 
 const PortfolioThumbnails = ({
   images,
   size = "default",
-  onImageClick,
-  selectedImage,
 }: PortfolioThumbnailsProps) => (
-  <div className="flex flex-wrap gap-4 my-4 pb-4">
-    {images.map(({ src, alt = "" }, i) => (
-      <Button
-        variant="unstyled"
-        className="hover:-translate-y-2 hover:opacity-50"
-        disabled={`/img/${src}` === selectedImage?.src}
-        key={i}
-        onClick={() => {
-          if (selectedImage) onImageClick(selectedImage, images);
-        }}
-      >
-        <Portfolio.Image
-          size={size}
-          src={`/img/${src}`}
-          alt={alt}
-          images={images}
-          onImageClick={onImageClick}
-        />
-      </Button>
-    ))}
+  <div className="my-4 flex flex-wrap gap-4 pb-4">
+    {images.map(({ src, alt = "" }, i) => {
+      const imageSrc = `/img/${src}`;
+
+      return (
+        <ModalTrigger
+          key={i}
+          isDismissable
+          buttonContent={
+            <PortfolioImage key={i} size={size} src={imageSrc} alt={alt} />
+          }
+        >
+          {() => (
+            <Dialog title={imageSrc}>
+              <PortfolioImage key={i} size="xl" src={imageSrc} alt={alt} />
+            </Dialog>
+          )}
+        </ModalTrigger>
+      );
+    })}
   </div>
 );
 

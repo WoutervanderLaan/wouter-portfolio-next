@@ -1,48 +1,39 @@
 "use client";
 
 import clsx from "clsx";
-import { PropsWithChildren } from "react";
+import { ElementType, ReactNode, useRef } from "react";
+import { AriaButtonOptions, useButton } from "react-aria";
 
-type Variant = "toggle" | "primary" | "circle" | "unstyled";
+type Variant = "primary" | "circle" | "unstyled";
 
 const variantStyles: Record<Variant, string> = {
-  toggle:
-    "flex flex-row rounded-full h-6 hover:opacity-50 flex justify-between items-center p-0.5 border-[1px] border-black dark:border-white bg-white dark:bg-black",
   primary:
-    "w-fit px-9 py-5 rounded-custom bg-purple text-blue duration-200 hover:bg-blue hover:text-purple dark:bg-green dark:text-white dark:hover:bg-white dark:hover:text-green disabled:opacity-50",
-  circle: "h-10 w-10 rounded-full hover:opacity-50 border-[1px] border-white",
-  unstyled: "",
+    "w-fit px-9 py-5 rounded-custom bg-black text-white hover:text-black hover:bg-white border-black border-[1px] disabled:opacity-50",
+  circle:
+    "h-10 w-10 rounded-full hover:opacity-50 border-[1px] dark:border-white border-black",
+  unstyled: "hover:opacity-50",
 };
 
 type ButtonProps = {
-  onClick: () => void;
+  children: ReactNode;
   className?: string;
   variant?: Variant;
-  disabled?: boolean;
 };
 
-const Button = ({
-  children,
-  variant = "primary",
-  onClick,
-  className,
-  disabled = false,
-}: PropsWithChildren<ButtonProps>) => {
+const Button = (props: ButtonProps & AriaButtonOptions<ElementType>) => {
+  const ref = useRef<HTMLButtonElement>(null);
+  const { buttonProps, isPressed } = useButton(props, ref);
+  const { children, variant = "primary", className } = props;
+
   return (
     <button
-      onKeyDown={(e) => {
-        e.stopPropagation();
-        if (e.code === "Enter") onClick();
-      }}
-      disabled={disabled}
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick();
-      }}
+      ref={ref}
+      {...buttonProps}
       className={clsx(
-        "outline-none focus-visible:ring-2 ring-blue-500 ring-offset-transparent transition",
+        "outline-none ring-blue-500 ring-offset-transparent transition focus-visible:ring-2",
+        { "scale-90": isPressed },
         className,
-        variantStyles[variant]
+        variantStyles[variant],
       )}
     >
       {children}

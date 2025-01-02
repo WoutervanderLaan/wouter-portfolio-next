@@ -1,41 +1,32 @@
-"use client";
+import { useRef } from "react";
+import type { AriaDialogProps } from "react-aria";
+import { useDialog } from "react-aria";
+import Text from "../text/text";
 
-import { ForwardedRef, forwardRef, JSX, PropsWithChildren } from "react";
-import CloseButton from "@/components/molecules/close-button/close-button";
-import { useScrollContext } from "@/context/scroll-context";
-import { FocusScope } from "react-aria";
+interface DialogProps extends AriaDialogProps {
+  title?: React.ReactNode;
+  children: React.ReactNode;
+}
 
-const Dialog = forwardRef(
-  (
-    {
-      children,
-      ...rest
-    }: PropsWithChildren<Omit<JSX.IntrinsicElements["dialog"], "ref">>,
-    modalRef: ForwardedRef<HTMLDialogElement>
-  ) => {
-    const { setIsScrollEnabled } = useScrollContext();
+const Dialog = ({
+  title,
+  children,
+  ...props
+}: DialogProps & AriaDialogProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const { dialogProps, titleProps } = useDialog(props, ref);
 
-    const handleClose = () => {
-      if (typeof modalRef !== "function") modalRef?.current?.close();
-    };
+  return (
+    <div {...dialogProps} ref={ref}>
+      {title && (
+        <Text.Heading as="h3" {...titleProps}>
+          {title}
+        </Text.Heading>
+      )}
 
-    return (
-      <FocusScope contain>
-        <dialog
-          onClose={() => setIsScrollEnabled(true)}
-          ref={modalRef}
-          {...rest}
-          className="fixed top-0 left-0 w-screen h-screen z-10 backdrop-blur bg-black/60"
-          onClick={handleClose}
-        >
-          <CloseButton onClick={handleClose} />
-          {children}
-        </dialog>
-      </FocusScope>
-    );
-  }
-);
-
-Dialog.displayName = "Dialog";
+      {children}
+    </div>
+  );
+};
 
 export default Dialog;
