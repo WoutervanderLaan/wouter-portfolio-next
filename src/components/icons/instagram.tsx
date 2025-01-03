@@ -1,29 +1,27 @@
+import clsx from "clsx";
+
 type IconProps = {
   width?: number;
   height?: number;
-  color?: string;
+  className?: string;
 };
 
-const Instagram = ({ width = 57, height = 57, color = "black" }: IconProps) => (
+const Instagram = ({ width = 47, height = 46, className }: IconProps) => (
   <svg
     width={width}
     height={height}
-    viewBox="0 0 57 57"
+    viewBox="0 0 47 46"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    className={clsx("fill-black stroke-black", className)}
   >
     <path
-      d="M28.2 16.7C21.2 16.7 15.4 22.4 15.4 29.5C15.4 36.6 21.1 42.3 28.2 42.3C35.3 42.3 41 36.5 41 29.5C41 22.5 35.2 16.7 28.2 16.7ZM28.2 37.7C23.7 37.7 20 34 20 29.5C20 25 23.7 21.3 28.2 21.3C32.7 21.3 36.4 25 36.4 29.5C36.4 34 32.7 37.7 28.2 37.7Z"
-      fill={color}
+      d="M2 34V12C2 6.47715 6.47715 2 12 2H35C40.5228 2 45 6.47715 45 12V34C45 39.5228 40.5228 44 35 44H12C6.47715 44 2 39.5228 2 34Z"
+      strokeWidth="3"
+      fill="none"
     />
-    <path
-      d="M41.5 19.3C43.1016 19.3 44.4 18.0016 44.4 16.4C44.4 14.7984 43.1016 13.5 41.5 13.5C39.8984 13.5 38.6 14.7984 38.6 16.4C38.6 18.0016 39.8984 19.3 41.5 19.3Z"
-      fill={color}
-    />
-    <path
-      d="M49 8.9C46.4 6.2 42.7 4.8 38.5 4.8H17.9C9.2 4.8 3.4 10.6 3.4 19.3V39.8C3.4 44.1 4.8 47.8 7.6 50.5C10.3 53.1 13.9 54.4 18 54.4H38.4C42.7 54.4 46.3 53 48.9 50.5C51.6 47.9 53 44.2 53 39.9V19.3C53 15.1 51.6 11.5 49 8.9ZM48.6 39.9C48.6 43 47.5 45.5 45.7 47.2C43.9 48.9 41.4 49.8 38.4 49.8H18C15 49.8 12.5 48.9 10.7 47.2C8.9 45.4 8 42.9 8 39.8V19.3C8 16.3 8.9 13.8 10.7 12C12.4 10.3 15 9.4 18 9.4H38.6C41.6 9.4 44.1 10.3 45.9 12.1C47.6 13.9 48.6 16.4 48.6 19.3V39.9Z"
-      fill={color}
-    />
+    <circle cx="23.5" cy="22.5" r="9" strokeWidth="3" fill="none" />
+    <circle cx="36" cy="10" r="3" />
   </svg>
 );
 

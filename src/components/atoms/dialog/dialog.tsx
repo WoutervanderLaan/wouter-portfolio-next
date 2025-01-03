@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef } from "react";
 import type { AriaDialogProps } from "react-aria";
 import { useDialog } from "react-aria";
@@ -17,7 +19,11 @@ const Dialog = ({
   const { dialogProps, titleProps } = useDialog(props, ref);
 
   return (
-    <div {...dialogProps} ref={ref}>
+    <div
+      {...dialogProps}
+      ref={ref}
+      className="flex flex-col items-center justify-center gap-10 outline-none"
+    >
       {title && (
         <Text.Heading as="h3" {...titleProps}>
           {title}

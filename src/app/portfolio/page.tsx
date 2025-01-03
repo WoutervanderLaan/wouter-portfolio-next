@@ -1,4 +1,4 @@
-import PORTFOLIO_ITEMS from "./portfolio-items";
+import PORTFOLIO_ITEMS from "../../components/portfolio-items";
 import PortfolioThumbnails from "@/components/atoms/portfolio/portfolio-thumbnails";
 import PortfolioSeriesInfo from "@/components/atoms/portfolio/portfolio-series-info";
 import PortfolioSeries from "@/components/atoms/portfolio/portfolio-series";

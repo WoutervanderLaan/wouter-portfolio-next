@@ -1,3 +1,10 @@
+import Phantom_Limbs_1 from "@/../public/img/phantom_limbs_1.jpg";
+import Phantom_Limbs_2 from "@/../public/img/phantom_limbs_2.jpg";
+import Phantom_Limbs_3 from "@/../public/img/phantom_limbs_3.jpg";
+import Phantom_Limbs_4 from "@/../public/img/phantom_limbs_4.jpg";
+import Phantom_Limbs_5 from "@/../public/img/phantom_limbs_5.jpg";
+import Phantom_Limbs_6 from "@/../public/img/phantom_limbs_6.jpg";
+
 const PORTFOLIO_ITEMS = [
   {
     title: "Nest #1 (Green Room)",
@@ -7,8 +14,8 @@ const PORTFOLIO_ITEMS = [
     description:
       "Nest is a nomadic installation for which I moved my entire studio interior to various locations in order to renegotiate everything brought along in relation to what was encountered along the way. Every new situation meant a rigorous reformulation of my work, archive, and routine into ever-changing provisional configurations.",
     img: [
-      { src: "", alt: "" },
-      { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
     ],
   },
   {
@@ -20,12 +27,12 @@ const PORTFOLIO_ITEMS = [
     description:
       "Through a series of (re)makings of carefully chosen ‘ghostly’ objects I tried to access a transference of knowledge that resides within the objects and their distinct materialities; a kind of close study through replication as internalisation. In this process I remade and was remade, the ghostly objects acting through me as a Chimera of phantom limbs.",
     img: [
-      { src: "phantom_limbs_1.jpg", alt: "" },
-      { src: "phantom_limbs_2.JPG", alt: "" },
-      { src: "phantom_limbs_3.JPG", alt: "" },
-      { src: "phantom_limbs_4.JPG", alt: "" },
-      { src: "phantom_limbs_5.JPG", alt: "" },
-      { src: "phantom_limbs_6.jpeg", alt: "" },
+      { src: Phantom_Limbs_1, alt: "" },
+      { src: Phantom_Limbs_2, alt: "" },
+      { src: Phantom_Limbs_3, alt: "" },
+      { src: Phantom_Limbs_4, alt: "" },
+      { src: Phantom_Limbs_5, alt: "" },
+      { src: Phantom_Limbs_6, alt: "" },
     ],
   },
   {
@@ -35,10 +42,10 @@ const PORTFOLIO_ITEMS = [
     dimensions: "Variable dimensions",
     description: "",
     img: [
-      { src: "", alt: "" },
-      { src: "", alt: "" },
-      { src: "", alt: "" },
-      { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
     ],
   },
   {
@@ -49,17 +56,17 @@ const PORTFOLIO_ITEMS = [
     dimensions: "Various dimensions",
     description: "",
     img: [
-      { src: "", alt: "" },
-      { src: "", alt: "" },
-      { src: "", alt: "" },
-      { src: "", alt: "" },
-      { src: "", alt: "" },
-      { src: "", alt: "" },
-      { src: "", alt: "" },
-      { src: "", alt: "" },
-      { src: "", alt: "" },
-      { src: "", alt: "" },
-      { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
+      // { src: "", alt: "" },
     ],
   },
 ];

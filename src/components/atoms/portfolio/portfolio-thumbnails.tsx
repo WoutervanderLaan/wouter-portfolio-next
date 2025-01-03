@@ -11,19 +11,17 @@ const PortfolioThumbnails = ({
 }: PortfolioThumbnailsProps) => (
   <div className="my-4 flex flex-wrap gap-4 pb-4">
     {images.map(({ src, alt = "" }, i) => {
-      const imageSrc = `/img/${src}`;
-
       return (
         <ModalTrigger
           key={i}
           isDismissable
           buttonContent={
-            <PortfolioImage key={i} size={size} src={imageSrc} alt={alt} />
+            <PortfolioImage key={i} size={size} src={src} alt={alt} />
           }
         >
           {() => (
-            <Dialog title={imageSrc}>
-              <PortfolioImage key={i} size="xl" src={imageSrc} alt={alt} />
+            <Dialog>
+              <PortfolioImage key={i} size="xl" src={src} alt={alt} />
             </Dialog>
           )}
         </ModalTrigger>

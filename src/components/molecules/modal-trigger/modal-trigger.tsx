@@ -35,12 +35,7 @@ const ModalTrigger = ({
         {buttonContent}
       </Button>
       {isOpen && (
-        <Modal
-          isDismissable={props.isDismissable}
-          {...props}
-          state={state}
-          close={close}
-        >
+        <Modal {...props} state={state} close={close}>
           {React.cloneElement(children(close), overlayProps)}
         </Modal>
       )}

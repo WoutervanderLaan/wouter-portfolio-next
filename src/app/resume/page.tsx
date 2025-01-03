@@ -1,9 +1,9 @@
 import Text from "@/components/atoms/text/text";
 import Resume from "@/components/templates/resume/resume";
-import RESUME_ITEMS from "./resume-items";
+import RESUME_ITEMS from "../../components/resume-items";
 
 const ResumePage = () => (
-  <main className="flex flex-col mx-80 gap-10">
+  <main className="mx-80 flex flex-col gap-10">
     <div>
       <Text.Paragraph>Wouter van der Laan (Huizen, NL, 1993)</Text.Paragraph>
       <Text.Paragraph>Lives and works in Amsterdam (NL)</Text.Paragraph>

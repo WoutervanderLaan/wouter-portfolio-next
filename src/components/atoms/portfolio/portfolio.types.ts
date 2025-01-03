@@ -1,3 +1,5 @@
+import { StaticImageData } from "next/image";
+
 export type TPortfolioSeriesInfo = {
   title: string;
   material: string;
@@ -7,8 +9,8 @@ export type TPortfolioSeriesInfo = {
 };
 
 export type TImage = {
-  src: string;
-  alt?: string;
+  src: StaticImageData | string;
+  alt: string;
 };
 
 export type Size = "small" | "default" | "large" | "xl";
@@ -20,6 +22,4 @@ export type PortfolioThumbnailsProps = {
 
 export type PortfolioImageProps = {
   size?: Size;
-  src: string;
-  alt: string;
-};
+} & TImage;

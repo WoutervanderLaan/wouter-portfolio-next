@@ -1,4 +1,7 @@
+"use client";
+
 import Button from "@/components/atoms/button/button";
+import Cross from "@/components/icons/cross";
 
 const CloseButton = ({
   onPress,
@@ -6,12 +9,10 @@ const CloseButton = ({
 }: {
   onPress: () => void;
   className?: string;
-}) => {
-  return (
-    <Button onPress={onPress} variant="circle" className={className}>
-      x
-    </Button>
-  );
-};
+}) => (
+  <Button onPress={onPress} variant="circle" className={className}>
+    <Cross width={16} height={16} className="stroke-black dark:stroke-white" />
+  </Button>
+);
 
 export default CloseButton;
