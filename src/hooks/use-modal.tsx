@@ -1,65 +1,33 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
-import { createPortal } from "react-dom";
-import { useOverlayTrigger } from "react-aria";
+import React, { JSXElementConstructor, ReactElement } from "react";
+import { OverlayTriggerAria } from "react-aria";
 import Modal from "@/components/atoms/modal/modal";
-import { OverlayTriggerProps, useOverlayTriggerState } from "react-stately";
+import { OverlayTriggerState } from "react-stately";
+import Dialog from "@/components/atoms/dialog/dialog";
 
 type UseModalProps = {
   isDismissable?: boolean;
-} & OverlayTriggerProps;
+} & OverlayTriggerAria["overlayProps"];
 
-type UseModalReturn = {
-  triggerProps: React.HTMLAttributes<HTMLElement>;
-  openModal: (content: React.ReactElement) => void;
-  closeModal: () => void;
-  isOpen: boolean;
-};
+export const useModal = (props: UseModalProps, state: OverlayTriggerState) => {
+  const { isOpen } = state;
 
-export const useModal = (props: UseModalProps = {}): UseModalReturn => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<React.ReactElement | null>(
-    null,
-  );
-  const state = useOverlayTriggerState(props);
-
-  const { triggerProps, overlayProps } = useOverlayTrigger(
-    { type: "dialog" },
-    state,
-  );
-
-  const openModal = useCallback(
-    (content: React.ReactElement) => {
-      setModalContent(React.cloneElement(content, { ...overlayProps }));
-      setIsOpen(true);
-    },
-    [overlayProps],
-  );
-
-  const closeModal = useCallback(() => {
-    setIsOpen(false);
-    setModalContent(null);
-  }, []);
-
-  const renderModal = () => {
+  const renderModal = (
+    modalContent: ReactElement<
+      unknown,
+      string | JSXElementConstructor<unknown>
+    >,
+    isDismissable = false,
+  ) => {
     if (!isOpen || !modalContent) return null;
 
-    return createPortal(
-      <Modal
-        isDismissable={props.isDismissable}
-        close={closeModal}
-        state={{ isOpen, close: closeModal }}
-      >
-        {modalContent}
-      </Modal>,
-      document.body,
+    return (
+      <Modal {...props} state={state} isDismissable={isDismissable}>
+        {React.cloneElement(<Dialog>{modalContent}</Dialog>, { ...props })}
+      </Modal>
     );
   };
 
-  if (typeof window !== "undefined") {
-    renderModal(); // Ensure the modal is rendered dynamically
-  }
-
-  return { triggerProps, openModal, closeModal, isOpen };
+  return renderModal;
 };

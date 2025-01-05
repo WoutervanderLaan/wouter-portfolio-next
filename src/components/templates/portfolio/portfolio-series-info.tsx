@@ -1,6 +1,13 @@
 import { Fragment } from "react";
-import { TPortfolioSeriesInfo } from "./portfolio.types";
-import Text from "../text/text";
+import Text from "../../atoms/text/text";
+
+type TPortfolioSeriesInfo = {
+  title: string;
+  material: string;
+  dimensions?: string;
+  description: string;
+  year: string;
+};
 
 const PortfolioSeriesInfo = ({
   title,

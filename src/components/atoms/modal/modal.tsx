@@ -8,13 +8,11 @@ import { OverlayTriggerState } from "react-stately";
 type ModalProps = {
   children: ReactNode;
   state: OverlayTriggerState;
-  close: () => void;
 };
 
 const Modal = ({
   state,
   children,
-  close,
   ...props
 }: AriaModalOverlayProps & ModalProps) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -26,7 +24,7 @@ const Modal = ({
         className="fixed bottom-0 left-0 right-0 top-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm dark:bg-black/70"
         {...underlayProps}
       >
-        <CloseButton onPress={close} className="absolute right-4 top-4" />
+        <CloseButton onPress={state.close} className="absolute right-4 top-4" />
         <div {...modalProps} ref={ref}>
           {children}
         </div>

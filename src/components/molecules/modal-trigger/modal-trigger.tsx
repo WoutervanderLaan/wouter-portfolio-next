@@ -1,44 +1,44 @@
 "use client";
 
 import Button from "@/components/atoms/button/button";
-import Modal from "@/components/atoms/modal/modal";
-import React, { ReactElement, ReactNode } from "react";
+import { useModal } from "@/hooks/use-modal";
+import React, { JSXElementConstructor, ReactElement, ReactNode } from "react";
 import { useOverlayTrigger } from "react-aria";
-import {
-  OverlayTriggerProps,
-  OverlayTriggerState,
-  useOverlayTriggerState,
-} from "react-stately";
+import { OverlayTriggerProps, useOverlayTriggerState } from "react-stately";
 
 type ModalTriggerProps = {
-  children: (close: OverlayTriggerState["close"]) => ReactElement;
-  buttonContent: ReactNode;
+  children: ReactNode;
+  modalContent: ReactElement<unknown, string | JSXElementConstructor<unknown>>;
   isDismissable?: boolean;
-};
+  isDisabled?: boolean;
+  className?: string;
+} & OverlayTriggerProps;
 
 const ModalTrigger = ({
-  buttonContent,
   children,
+  modalContent,
+  className,
   ...props
-}: OverlayTriggerProps & ModalTriggerProps) => {
+}: ModalTriggerProps) => {
   const state = useOverlayTriggerState(props);
   const { triggerProps, overlayProps } = useOverlayTrigger(
     { type: "dialog" },
     state,
   );
 
-  const { isOpen, close } = state;
+  const renderModal = useModal(overlayProps, state);
 
   return (
     <>
-      <Button variant="unstyled" {...triggerProps}>
-        {buttonContent}
+      <Button
+        variant="unstyled"
+        {...triggerProps}
+        className={className}
+        isDisabled={state.isOpen}
+      >
+        {children}
       </Button>
-      {isOpen && (
-        <Modal {...props} state={state} close={close}>
-          {React.cloneElement(children(close), overlayProps)}
-        </Modal>
-      )}
+      {renderModal(modalContent, props.isDismissable)}
     </>
   );
 };

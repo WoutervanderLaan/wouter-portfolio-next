@@ -1,0 +1,77 @@
+"use client";
+
+import Button from "@/components/atoms/button/button";
+import Image from "@/components/atoms/image/image";
+import { Size, TImage } from "@/components/templates/portfolio/portfolio.types";
+import ModalTrigger from "@/components/molecules/modal-trigger/modal-trigger";
+import ImageGallery from "@/components/organisms/image-gallery/image-gallery";
+import clsx from "clsx";
+
+type BaseThumbnailsProps = {
+  images: Array<TImage>;
+  size?: Exclude<Size, "large" | "xl">;
+  selectedImage?: TImage;
+};
+
+type ThumbnailButtonProps = {
+  type?: "button";
+  onPress: (img: TImage) => void;
+};
+
+type ThumbnailModalTriggerProps = {
+  type: "modalTrigger";
+  onPress?: never;
+};
+
+const isModalTriggerType: (
+  props: ThumbnailButtonProps | ThumbnailModalTriggerProps,
+) => props is ThumbnailModalTriggerProps = (props) =>
+  props.type === "modalTrigger";
+
+const Thumbnails = (
+  props: BaseThumbnailsProps &
+    (ThumbnailButtonProps | ThumbnailModalTriggerProps),
+) => {
+  const { images, size, selectedImage, ...rest } = props;
+
+  return (
+    <div className="my-4 flex flex-wrap gap-4 pb-4">
+      {images.map(({ src, alt = "" }, i) => {
+        if (isModalTriggerType(rest)) {
+          return (
+            <ModalTrigger
+              key={i}
+              isDismissable
+              modalContent={
+                <ImageGallery images={images} selectedImage={{ src, alt }} />
+              }
+              className={clsx({
+                "border-4 border-blue-500": selectedImage?.src === src,
+              })}
+            >
+              <Image size={size} src={src} alt={alt} />
+            </ModalTrigger>
+          );
+        } else {
+          const { onPress } = rest as ThumbnailButtonProps;
+
+          return (
+            <Button
+              key={i}
+              variant="unstyled"
+              onPress={() => onPress({ src, alt })}
+              className={clsx({
+                "border-4 border-black/50 dark:border-white/50":
+                  selectedImage?.src === src,
+              })}
+            >
+              <Image size={size} src={src} alt={alt} />
+            </Button>
+          );
+        }
+      })}
+    </div>
+  );
+};
+
+export default Thumbnails;
