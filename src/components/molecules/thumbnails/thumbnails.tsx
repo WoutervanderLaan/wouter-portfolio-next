@@ -10,6 +10,7 @@ import {
 import ModalTrigger from "@/components/molecules/modal-trigger/modal-trigger";
 import ImageGallery from "@/components/organisms/image-gallery/image-gallery";
 import clsx from "clsx";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 type BaseThumbnailsProps = {
   images: Array<TImage>;
@@ -37,9 +38,7 @@ const Thumbnails = (
   props: BaseThumbnailsProps &
     (ThumbnailButtonProps | ThumbnailModalTriggerProps),
 ) => {
-  const { images, videos = [], size, selectedImage, ...rest } = props;
-
-  console.log(videos.length); //TODO: add video thumbnail
+  const { images, size, selectedImage, ...rest } = props;
 
   return (
     <div
@@ -54,6 +53,9 @@ const Thumbnails = (
               key={i}
               aria-label={`Open image of ${alt}`}
               isDismissable
+              extraAction={() => {
+                sendGTMEvent({ event: "Modal triggered", value: src });
+              }}
               modalContent={
                 <ImageGallery images={images} selectedImage={{ src, alt }} />
               }
@@ -72,7 +74,10 @@ const Thumbnails = (
               key={i}
               aria-label={`Open image of ${alt}`}
               variant="unstyled"
-              onPress={() => onPress({ src, alt })}
+              onPress={() => {
+                sendGTMEvent({ event: "Image clicked", value: src });
+                onPress({ src, alt });
+              }}
               className={clsx({
                 "border-4 border-black/50 dark:border-white/50":
                   selectedImage?.src === src,

@@ -12,6 +12,7 @@ type ModalTriggerProps = {
   isDismissable?: boolean;
   isDisabled?: boolean;
   className?: string;
+  extraAction?: () => void;
 } & OverlayTriggerProps &
   AriaButtonProps;
 
@@ -19,6 +20,7 @@ const ModalTrigger = ({
   children,
   modalContent,
   className,
+  extraAction,
   ...props
 }: ModalTriggerProps) => {
   const state = useOverlayTriggerState(props);
@@ -29,12 +31,19 @@ const ModalTrigger = ({
 
   const renderModal = useModal(overlayProps, state);
 
+  const { onPress } = triggerProps;
+
   return (
     <>
       <Button
         aria-label=""
         variant="unstyled"
         {...triggerProps}
+        onPress={(e) => {
+          if (!onPress) return;
+          if (extraAction) extraAction();
+          onPress(e);
+        }}
         className={className}
         isDisabled={state.isOpen}
       >
