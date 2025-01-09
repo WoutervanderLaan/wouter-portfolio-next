@@ -2,13 +2,18 @@
 
 import Button from "@/components/atoms/button/button";
 import Image from "@/components/atoms/image/image";
-import { Size, TImage } from "@/components/templates/portfolio/portfolio.types";
+import {
+  Size,
+  TImage,
+  TVideo,
+} from "@/components/templates/portfolio/portfolio.types";
 import ModalTrigger from "@/components/molecules/modal-trigger/modal-trigger";
 import ImageGallery from "@/components/organisms/image-gallery/image-gallery";
 import clsx from "clsx";
 
 type BaseThumbnailsProps = {
   images: Array<TImage>;
+  videos?: Array<TVideo>;
   size?: Exclude<Size, "large" | "xl">;
   selectedImage?: TImage;
 };
@@ -32,15 +37,22 @@ const Thumbnails = (
   props: BaseThumbnailsProps &
     (ThumbnailButtonProps | ThumbnailModalTriggerProps),
 ) => {
-  const { images, size, selectedImage, ...rest } = props;
+  const { images, videos = [], size, selectedImage, ...rest } = props;
+
+  console.log(videos.length); //TODO: add video thumbnail
 
   return (
-    <div className="my-4 flex flex-wrap gap-4 pb-4">
+    <div
+      className={clsx("my-4 flex gap-4 pb-4", {
+        "flex-wrap": rest.type === "modalTrigger",
+      })}
+    >
       {images.map(({ src, alt = "" }, i) => {
         if (isModalTriggerType(rest)) {
           return (
             <ModalTrigger
               key={i}
+              aria-label={`Open image of ${alt}`}
               isDismissable
               modalContent={
                 <ImageGallery images={images} selectedImage={{ src, alt }} />
@@ -49,7 +61,7 @@ const Thumbnails = (
                 "border-4 border-blue-500": selectedImage?.src === src,
               })}
             >
-              <Image size={size} src={src} alt={alt} />
+              <Image size={size} src={src} alt={alt} loading="eager" />
             </ModalTrigger>
           );
         } else {
@@ -58,6 +70,7 @@ const Thumbnails = (
           return (
             <Button
               key={i}
+              aria-label={`Open image of ${alt}`}
               variant="unstyled"
               onPress={() => onPress({ src, alt })}
               className={clsx({

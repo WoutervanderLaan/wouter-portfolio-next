@@ -17,10 +17,9 @@ const jsonLd: WithContext<Organization> = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Wouter van der Laan",
-  // image: "/share.webp",
+  image: "/share.webp",
   description: "Portfolio website of artist Wouter van der Laan",
   url: "https://www.woutervanderlaan.com",
-  // logo: "https://www.freck-studio.com/logo.svg",
   email: "woutervdlaan93@gmail.com",
   address: {
     "@type": "PostalAddress",
@@ -34,27 +33,28 @@ const jsonLd: WithContext<Organization> = {
 };
 
 export const metadata: Metadata = {
-  // metadataBase: new URL("https://freck-studio-next-js.vercel.app"),
+  metadataBase: new URL("https://wouter-portfolio-next.vercel.app"),
   title: "Wouter van der Laan",
   description: "Portfolio website of artist Wouter van der Laan",
-  // icons: {
-  //   icon: ["/favicon.svg", "/favicon.ico"],
-  //   apple: "/apple-touch-icon.png",
-  //   shortcut: "/favicon.ico",
-  // },
-  // manifest: "/manifest.json",
-  // keywords: "",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
+  },
+  manifest: "/manifest.json",
+  keywords:
+    "wouter van der laan artist art rijksakademie hogeschool van de kunsten utrecht frank mohr institute gronginen hanze university drawing painting sculpting fine art installation performance textile ceramic design skowhegan school",
   openGraph: {
     title: "Wouter van der Laan - Portfolio",
     type: "website",
     description: "Portfolio website of artist Wouter van der Laan",
-    // images: [
-    //   {
-    //     url: "/share.webp",
-    //     width: 1600,
-    //     height: 900,
-    //   },
-    // ],
+    images: [
+      {
+        url: "/share.webp",
+        width: 1600,
+        height: 1000,
+      },
+    ],
     siteName: "Wouter van der Laan",
     url: "https://www.woutervanderlaan.com",
   },
@@ -64,11 +64,11 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     capable: true,
   },
-  // twitter: {
-  //   card: "summary_large_image",
-  //   title: "Freck Studio",
-  //   description: "Elevate Your Message with Purposeful and Ethical Design",
-  // },
+  twitter: {
+    card: "summary_large_image",
+    title: "Wouter van der Laan",
+    description: "Wouter van der Laan - Artist",
+  },
   formatDetection: { telephone: false },
 };
 
@@ -104,9 +104,9 @@ export default function RootLayout({
       <body className={`${montserrat.variable}`}>
         <ThemeProviderWrapper>
           <div className="container flex min-h-screen flex-col">
-            <div className="flex flex-row justify-between py-10">
+            <div className="flex flex-col justify-between py-4 sm:flex-row md:py-10">
               <Navbar />
-              <ThemeToggleButton />
+              <ThemeToggleButton className="hidden sm:flex" />
             </div>
             {children}
             <Footer />

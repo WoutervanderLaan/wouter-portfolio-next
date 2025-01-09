@@ -18,11 +18,11 @@ const NavItem = ({ children, href }: PropsWithChildren<NavItemProps>) => {
 
   return (
     <List.Item>
-      <StyledLink href={href}>
+      <StyledLink href={href} className="pt-1">
         <Text.Heading
           as="span"
           className={clsx({
-            "underline decoration-1 underline-offset-2 decoration-black dark:decoration-white":
+            "underline decoration-black decoration-1 underline-offset-2 dark:decoration-white":
               typeof children === "string" && path === navString,
           })}
         >

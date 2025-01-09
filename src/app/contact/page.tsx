@@ -3,7 +3,7 @@ import Text from "@/components/atoms/text/text";
 import Instagram from "@/components/icons/instagram";
 
 const Contact = () => (
-  <main className="mx-80 flex flex-col gap-4">
+  <main className="my-20 flex flex-col gap-4 md:mx-40 lg:mx-80">
     <Text.Paragraph>
       Email:{" "}
       <StyledLink href="mailto:woutervdlaan93@gmail.com<">

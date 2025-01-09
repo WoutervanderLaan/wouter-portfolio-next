@@ -5,4 +5,9 @@ export type TImage = {
   alt: string;
 };
 
-export type Size = "small" | "default" | "large" | "xl";
+export type TVideo = {
+  src: string;
+  alt: string;
+};
+
+export type Size = "extraSmall" | "small" | "default" | "large" | "xl";

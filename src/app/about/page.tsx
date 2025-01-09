@@ -1,7 +1,7 @@
 import Text from "@/components/atoms/text/text";
 
 const About = () => (
-  <main className="mx-80">
+  <main className="my-10 md:mx-40 xl:mx-80">
     <article>
       <Text.Paragraph>
         Rather than a reductive inquiry into the essential characteristics of
@@ -11,13 +11,12 @@ const About = () => (
       </Text.Paragraph>
       <br />
       <Text.Paragraph>
-        His practice moves nomadically through different His practice moves
-        nomadically through different environments, where it finds moments of
-        connection, enrichment, and hybridization. What is brought along is
-        reiterated, reflected on, and reorganized in relation to what is
-        encounter on its way. I.e. in the installation series ‘Nest’, for which
-        he moved his entire studio content to various locations where everything
-        was site-responsively reorganized.
+        His practice moves nomadically through different environments, where it
+        finds moments of connection, enrichment, and hybridization. What is
+        brought along is reiterated, reflected on, and reorganized in relation
+        to what is encounter on its way. I.e. in the installation series ‘Nest’,
+        for which he moved his entire studio content to various locations where
+        everything was site-responsively reorganized.
       </Text.Paragraph>
       <br />
       <Text.Paragraph>

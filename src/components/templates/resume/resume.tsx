@@ -22,20 +22,28 @@ const ResumeList = ({ items }: { items: Array<TResumeItem> }) => {
   const sortedByDate = items.toSorted((a, b) => b.endDate - a.endDate);
 
   return (
-    <List>
+    <List className="flex flex-col gap-4 sm:gap-0">
       {sortedByDate.map((item, i) => (
-        <List.Item key={`category_item_${i}`} className="flex">
-          <Text.Paragraph className="w-10">
-            {item.startDate ?? item.endDate}
-          </Text.Paragraph>
-
-          {items.some((item) => item.startDate) && (
+        <List.Item
+          key={`category_item_${i}`}
+          className="flex flex-col sm:flex-row"
+        >
+          <div className="flex">
             <Text.Paragraph className="w-10">
-              {item.startDate ? item.endDate : null}
+              {item.startDate ?? item.endDate}
             </Text.Paragraph>
-          )}
 
-          <Text.Paragraph className="ml-4">{item.name}</Text.Paragraph>
+            {items.some((item) => item.startDate) && (
+              <Text.Paragraph className="w-10">
+                {item.startDate ? item.endDate : null}
+              </Text.Paragraph>
+            )}
+          </div>
+
+          <div className="flex flex-row gap-2 md:ml-4">
+            <div className="my-2 h-1 w-1 rounded-full bg-black dark:bg-white sm:hidden" />
+            <Text.Paragraph>{item.name}</Text.Paragraph>
+          </div>
         </List.Item>
       ))}
     </List>

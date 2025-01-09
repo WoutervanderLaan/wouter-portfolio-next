@@ -8,6 +8,7 @@ type PortfolioImageProps = {
   ImageProps;
 
 const variantStyles: Record<Size, string> = {
+  extraSmall: "h-10",
   small: "h-20",
   default: "h-40",
   large: "h-80",
@@ -26,7 +27,6 @@ const Image = ({
     alt={alt}
     draggable="false"
     quality={size === "xl" ? 100 : 50}
-    loading="lazy"
     className={clsx("w-fit object-contain", variantStyles[size], className)}
     {...rest}
   />

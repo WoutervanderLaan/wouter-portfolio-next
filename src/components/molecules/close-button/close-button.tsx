@@ -10,7 +10,12 @@ const CloseButton = ({
   onPress: () => void;
   className?: string;
 }) => (
-  <Button onPress={onPress} variant="circle" className={className}>
+  <Button
+    onPress={onPress}
+    variant="circle"
+    aria-label="close modal"
+    className={className}
+  >
     <Cross width={16} height={16} className="stroke-black dark:stroke-white" />
   </Button>
 );

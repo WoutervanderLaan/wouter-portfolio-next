@@ -22,7 +22,7 @@ const ImageGallery = ({
   };
 
   return (
-    <div className="flex h-full flex-col items-center justify-center">
+    <div className="container flex h-full flex-col items-center justify-center">
       {loading && (
         <div className="absolute">
           <Spinner />
@@ -38,10 +38,11 @@ const ImageGallery = ({
           src={image.src}
           alt={image.alt || "no alt text provided"}
           size="xl"
+          className="h-[60vh]"
         />
       </MotionDiv>
       <Thumbnails
-        size="small"
+        size={"extraSmall"}
         images={images}
         onPress={handleImageSelect}
         selectedImage={image}

@@ -3,7 +3,7 @@
 import Button from "@/components/atoms/button/button";
 import { useModal } from "@/hooks/use-modal";
 import React, { JSXElementConstructor, ReactElement, ReactNode } from "react";
-import { useOverlayTrigger } from "react-aria";
+import { AriaButtonProps, useOverlayTrigger } from "react-aria";
 import { OverlayTriggerProps, useOverlayTriggerState } from "react-stately";
 
 type ModalTriggerProps = {
@@ -12,7 +12,8 @@ type ModalTriggerProps = {
   isDismissable?: boolean;
   isDisabled?: boolean;
   className?: string;
-} & OverlayTriggerProps;
+} & OverlayTriggerProps &
+  AriaButtonProps;
 
 const ModalTrigger = ({
   children,
@@ -31,6 +32,7 @@ const ModalTrigger = ({
   return (
     <>
       <Button
+        aria-label=""
         variant="unstyled"
         {...triggerProps}
         className={className}

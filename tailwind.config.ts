@@ -17,6 +17,7 @@ export default {
     },
     container: {
       center: true,
+      padding: "1rem",
     },
     fontSize: {
       sm: ["0.7rem", "1rem"],

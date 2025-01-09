@@ -1,9 +1,9 @@
-import Text from "@/components/atoms/text/text";
+import ThemeToggleButton from "@/components/organisms/theme-toggle-button/theme-toggle-button";
 
 export default function Home() {
   return (
     <main>
-      <Text.Heading>Home</Text.Heading>
+      <ThemeToggleButton className="sm:hidden" />
     </main>
   );
 }

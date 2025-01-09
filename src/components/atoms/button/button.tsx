@@ -2,13 +2,11 @@
 
 import clsx from "clsx";
 import { ElementType, ReactNode, useRef } from "react";
-import { AriaButtonOptions, useButton } from "react-aria";
+import { AriaButtonOptions, useButton, useFocusRing } from "react-aria";
 
-type Variant = "primary" | "circle" | "unstyled";
+type Variant = "circle" | "unstyled";
 
 const variantStyles: Record<Variant, string> = {
-  primary:
-    "w-fit px-9 py-5 rounded-custom bg-black text-white hover:text-black hover:bg-white border-black border-[1px] disabled:opacity-50",
   circle:
     "h-10 w-10 rounded-full flex justify-center items-center hover:opacity-50 border-[1px] dark:border-white border-black",
   unstyled: "hover:opacity-50",
@@ -24,15 +22,22 @@ const Button = (props: ButtonProps & AriaButtonOptions<ElementType>) => {
   const ref = useRef<HTMLButtonElement>(null);
 
   const { buttonProps, isPressed } = useButton(props, ref);
-  const { children, variant = "primary", className } = props;
+  const { isFocusVisible, focusProps } = useFocusRing();
+
+  const { children, variant = "unstyled", className } = props;
 
   return (
     <button
       ref={ref}
       {...buttonProps}
+      {...focusProps}
       className={clsx(
-        "outline-none ring-blue-500 ring-offset-transparent transition focus-visible:ring-2",
+        "outline-none ring-offset-transparent transition",
         { "scale-90": isPressed },
+        {
+          "focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2":
+            isFocusVisible,
+        },
         className,
         variantStyles[variant],
       )}
