@@ -3,9 +3,9 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/organisms/footer/footer";
 import Navbar from "@/components/organisms/navbar/navbar";
-import { ThemeProviderWrapper } from "@/components/molecules/theme-provider-wrapper/theme-provider-wrapper";
+// import { ThemeProviderWrapper } from "@/components/molecules/theme-provider-wrapper/theme-provider-wrapper";
 import { Organization, WithContext } from "schema-dts";
-import ThemeToggleButton from "@/components/organisms/theme-toggle-button/theme-toggle-button";
+// import ThemeToggleButton from "@/components/organisms/theme-toggle-button/theme-toggle-button";
 import Script from "next/script";
 
 const montserrat = Montserrat({
@@ -78,7 +78,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <head>
         <Script
           id="jsonLd"
@@ -102,16 +102,16 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={`${montserrat.variable}`}>
-        <ThemeProviderWrapper>
-          <div className="container flex min-h-screen flex-col">
-            <div className="flex flex-col justify-between py-4 sm:flex-row md:py-10">
-              <Navbar />
-              <ThemeToggleButton className="hidden sm:flex" />
-            </div>
-            {children}
-            <Footer />
+        {/* <ThemeProviderWrapper> */}
+        <div className="container flex min-h-screen flex-col">
+          <div className="flex flex-col justify-between py-4 sm:flex-row md:py-10">
+            <Navbar />
+            {/* <ThemeToggleButton className="hidden sm:flex" /> */}
           </div>
-        </ThemeProviderWrapper>
+          {children}
+          <Footer />
+        </div>
+        {/* </ThemeProviderWrapper> */}
       </body>
     </html>
   );
