@@ -9,16 +9,21 @@ import { PropsWithChildren } from "react";
 
 type NavItemProps = {
   href: string;
+  label?: string;
 };
 
-const NavItem = ({ children, href }: PropsWithChildren<NavItemProps>) => {
+const NavItem = ({
+  children,
+  href,
+  label,
+}: PropsWithChildren<NavItemProps>) => {
   const pathName = usePathname();
   const path = pathName.replace("/", "");
   const navString = children?.toString().toLowerCase();
 
   return (
     <List.Item>
-      <StyledLink href={href} className="pt-1">
+      <StyledLink href={href} className="pt-1" aria-label={label}>
         <Text.Heading
           as="span"
           className={clsx({

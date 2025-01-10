@@ -1,12 +1,15 @@
 import List from "@/components/atoms/list/list";
 import NavItem from "@/components/molecules/nav-item/nav-item";
+import clsx from "clsx";
 
-const Navbar = () => {
+const Navbar = ({ className }: { className?: string }) => {
   return (
-    <nav className="self-start flex flex-col relative">
-      <div className="absolute w-[120%] h-[120%] -top-[10%] -left-[10%] z-0 bg-white dark:bg-black opacity-50 blur-lg" />
+    <nav className={clsx("relative flex flex-col self-start", className)}>
+      <div className="absolute -left-[10%] -top-[10%] z-0 h-[120%] w-[120%] bg-white opacity-50 blur-lg dark:bg-black" />
       <List className="z-10">
-        <NavItem href="/">Wouter van der Laan</NavItem>
+        <NavItem href="/" label="homepage">
+          Wouter van der Laan
+        </NavItem>
         <NavItem href="/portfolio">Portfolio</NavItem>
         <NavItem href="/resume">Resume</NavItem>
         <NavItem href="/about">About</NavItem>

@@ -3,10 +3,11 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/organisms/footer/footer";
 import Navbar from "@/components/organisms/navbar/navbar";
-// import { ThemeProviderWrapper } from "@/components/molecules/theme-provider-wrapper/theme-provider-wrapper";
 import { Organization, WithContext } from "schema-dts";
-// import ThemeToggleButton from "@/components/organisms/theme-toggle-button/theme-toggle-button";
 import Script from "next/script";
+import ThemeContextProvider from "@/hooks/use-theme";
+import ThemeToggleButton from "@/components/organisms/theme-toggle-button/theme-toggle-button";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -87,32 +88,21 @@ export default function RootLayout({
             __html: JSON.stringify(jsonLd),
           }}
         />
-
-        <Script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-NXGRPWEN5C"
-        />
-
-        <Script id="analytics">
-          {`window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-NXGRPWEN5C');`}
-        </Script>
       </head>
-      <body className={`${montserrat.variable}`}>
-        {/* <ThemeProviderWrapper> */}
-        <div className="container flex min-h-screen flex-col">
-          <div className="flex flex-col justify-between py-4 sm:flex-row md:py-10">
-            <Navbar />
-            {/* <ThemeToggleButton className="hidden sm:flex" /> */}
+      <ThemeContextProvider>
+        <body className={`${montserrat.variable} bg-white dark:bg-black`}>
+          <GoogleAnalytics gaId="G-NXGRPWEN5C" />
+
+          <div className="container flex min-h-screen flex-col">
+            <div className="flex flex-col justify-between py-4 sm:flex-row md:py-10">
+              <Navbar />
+              <ThemeToggleButton className="hidden sm:flex" />
+            </div>
+            {children}
+            <Footer />
           </div>
-          {children}
-          <Footer />
-        </div>
-        {/* </ThemeProviderWrapper> */}
-      </body>
+        </body>
+      </ThemeContextProvider>
     </html>
   );
 }

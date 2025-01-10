@@ -1,7 +1,8 @@
 "use client";
 
 import Button from "@/components/atoms/button/button";
-import { useModal } from "@/hooks/use-modal";
+import Dialog from "@/components/atoms/dialog/dialog";
+import Modal from "@/components/atoms/modal/modal";
 import React, { JSXElementConstructor, ReactElement, ReactNode } from "react";
 import { AriaButtonProps, useOverlayTrigger } from "react-aria";
 import { OverlayTriggerProps, useOverlayTriggerState } from "react-stately";
@@ -27,7 +28,7 @@ const ModalTrigger = ({
     state,
   );
 
-  const renderModal = useModal(overlayProps, state);
+  const { isOpen } = state;
 
   return (
     <>
@@ -40,7 +41,15 @@ const ModalTrigger = ({
       >
         {children}
       </Button>
-      {renderModal(modalContent, props.isDismissable)}
+      {isOpen && (
+        <Modal
+          {...overlayProps}
+          state={state}
+          isDismissable={props.isDismissable}
+        >
+          {React.cloneElement(<Dialog>{modalContent}</Dialog>, { ...props })}
+        </Modal>
+      )}
     </>
   );
 };
