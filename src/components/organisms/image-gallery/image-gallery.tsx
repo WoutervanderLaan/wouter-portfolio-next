@@ -36,9 +36,8 @@ const ImageGallery = ({
         <Image
           onLoad={() => setLoading(false)}
           src={image.src}
-          alt={image.alt || "no alt text provided"}
+          alt={image.alt}
           size="xl"
-          className="h-[60vh]"
         />
       </MotionDiv>
       <Thumbnails

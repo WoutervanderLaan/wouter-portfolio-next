@@ -12,7 +12,7 @@ const variantStyles: Record<Size, string> = {
   small: "h-20",
   default: "h-40",
   large: "h-80",
-  xl: "h-[500px]",
+  xl: "h-[60vh]",
 };
 
 const Image = ({
@@ -26,8 +26,8 @@ const Image = ({
     src={src}
     alt={alt}
     draggable="false"
-    quality={size === "xl" ? 100 : 50}
-    className={clsx("w-fit object-contain", variantStyles[size], className)}
+    objectFit="contain"
+    className={clsx("w-auto", variantStyles[size], className)}
     {...rest}
   />
 );

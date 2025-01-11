@@ -1,7 +1,7 @@
 "use client";
 
 import Button from "@/components/atoms/button/button";
-// import Image from "@/components/atoms/image/image";
+import Image from "@/components/atoms/image/image";
 import {
   Size,
   TImage,
@@ -10,7 +10,6 @@ import {
 import ModalTrigger from "@/components/molecules/modal-trigger/modal-trigger";
 import ImageGallery from "@/components/organisms/image-gallery/image-gallery";
 import clsx from "clsx";
-import Text from "@/components/atoms/text/text";
 
 type BaseThumbnailsProps = {
   images: Array<TImage>;
@@ -60,10 +59,7 @@ const Thumbnails = (
                 "border-4 border-blue-500": selectedImage?.src === src,
               })}
             >
-              {/* <Image size={size} src={src} alt={alt} loading="eager" /> */}
-              <Text.Paragraph>
-                {alt} {size}
-              </Text.Paragraph>
+              <Image size={size} src={src} alt={alt} sizes="10vw" />
             </ModalTrigger>
           );
         } else {
@@ -80,10 +76,7 @@ const Thumbnails = (
                   selectedImage?.src === src,
               })}
             >
-              {/* <Image size={size} src={src} alt={alt} /> */}
-              <Text.Paragraph>
-                {alt} {size}
-              </Text.Paragraph>
+              <Image size={size} src={src} alt={alt} sizes="10vw" />
             </Button>
           );
         }
