@@ -7,8 +7,8 @@ import {
   TImage,
   TVideo,
 } from "@/components/templates/portfolio/portfolio.types";
-import ModalTrigger from "@/components/molecules/modal-trigger/modal-trigger";
-import ImageGallery from "@/components/organisms/image-gallery/image-gallery";
+// import ModalTrigger from "@/components/molecules/modal-trigger/modal-trigger";
+// import ImageGallery from "@/components/organisms/image-gallery/image-gallery";
 import clsx from "clsx";
 
 type BaseThumbnailsProps = {
@@ -48,19 +48,19 @@ const Thumbnails = (
       {images.map(({ src, alt = "" }, i) => {
         if (isModalTriggerType(rest)) {
           return (
-            <ModalTrigger
-              key={i}
-              aria-label={`Open image of ${alt}`}
-              isDismissable
-              modalContent={
-                <ImageGallery images={images} selectedImage={{ src, alt }} />
-              }
-              className={clsx({
-                "border-4 border-blue-500": selectedImage?.src === src,
-              })}
-            >
-              <Image size={size} src={src} alt={alt} loading="eager" />
-            </ModalTrigger>
+            // <ModalTrigger
+            //   key={i}
+            //   aria-label={`Open image of ${alt}`}
+            //   isDismissable
+            //   modalContent={
+            //     <ImageGallery images={images} selectedImage={{ src, alt }} />
+            //   }
+            //   className={clsx({
+            //     "border-4 border-blue-500": selectedImage?.src === src,
+            //   })}
+            // >
+            <Image key={i} size={size} src={src} alt={alt} loading="eager" />
+            // {/* </ModalTrigger> */}
           );
         } else {
           const { onPress } = rest as ThumbnailButtonProps;
