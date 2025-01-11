@@ -59,7 +59,12 @@ const Thumbnails = (
                 "border-4 border-blue-500": selectedImage?.src === src,
               })}
             >
-              <Image size={size} src={src} alt={alt} sizes="10vw" />
+              <Image
+                size={size}
+                src={src}
+                alt={alt}
+                sizes="(max-width: 320px) 90vw, (max-width: 768px) 50vw, 20vw"
+              />
             </ModalTrigger>
           );
         } else {
@@ -76,7 +81,12 @@ const Thumbnails = (
                   selectedImage?.src === src,
               })}
             >
-              <Image size={size} src={src} alt={alt} sizes="10vw" />
+              <Image
+                size={size}
+                src={src}
+                alt={alt}
+                sizes="(max-width: 320px) 90vw, (max-width: 768px) 50vw, 20vw"
+              />
             </Button>
           );
         }

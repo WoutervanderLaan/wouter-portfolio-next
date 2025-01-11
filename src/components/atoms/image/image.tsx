@@ -26,8 +26,7 @@ const Image = ({
     src={src}
     alt={alt}
     draggable="false"
-    objectFit="contain"
-    className={clsx("w-auto", variantStyles[size], className)}
+    className={clsx("w-auto object-contain", variantStyles[size], className)}
     {...rest}
   />
 );

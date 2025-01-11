@@ -4,6 +4,7 @@ import Thumbnails from "@/components/molecules/thumbnails/thumbnails";
 import { useState } from "react";
 import { MotionDiv } from "@/components/atoms/motion-element/motion-element";
 import Spinner from "@/components/atoms/spinner/spinner";
+import StyledLink from "@/components/atoms/link/link";
 
 const ImageGallery = ({
   selectedImage,
@@ -33,12 +34,15 @@ const ImageGallery = ({
         animate={{ opacity: loading ? 0 : 1 }}
         exit={{ opacity: 0 }}
       >
-        <Image
-          onLoad={() => setLoading(false)}
-          src={image.src}
-          alt={image.alt}
-          size="xl"
-        />
+        <StyledLink href={image.src.src} target="_blank" aria-label={image.alt}>
+          <Image
+            onLoad={() => setLoading(false)}
+            src={image.src}
+            alt={image.alt}
+            size="xl"
+            sizes="(max-width: 768px) 80vw, 50vw"
+          />
+        </StyledLink>
       </MotionDiv>
       <Thumbnails
         size={"extraSmall"}

@@ -1,7 +1,7 @@
 import { StaticImageData } from "next/image";
 
 export type TImage = {
-  src: StaticImageData | string;
+  src: StaticImageData;
   alt: string;
 };
 
