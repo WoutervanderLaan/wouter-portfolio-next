@@ -1,15 +1,16 @@
 "use client";
 
-// import Button from "@/components/atoms/button/button";
-import Image from "@/components/atoms/image/image";
+import Button from "@/components/atoms/button/button";
+// import Image from "@/components/atoms/image/image";
 import {
   Size,
   TImage,
   TVideo,
 } from "@/components/templates/portfolio/portfolio.types";
-// import ModalTrigger from "@/components/molecules/modal-trigger/modal-trigger";
-// import ImageGallery from "@/components/organisms/image-gallery/image-gallery";
+import ModalTrigger from "@/components/molecules/modal-trigger/modal-trigger";
+import ImageGallery from "@/components/organisms/image-gallery/image-gallery";
 import clsx from "clsx";
+import Text from "@/components/atoms/text/text";
 
 type BaseThumbnailsProps = {
   images: Array<TImage>;
@@ -37,7 +38,7 @@ const Thumbnails = (
   props: BaseThumbnailsProps &
     (ThumbnailButtonProps | ThumbnailModalTriggerProps),
 ) => {
-  const { images, size, ...rest } = props;
+  const { images, size, selectedImage, ...rest } = props;
 
   return (
     <div
@@ -48,36 +49,42 @@ const Thumbnails = (
       {images.map(({ src, alt = "" }, i) => {
         if (isModalTriggerType(rest)) {
           return (
-            // <ModalTrigger
-            //   key={i}
-            //   aria-label={`Open image of ${alt}`}
-            //   isDismissable
-            //   modalContent={
-            //     <ImageGallery images={images} selectedImage={{ src, alt }} />
-            //   }
-            //   className={clsx({
-            //     "border-4 border-blue-500": selectedImage?.src === src,
-            //   })}
-            // >
-            <Image key={i} size={size} src={src} alt={alt} loading="eager" />
-            // {/* </ModalTrigger> */}
+            <ModalTrigger
+              key={i}
+              aria-label={`Open image of ${alt}`}
+              isDismissable
+              modalContent={
+                <ImageGallery images={images} selectedImage={{ src, alt }} />
+              }
+              className={clsx({
+                "border-4 border-blue-500": selectedImage?.src === src,
+              })}
+            >
+              {/* <Image size={size} src={src} alt={alt} loading="eager" /> */}
+              <Text.Paragraph>
+                {alt} {size}
+              </Text.Paragraph>
+            </ModalTrigger>
           );
         } else {
-          // const { onPress } = rest as ThumbnailButtonProps;
+          const { onPress } = rest as ThumbnailButtonProps;
 
           return (
-            // <Button
-            //   key={i}
-            //   aria-label={`Open image of ${alt}`}
-            //   variant="unstyled"
-            //   onPress={() => onPress({ src, alt })}
-            //   className={clsx({
-            //     "border-4 border-black/50 dark:border-white/50":
-            //       selectedImage?.src === src,
-            //   })}
-            // >
-            <Image key={i} size={size} src={src} alt={alt} />
-            // </Button>
+            <Button
+              key={i}
+              aria-label={`Open image of ${alt}`}
+              variant="unstyled"
+              onPress={() => onPress({ src, alt })}
+              className={clsx({
+                "border-4 border-black/50 dark:border-white/50":
+                  selectedImage?.src === src,
+              })}
+            >
+              {/* <Image size={size} src={src} alt={alt} /> */}
+              <Text.Paragraph>
+                {alt} {size}
+              </Text.Paragraph>
+            </Button>
           );
         }
       })}
