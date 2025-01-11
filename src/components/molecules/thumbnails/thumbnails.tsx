@@ -41,8 +41,8 @@ const Thumbnails = (
 
   return (
     <div
-      className={clsx("my-4 flex gap-4 pb-4", {
-        "flex-wrap": rest.type === "modalTrigger",
+      className={clsx("my-4 flex flex-wrap gap-4 pb-4", {
+        "justify-between": rest.type === "button",
       })}
     >
       {images.map(({ src, alt = "" }, i) => {
