@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "@/components/atoms/button/button";
+// import Button from "@/components/atoms/button/button";
 import Image from "@/components/atoms/image/image";
 import {
   Size,
@@ -37,7 +37,7 @@ const Thumbnails = (
   props: BaseThumbnailsProps &
     (ThumbnailButtonProps | ThumbnailModalTriggerProps),
 ) => {
-  const { images, size, selectedImage, ...rest } = props;
+  const { images, size, ...rest } = props;
 
   return (
     <div
@@ -63,21 +63,21 @@ const Thumbnails = (
             // {/* </ModalTrigger> */}
           );
         } else {
-          const { onPress } = rest as ThumbnailButtonProps;
+          // const { onPress } = rest as ThumbnailButtonProps;
 
           return (
-            <Button
-              key={i}
-              aria-label={`Open image of ${alt}`}
-              variant="unstyled"
-              onPress={() => onPress({ src, alt })}
-              className={clsx({
-                "border-4 border-black/50 dark:border-white/50":
-                  selectedImage?.src === src,
-              })}
-            >
-              <Image size={size} src={src} alt={alt} />
-            </Button>
+            // <Button
+            //   key={i}
+            //   aria-label={`Open image of ${alt}`}
+            //   variant="unstyled"
+            //   onPress={() => onPress({ src, alt })}
+            //   className={clsx({
+            //     "border-4 border-black/50 dark:border-white/50":
+            //       selectedImage?.src === src,
+            //   })}
+            // >
+            <Image key={i} size={size} src={src} alt={alt} />
+            // </Button>
           );
         }
       })}
