@@ -6,7 +6,7 @@ import PortfolioSeries from "@/components/templates/portfolio/portfolio-series";
 const PortfolioPage = () => (
   <main className="mt-10 flex flex-col gap-16 md:mx-20 lg:mx-40">
     {PORTFOLIO_ITEMS.map((series, i) => {
-      const { title, img, video } = series;
+      const { title } = series;
 
       return (
         <PortfolioSeries key={`portfolio_${title}_${i}`}>
