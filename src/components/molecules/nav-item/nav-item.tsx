@@ -1,6 +1,6 @@
 "use client";
 
-import StyledLink from "@/components/atoms/link/link";
+import Link from "@/components/atoms/link/link";
 import List from "@/components/atoms/list/list";
 import Text from "@/components/atoms/text/text";
 import clsx from "clsx";
@@ -19,11 +19,12 @@ const NavItem = ({
 }: PropsWithChildren<NavItemProps>) => {
   const pathName = usePathname();
   const path = pathName.replace("/", "");
-  const navString = children?.toString().toLowerCase();
+  const navString =
+    typeof children === "string" ? children?.toString().toLowerCase() : "";
 
   return (
     <List.Item>
-      <StyledLink href={href} className="pt-1" aria-label={label}>
+      <Link href={href} className="pt-1" aria-label={label}>
         <Text.Heading
           as="span"
           className={clsx({
@@ -33,7 +34,7 @@ const NavItem = ({
         >
           {children}
         </Text.Heading>
-      </StyledLink>
+      </Link>
     </List.Item>
   );
 };

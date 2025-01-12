@@ -1,11 +1,11 @@
 "use client";
 
 import clsx from "clsx";
-import Link from "next/link";
+import NextLink from "next/link";
 import { PropsWithChildren, useRef } from "react";
 import { AriaLinkOptions, useFocusRing, useLink } from "react-aria";
 
-const StyledLink = (
+const Link = (
   props: PropsWithChildren<
     AriaLinkOptions & { className?: string; href: string }
   >,
@@ -16,7 +16,7 @@ const StyledLink = (
 
   const { className, children, href } = props;
   return (
-    <Link
+    <NextLink
       ref={ref}
       className={clsx(
         "outline-none ring-offset-transparent transition",
@@ -32,8 +32,8 @@ const StyledLink = (
       {...focusProps}
     >
       {children}
-    </Link>
+    </NextLink>
   );
 };
 
-export default StyledLink;
+export default Link;

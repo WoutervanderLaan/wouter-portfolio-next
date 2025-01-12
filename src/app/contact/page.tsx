@@ -1,4 +1,4 @@
-import StyledLink from "@/components/atoms/link/link";
+import Link from "@/components/atoms/link/link";
 import Text from "@/components/atoms/text/text";
 import Instagram from "@/components/icons/instagram";
 
@@ -6,11 +6,11 @@ const Contact = () => (
   <main className="my-20 flex flex-col gap-4 md:mx-40 lg:mx-80">
     <Text.Paragraph>
       Email:{" "}
-      <StyledLink href="mailto:woutervdlaan93@gmail.com<">
+      <Link href="mailto:woutervdlaan93@gmail.com<">
         woutervdlaan93@gmail.com
-      </StyledLink>
+      </Link>
     </Text.Paragraph>
-    <StyledLink
+    <Link
       href="https://www.instagram.com/wvanderlaan/"
       target="_blank"
       rel="noreferrer"
@@ -21,7 +21,7 @@ const Contact = () => (
         height={20}
         className="dark:fill-white dark:stroke-white"
       />
-    </StyledLink>
+    </Link>
   </main>
 );
 

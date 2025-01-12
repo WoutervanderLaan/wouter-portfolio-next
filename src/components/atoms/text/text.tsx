@@ -23,12 +23,18 @@ const TextBase = ({
   className,
 }: PropsWithChildren<TextProps>) => {
   const Component = as;
-  const combinedClassName = clsx(
-    "dark:text-white text-black",
-    variantStyles[variant],
-    className
+
+  return (
+    <Component
+      className={clsx(
+        "text-black dark:text-white",
+        variantStyles[variant],
+        className,
+      )}
+    >
+      {children}
+    </Component>
   );
-  return <Component className={combinedClassName}>{children}</Component>;
 };
 
 const Text = {

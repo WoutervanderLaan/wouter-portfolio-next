@@ -39,6 +39,8 @@ const Thumbnails = (
 ) => {
   const { images, size, selectedImage, ...rest } = props;
 
+  const sizes = "(max-width: 320px) 90vw, (max-width: 768px) 50vw, 20vw";
+
   return (
     <div
       className={clsx("my-4 flex flex-wrap gap-4 pb-4", {
@@ -59,12 +61,7 @@ const Thumbnails = (
                 "border-4 border-blue-500": selectedImage?.src === src,
               })}
             >
-              <Image
-                size={size}
-                src={src}
-                alt={alt}
-                sizes="(max-width: 320px) 90vw, (max-width: 768px) 50vw, 20vw"
-              />
+              <Image size={size} src={src} alt={alt} sizes={sizes} />
             </ModalTrigger>
           );
         } else {
@@ -81,12 +78,7 @@ const Thumbnails = (
                   selectedImage?.src === src,
               })}
             >
-              <Image
-                size={size}
-                src={src}
-                alt={alt}
-                sizes="(max-width: 320px) 90vw, (max-width: 768px) 50vw, 20vw"
-              />
+              <Image size={size} src={src} alt={alt} sizes={sizes} />
             </Button>
           );
         }
