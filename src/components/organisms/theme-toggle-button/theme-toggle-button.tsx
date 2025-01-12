@@ -6,11 +6,11 @@ import ToggleButton from "../../molecules/toggle-button/toggle-button";
 import { useThemeContext } from "@/hooks/use-theme";
 
 const ThemeToggleButton = ({ className }: { className?: string }) => {
-  const { isDarkMode, setIsDarkMode } = useThemeContext();
+  const { isDarkMode, setDarkMode } = useThemeContext();
 
   return (
     <ToggleButton
-      onChange={() => setIsDarkMode((prev) => !prev)}
+      onChange={() => setDarkMode(!isDarkMode)}
       isSelected={isDarkMode}
       className={className}
       aria-label="dark/light mode toggle"
