@@ -96,7 +96,7 @@ export default function RootLayout({
           <div className="container flex min-h-screen flex-col">
             <div className="flex flex-col justify-between py-4 sm:flex-row md:py-10">
               <Navbar />
-              <ThemeToggleButton className="hidden sm:flex" />
+              <ThemeToggleButton className="z-10 hidden sm:flex" />
             </div>
             {children}
             <Footer />

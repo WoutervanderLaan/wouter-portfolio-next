@@ -9,13 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/third-parties": "^15.1.4",
+    "@next/third-parties": "^15.1.5",
     "clsx": "^2.1.1",
+    "konva": "^9.3.18",
     "motion": "^11.16.4",
     "next": "15.1.0",
     "react": "^19.0.0",
     "react-aria": "^3.36.0",
     "react-dom": "^19.0.0",
+    "react-konva": "^19.0.2",
     "react-stately": "^3.34.0",
     "schema-dts": "^1.1.2"
   },
