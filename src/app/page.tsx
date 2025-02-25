@@ -1,6 +1,7 @@
 "use client";
 
 import ThemeToggleButton from "@/components/organisms/theme-toggle-button/theme-toggle-button";
+import DrawingContextProvider from "@/context/drawing-context";
 import dynamic from "next/dynamic";
 
 const DrawingCanvas = dynamic(
@@ -14,7 +15,9 @@ export default function Home() {
   return (
     <main>
       <ThemeToggleButton className="sm:hidden" />
-      <DrawingCanvas debugMode />
+      <DrawingContextProvider>
+        <DrawingCanvas />
+      </DrawingContextProvider>
     </main>
   );
 }

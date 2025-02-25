@@ -4,13 +4,15 @@ import clsx from "clsx";
 import { ElementType, ReactNode, useRef } from "react";
 import { AriaButtonOptions, useButton, useFocusRing } from "react-aria";
 
-type Variant = "primary" | "circle" | "unstyled";
+type Variant = "primary" | "secondary" | "circle" | "unstyled";
 
 const variantStyles: Record<Variant, string> = {
   primary:
     "bg-black dark:bg-white rounded-md py-2 px-4 text-white dark:text-black",
+  secondary:
+    "bg-white dark:bg-black border border-black dark:border-white p-2 rounded-md",
   circle:
-    "h-10 w-10 rounded-full flex justify-center items-center hover:opacity-50 border-[1px] dark:border-white border-black",
+    "h-10 w-10 rounded-full flex justify-center items-center hover:opacity-50 border dark:border-white border-black",
   unstyled: "hover:opacity-50",
 };
 
@@ -34,13 +36,11 @@ const Button = (props: ButtonProps & AriaButtonOptions<ElementType>) => {
       {...buttonProps}
       {...focusProps}
       className={clsx(
-        "outline-none ring-offset-transparent transition",
+        "outline-none ring-offset-2 transition-all",
         { "scale-90": isPressed },
         { "opacity-50": props.isDisabled },
-
         {
-          "focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2":
-            isFocusVisible,
+          "focus-visible:ring-4 focus-visible:ring-blue-500": isFocusVisible,
         },
         className,
         variantStyles[variant],

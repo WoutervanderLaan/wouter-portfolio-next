@@ -34,7 +34,7 @@ const ToggleButton = (props: ToggleButtonProps) => {
       {...buttonProps}
       {...focusProps}
       className={clsx(
-        "relative flex h-6 min-w-[46px] flex-row items-center justify-between gap-1 rounded-full border-[1px] border-black bg-white p-0.5 outline-none ring-offset-transparent transition hover:opacity-50 dark:border-white dark:bg-black",
+        "relative flex h-6 min-w-[46px] flex-row items-center justify-between gap-1 rounded-full border border-black bg-white p-0.5 outline-none ring-offset-transparent transition hover:opacity-50 dark:border-white dark:bg-black",
         { "scale-90": isPressed },
         {
           "focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2":
@@ -46,7 +46,7 @@ const ToggleButton = (props: ToggleButtonProps) => {
       {children}
 
       <MotionDiv
-        className="absolute top-0 mt-[1px] h-5 w-5 rounded-full border-[1px] border-black bg-white dark:border-white dark:bg-black"
+        className="absolute top-0 mt-[1px] h-5 w-5 rounded-full border border-black bg-white dark:border-white dark:bg-black"
         animate={{
           left: isSelected ? 23 : 1,
         }}

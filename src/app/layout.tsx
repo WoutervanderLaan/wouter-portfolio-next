@@ -5,7 +5,7 @@ import Footer from "@/components/organisms/footer/footer";
 import Navbar from "@/components/organisms/navbar/navbar";
 import { Organization, WithContext } from "schema-dts";
 import Script from "next/script";
-import ThemeContextProvider from "@/hooks/use-theme";
+import ThemeContextProvider from "@/context/theme-context";
 import ThemeToggleButton from "@/components/organisms/theme-toggle-button/theme-toggle-button";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
