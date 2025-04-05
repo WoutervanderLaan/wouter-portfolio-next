@@ -20,6 +20,7 @@ const ModalTrigger = ({
   children,
   modalContent,
   className,
+  isDisabled,
   ...props
 }: ModalTriggerProps) => {
   const state = useOverlayTriggerState(props);
@@ -37,7 +38,7 @@ const ModalTrigger = ({
         variant="unstyled"
         {...triggerProps}
         className={className}
-        isDisabled={state.isOpen}
+        isDisabled={isOpen || isDisabled}
       >
         {children}
       </Button>

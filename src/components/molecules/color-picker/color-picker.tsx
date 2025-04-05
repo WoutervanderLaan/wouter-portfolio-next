@@ -25,7 +25,7 @@ const ColorPicker = ({ color, setColor, disabled }: ColorPickerProps) => {
         className="self-start"
       >
         <div
-          className="h-10 w-10 border border-black"
+          className="aspect-square h-9 border border-black"
           style={{ backgroundColor: color }}
         />
       </Button>

@@ -1,6 +1,6 @@
 import Text from "@/components/atoms/text/text";
 import Resume from "@/components/templates/resume/resume";
-import RESUME_ITEMS from "../../components/resume-items";
+import RESUME_ITEMS from "@/components/resume-items";
 
 const ResumePage = () => (
   <main className="my-10 flex flex-col gap-10 md:mx-20 lg:mx-32 xl:mx-80">

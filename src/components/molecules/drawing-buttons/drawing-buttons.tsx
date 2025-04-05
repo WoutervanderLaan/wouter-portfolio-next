@@ -1,17 +1,27 @@
 import Button from "@/components/atoms/button/button";
-import Text from "@/components/atoms/text/text";
-import Arrow from "@/components/icons/arrow";
 import Eraser from "@/components/icons/eraser";
 import Paint from "@/components/icons/paint";
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Slider from "../slider/slider";
-import { useDrawingContext } from "@/hooks/use-drawing-context";
+import useDrawingContext from "@/hooks/use-drawing-context";
 import { Zoom } from "@/hooks/use-zoom";
 import { ToolType } from "@/types/tool-type";
+import ModalTrigger from "../modal-trigger/modal-trigger";
+import ZoomIn from "@/components/icons/zoom-in";
+import ZoomOut from "@/components/icons/zoom-out";
+import Move from "@/components/icons/move";
+import Download from "@/components/icons/download";
+import Layer from "@/components/icons/layer";
+import Bin from "@/components/icons/bin";
+import Undo from "@/components/icons/undo";
+import Redo from "@/components/icons/redo";
+import Opacity from "@/components/icons/opacity";
+import Diameter from "@/components/icons/diameter";
+import useSaveCanvas from "@/hooks/use-save-canvas";
 
 const STANDARD_BUTTON_STYLING =
-  "h-10 flex aspect-square items-center justify-center self-start overflow-hidden";
+  "h-9 flex aspect-square items-center justify-center self-start overflow-hidden";
 
 const PaintButton = () => {
   const { type, setType } = useDrawingContext();
@@ -21,7 +31,7 @@ const PaintButton = () => {
       onPress={() => setType(ToolType.BRUSH)}
       variant="secondary"
       className={clsx(STANDARD_BUTTON_STYLING, {
-        "bg-gray-300": type === ToolType.BRUSH,
+        "bg-gray-200": type === ToolType.BRUSH,
       })}
     >
       <Paint />
@@ -37,7 +47,7 @@ const EraserButton = () => {
       onPress={() => setType(ToolType.ERASER)}
       variant="secondary"
       className={clsx(STANDARD_BUTTON_STYLING, {
-        "bg-gray-300": type === ToolType.ERASER,
+        "bg-gray-200": type === ToolType.ERASER,
       })}
     >
       <Eraser />
@@ -45,7 +55,7 @@ const EraserButton = () => {
   );
 };
 
-const SizeButton = ({}) => {
+const SizeButton = () => {
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const { size, setSize } = useDrawingContext();
 
@@ -58,13 +68,12 @@ const SizeButton = ({}) => {
           "rounded-r-none border-r-0": isSliderOpen,
         })}
       >
-        <Text.Small>Si</Text.Small>
+        <Diameter />
       </Button>
       {isSliderOpen && (
-        <div className="absolute right-0 top-0 flex h-10 min-w-40 translate-x-[100%] items-center justify-center border border-l-0 border-black bg-white">
+        <div className="absolute right-0 top-0 flex h-9 min-w-40 translate-x-[100%] items-center justify-center border border-l-0 border-black bg-white">
           <Slider
-            onBlur={() => setIsSliderOpen(false)}
-            ariaLabel={"size-slider"}
+            ariaLabel="size-slider"
             showNumericValue
             value={size}
             max={200}
@@ -89,13 +98,12 @@ const OpacityButton = ({}) => {
           "rounded-r-none border-r-0": isSliderOpen,
         })}
       >
-        <Text.Small>Op</Text.Small>
+        <Opacity />
       </Button>
       {isSliderOpen && (
-        <div className="absolute right-0 top-0 flex h-10 min-w-40 translate-x-[100%] items-center justify-center border border-l-0 border-black bg-white">
+        <div className="absolute right-0 top-0 flex h-9 min-w-40 translate-x-[100%] items-center justify-center border border-l-0 border-black bg-white">
           <Slider
-            onBlur={() => setIsSliderOpen(false)}
-            ariaLabel={"opacity-slider"}
+            ariaLabel="opacity-slider"
             showNumericValue
             value={opacity}
             max={100}
@@ -117,7 +125,7 @@ const UndoButton = () => {
       className={clsx(STANDARD_BUTTON_STYLING)}
       isDisabled={noHistory}
     >
-      <Arrow />
+      <Undo />
     </Button>
   );
 };
@@ -132,45 +140,32 @@ const RedoButton = () => {
       isDisabled={!redoStack.length}
       className={clsx(STANDARD_BUTTON_STYLING)}
     >
-      <Arrow direction="right" />
+      <Redo />
     </Button>
   );
 };
 
-const ZoomInButton = () => {
+const ZoomButton = () => {
   const { setType, type, setZoomType, zoomType } = useDrawingContext();
+
+  useEffect(() => {
+    if (type !== ToolType.ZOOM) setZoomType(Zoom.IN);
+  }, [type]);
 
   return (
     <Button
       onPress={() => {
-        setZoomType(Zoom.IN);
+        setZoomType(
+          zoomType === Zoom.IN && type === ToolType.ZOOM ? Zoom.OUT : Zoom.IN,
+        );
         setType(ToolType.ZOOM);
       }}
       variant="secondary"
       className={clsx(STANDARD_BUTTON_STYLING, {
-        "bg-gray-300": zoomType === Zoom.IN && type === ToolType.ZOOM,
+        "bg-gray-200": type === ToolType.ZOOM,
       })}
     >
-      ++
-    </Button>
-  );
-};
-
-const ZoomOutButton = () => {
-  const { setType, type, setZoomType, zoomType } = useDrawingContext();
-
-  return (
-    <Button
-      onPress={() => {
-        setZoomType(Zoom.OUT);
-        setType(ToolType.ZOOM);
-      }}
-      variant="secondary"
-      className={clsx(STANDARD_BUTTON_STYLING, {
-        "bg-gray-300": zoomType === Zoom.OUT && type === ToolType.ZOOM,
-      })}
-    >
-      --
+      {zoomType === Zoom.IN ? <ZoomIn /> : <ZoomOut />}
     </Button>
   );
 };
@@ -183,10 +178,10 @@ const DragButton = () => {
       onPress={() => setType(ToolType.DRAG)}
       variant="secondary"
       className={clsx(STANDARD_BUTTON_STYLING, {
-        "bg-gray-300": type === ToolType.DRAG,
+        "bg-gray-200": type === ToolType.DRAG,
       })}
     >
-      DR
+      <Move />
     </Button>
   );
 };
@@ -206,27 +201,36 @@ const ClearButton = () => {
       isDisabled={noHistory}
       className={clsx(STANDARD_BUTTON_STYLING)}
     >
-      <Text.Small className="text-black">CL</Text.Small>
+      <Bin />
     </Button>
   );
 };
 
-type SaveButtonProps = {
-  save: () => void;
-};
-
-const SaveButton = ({ save }: SaveButtonProps) => {
+const SaveButton = () => {
   const { noHistory } = useDrawingContext();
+  const saveCanvas = useSaveCanvas();
 
   return (
-    <Button
-      onPress={save}
-      variant="secondary"
+    <ModalTrigger
       isDisabled={noHistory}
-      className={clsx(STANDARD_BUTTON_STYLING)}
+      isDismissable
+      className={clsx(
+        STANDARD_BUTTON_STYLING,
+        "rounded-md border border-black",
+      )}
+      modalContent={
+        <div className="rounded-md border border-black bg-white p-4">
+          <Button variant="secondary" onPress={() => saveCanvas("png")}>
+            PNG
+          </Button>
+          <Button variant="secondary" onPress={() => saveCanvas("svg")}>
+            SVG
+          </Button>
+        </div>
+      }
     >
-      <Text.Small className="text-black">SA</Text.Small>
-    </Button>
+      <Download />
+    </ModalTrigger>
   );
 };
 
@@ -257,7 +261,7 @@ const AddLayerButton = () => {
       variant="secondary"
       className={clsx(STANDARD_BUTTON_STYLING)}
     >
-      <Text.Small>+</Text.Small>
+      <Layer />
     </Button>
   );
 };
@@ -267,8 +271,7 @@ const DrawingButtons = {
   Eraser: EraserButton,
   Size: SizeButton,
   Opacity: OpacityButton,
-  ZoomIn: ZoomInButton,
-  ZoomOut: ZoomOutButton,
+  Zoom: ZoomButton,
   Drag: DragButton,
   Undo: UndoButton,
   Redo: RedoButton,

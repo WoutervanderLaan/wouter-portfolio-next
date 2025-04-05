@@ -5,14 +5,14 @@ import clsx from "clsx";
 import { PropsWithChildren, useState } from "react";
 
 const Sidebar = ({ children }: PropsWithChildren) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   return (
     <MotionAside
       initial={{ x: "-90%" }}
       animate={{ x: isExpanded ? 0 : "-90%" }}
       className={clsx(
-        "absolute z-20 h-full w-fit border-r border-black bg-white",
+        "absolute z-20 h-screen w-fit border-r border-black bg-white",
         "outline-none ring-offset-2 transition-colors focus-visible:ring-4 focus-visible:ring-blue-500",
       )}
       transition={{
@@ -21,7 +21,7 @@ const Sidebar = ({ children }: PropsWithChildren) => {
       }}
     >
       <Button
-        className="absolute -right-14 bottom-10 flex h-6 w-16 items-center justify-end border border-l-0 border-black bg-white pr-4 hover:scale-110 hover:opacity-100"
+        className="absolute -right-16 bottom-10 flex h-6 w-16 items-center justify-end border border-l-0 border-black bg-white pr-4 hover:scale-110"
         variant="unstyled"
         onPress={() => setIsExpanded((prev) => !prev)}
       >

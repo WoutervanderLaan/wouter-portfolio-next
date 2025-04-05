@@ -18,6 +18,7 @@
     "react-aria": "^3.36.0",
     "react-dom": "^19.0.0",
     "react-konva": "^19.0.2",
+    "react-konva-to-svg": "^1.0.2",
     "react-stately": "^3.34.0",
     "schema-dts": "^1.1.2"
   },

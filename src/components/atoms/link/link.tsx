@@ -15,6 +15,7 @@ const Link = (
   const { isFocusVisible, focusProps } = useFocusRing();
 
   const { className, children, href } = props;
+
   return (
     <NextLink
       ref={ref}

@@ -1,7 +1,8 @@
 import Konva from "konva";
-import { useDrawingContext } from "./use-drawing-context";
+import useDrawingContext from "./use-drawing-context";
 import { extractPoint } from "@/utils/drawing-helpers";
 import { TLine } from "@/types/line";
+import { MAX_COLOR_HISTORY } from "./use-brush-settings";
 
 const useDrawingEvents = () => {
   const {
@@ -13,6 +14,7 @@ const useDrawingEvents = () => {
     startLine,
     updateLine,
     resetHistory,
+    colorHistoryRef,
   } = useDrawingContext();
 
   const handleEventStart = (
@@ -30,6 +32,12 @@ const useDrawingEvents = () => {
       type,
       timeStamp: new Date().getTime(),
     };
+
+    if (!colorHistoryRef.current.includes(color))
+      colorHistoryRef.current = [color, ...colorHistoryRef.current].slice(
+        0,
+        MAX_COLOR_HISTORY,
+      );
 
     startLine(newLine);
   };

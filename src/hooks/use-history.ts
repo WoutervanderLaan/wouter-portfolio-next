@@ -29,31 +29,31 @@ const useHistory = ({
   );
 
   const undo = () => {
-    if (!noHistory) {
-      const mostRecentLines = layers.map(({ lines }, index) => ({
-        ...lines[lines.length - 1],
-        index,
-      }));
+    if (noHistory) return;
 
-      const mostRecentLine = mostRecentLines
-        .filter((line) => line.timeStamp)
-        .sort((a, b) => b.timeStamp - a.timeStamp)[0];
+    const mostRecentLines = layers.map(({ lines }, index) => ({
+      ...lines[lines.length - 1],
+      index,
+    }));
 
-      switchActiveLayer(mostRecentLine.index);
+    const mostRecentLine = mostRecentLines
+      .filter((line) => line.timeStamp)
+      .sort((a, b) => b.timeStamp - a.timeStamp)[0];
 
-      setRedoStack((prev) => [...prev, mostRecentLine]);
+    switchActiveLayer(mostRecentLine.index);
 
-      setLayers((prev) =>
-        prev.map((layer, index) => {
-          if (index === mostRecentLine.index)
-            return {
-              lines: layer.lines.slice(0, -1),
-            };
+    setRedoStack((prev) => [...prev, mostRecentLine]);
 
-          return layer;
-        }),
-      );
-    }
+    setLayers((prev) =>
+      prev.map((layer, index) => {
+        if (index === mostRecentLine.index)
+          return {
+            lines: layer.lines.slice(0, -1),
+          };
+
+        return layer;
+      }),
+    );
   };
 
   const redo = () => {

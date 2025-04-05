@@ -1,4 +1,4 @@
-import { BrushType } from "./tool-type";
+import { ToolType } from "./tool-type";
 
 export type TPoint = { x: number; y: number };
 
@@ -7,6 +7,6 @@ export type TLine = {
   color: string;
   size: number;
   opacity: number;
-  type: BrushType;
+  type: Omit<ToolType, `${ToolType.DRAG} ${ToolType.ZOOM}`>;
   timeStamp: number;
 };

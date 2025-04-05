@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from "react";
-import { useDrawingContext } from "./use-drawing-context";
+import useDrawingContext from "./use-drawing-context";
 import { ToolType } from "@/types/tool-type";
 
 const useDrag = () => {

@@ -3,7 +3,7 @@
 import Moon from "@/components/icons/moon";
 import Sun from "@/components/icons/sun";
 import ToggleButton from "../../molecules/toggle-button/toggle-button";
-import { useThemeContext } from "@/hooks/use-theme";
+import useThemeContext from "@/hooks/use-theme";
 
 const ThemeToggleButton = ({ className }: { className?: string }) => {
   const { isDarkMode, setDarkMode } = useThemeContext();

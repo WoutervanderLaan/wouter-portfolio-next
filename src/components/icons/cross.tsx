@@ -1,15 +1,15 @@
 import clsx from "clsx";
 
 type IconProps = {
-  width?: number;
-  height?: number;
+  size?: number;
+  strokeWidth?: number;
   className?: string;
 };
 
-const Cross = ({ width = 32, height = 32, className }: IconProps) => (
+const Cross = ({ size = 32, strokeWidth = 3, className }: IconProps) => (
   <svg
-    width={width}
-    height={height}
+    width={size}
+    height={size}
     viewBox="0 0 32 32"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +17,7 @@ const Cross = ({ width = 32, height = 32, className }: IconProps) => (
   >
     <path
       d="M1.5 2L30 30.5M1.5 30.5L30 2"
-      strokeWidth="3"
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
     />
   </svg>

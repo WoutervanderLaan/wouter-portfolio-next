@@ -1,68 +1,77 @@
+"use client";
+
 import ColorPicker from "@/components/molecules/color-picker/color-picker";
 import DrawingButtons from "@/components/molecules/drawing-buttons/drawing-buttons";
 import { MAX_COLOR_HISTORY } from "@/hooks/use-brush-settings";
-import { useDrawingContext } from "@/hooks/use-drawing-context";
-import { Stage as StageKonva } from "konva/lib/Stage";
-import { RefObject } from "react";
+import useDrawingContext from "@/hooks/use-drawing-context";
 import Sidebar from "../sidebar/sidebar";
 import Layers from "@/components/molecules/layers/layers";
+import Tooltip from "@/components/molecules/tooltip/tooltip";
 
-type DrawingSettingsProps = {
-  stageRef: RefObject<StageKonva | null>;
-};
-
-const DrawingSettings = ({ stageRef }: DrawingSettingsProps) => {
-  const { color, adjustColor, colorHistory } = useDrawingContext();
-
-  const saveCanvas = () => {
-    const uri = stageRef.current?.toDataURL();
-    if (!uri) return;
-    const link = document.createElement("a");
-    link.download = "drawing.png";
-    link.href = uri;
-    link.click();
-  };
+const DrawingSettings = () => {
+  const { color, setColor, colorHistoryRef } = useDrawingContext();
 
   return (
     <Sidebar>
       <div className="flex flex-col gap-2 p-2">
         <div className="flex w-fit flex-col gap-1">
-          <ColorPicker color={color} setColor={adjustColor} />
+          <Tooltip tooltipText="Color picker">
+            <ColorPicker color={color} setColor={setColor} />
+          </Tooltip>
 
           <div className="grid grid-cols-2 gap-1">
             {Array.from({ length: MAX_COLOR_HISTORY }).map((_, i) => (
               <DrawingButtons.PrevColor
-                key={`${colorHistory[i]}_${i}`}
-                setColor={adjustColor}
-                color={colorHistory[i]}
+                key={`${colorHistoryRef.current[i]}_${i}`}
+                setColor={setColor}
+                color={colorHistoryRef.current[i]}
               />
             ))}
           </div>
         </div>
+        <Tooltip tooltipText="Size">
+          <DrawingButtons.Size />
+        </Tooltip>
 
-        <DrawingButtons.Size />
+        <Tooltip tooltipText="Opacity">
+          <DrawingButtons.Opacity />
+        </Tooltip>
 
-        <DrawingButtons.Opacity />
+        <Tooltip tooltipText="Brush">
+          <DrawingButtons.Paint />
+        </Tooltip>
 
-        <DrawingButtons.Paint />
+        <Tooltip tooltipText="Eraser">
+          <DrawingButtons.Eraser />
+        </Tooltip>
 
-        <DrawingButtons.Eraser />
+        <Tooltip tooltipText="Zoom">
+          <DrawingButtons.Zoom />
+        </Tooltip>
 
-        <DrawingButtons.ZoomIn />
+        <Tooltip tooltipText="Move">
+          <DrawingButtons.Drag />
+        </Tooltip>
 
-        <DrawingButtons.ZoomOut />
+        <Tooltip tooltipText="Undo">
+          <DrawingButtons.Undo />
+        </Tooltip>
 
-        <DrawingButtons.Drag />
+        <Tooltip tooltipText="Redo">
+          <DrawingButtons.Redo />
+        </Tooltip>
 
-        <DrawingButtons.Undo />
+        <Tooltip tooltipText="Clear">
+          <DrawingButtons.Clear />
+        </Tooltip>
 
-        <DrawingButtons.Redo />
+        <Tooltip tooltipText="Save">
+          <DrawingButtons.Save />
+        </Tooltip>
 
-        <DrawingButtons.Clear />
-
-        <DrawingButtons.Save save={saveCanvas} />
-
-        <DrawingButtons.AddLayer />
+        <Tooltip tooltipText="Add layer">
+          <DrawingButtons.AddLayer />
+        </Tooltip>
       </div>
       <Layers />
     </Sidebar>

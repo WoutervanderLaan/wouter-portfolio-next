@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/organisms/footer/footer";
-import Navbar from "@/components/organisms/navbar/navbar";
 import { Organization, WithContext } from "schema-dts";
 import Script from "next/script";
 import ThemeContextProvider from "@/context/theme-context";
-import ThemeToggleButton from "@/components/organisms/theme-toggle-button/theme-toggle-button";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 const montserrat = Montserrat({
@@ -92,15 +89,7 @@ export default function RootLayout({
       <ThemeContextProvider>
         <body className={`${montserrat.variable} bg-white dark:bg-black`}>
           <GoogleAnalytics gaId="G-NXGRPWEN5C" />
-
-          <div className="container flex min-h-screen flex-col">
-            <div className="flex flex-col justify-between py-4 sm:flex-row md:py-10">
-              <Navbar />
-              <ThemeToggleButton className="z-10 hidden sm:flex" />
-            </div>
-            {children}
-            <Footer />
-          </div>
+          {children}
         </body>
       </ThemeContextProvider>
     </html>

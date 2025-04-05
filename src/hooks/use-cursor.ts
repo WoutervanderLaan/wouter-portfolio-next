@@ -2,7 +2,7 @@ import { Position } from "@/types/position";
 import { extractPoint } from "@/utils/drawing-helpers";
 import Konva from "konva";
 import { useCallback, useState } from "react";
-import { useDrawingContext } from "./use-drawing-context";
+import useDrawingContext from "./use-drawing-context";
 import { ToolType } from "@/types/tool-type";
 
 const APPLICABLE_TOOLS = [ToolType.BRUSH, ToolType.ERASER];

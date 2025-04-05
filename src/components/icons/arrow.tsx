@@ -1,6 +1,5 @@
 type ArrowProps = {
-  width?: number;
-  height?: number;
+  size?: number;
   direction?: "left" | "right" | "up" | "down";
   color?: string;
 };
@@ -8,30 +7,31 @@ type ArrowProps = {
 type Directions = "left" | "right" | "up" | "down";
 
 const directions: Record<Directions, number> = {
-  left: 0,
+  left: 180,
   up: 90,
-  right: 180,
+  right: 0,
   down: 270,
 };
 
 const Arrow = ({
-  width = 13,
-  height = 6,
+  size = 24,
   direction = "left",
   color = "black",
 }: ArrowProps) => (
   <svg
-    width={width}
-    height={height}
-    viewBox="0 0 13 6"
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
     fill="none"
     transform={`rotate(${directions[direction]})`}
-    xmlns="http://www.w3.org/2000/svg"
+    stroke={color}
+    strokeWidth="1"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
-    <path
-      d="M0 3L5 5.88675V0.113249L0 3ZM13 2.5H4.5V3.5H13V2.5Z"
-      fill={color}
-    />
+    <path d="M18 8L22 12L18 16" />
+    <path d="M2 12H22" />
   </svg>
 );
 

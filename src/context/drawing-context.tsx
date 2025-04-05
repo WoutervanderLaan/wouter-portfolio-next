@@ -22,14 +22,14 @@ import { Stage } from "konva/lib/Stage";
 
 type T = {
   color: string;
-  adjustColor: (color: string) => void;
+  setColor: Dispatch<SetStateAction<string>>;
   size: number;
   setSize: Dispatch<SetStateAction<number>>;
   opacity: number;
   setOpacity: Dispatch<SetStateAction<number>>;
   type: ToolType;
   setType: Dispatch<SetStateAction<ToolType>>;
-  colorHistory: Array<string>;
+  colorHistoryRef: RefObject<string[]>;
 };
 
 type L = {
@@ -69,6 +69,7 @@ type DrawingContext = T &
   D &
   Z & {
     isDrawing: RefObject<boolean>;
+    stageRef: RefObject<Stage | null>;
   };
 
 export const DrawingContext = createContext<DrawingContext | null>(null);
@@ -78,8 +79,9 @@ const DrawingContextProvider = ({ children }: { children: ReactNode }) => {
   const zoomSettings = useZoom();
   const layerActions = useLayers();
   const historyActions = useHistory(layerActions);
-  const drawActions = useDraw(layerActions);
+  const drawActions = useDraw({ ...layerActions, ...brushSettings });
   const isDrawing = useRef(false);
+  const stageRef = useRef<Stage>(null);
 
   //TODO: make adding and removing layers part of historyStack
 
@@ -92,6 +94,7 @@ const DrawingContextProvider = ({ children }: { children: ReactNode }) => {
         ...historyActions,
         ...drawActions,
         isDrawing,
+        stageRef,
       }}
     >
       {children}

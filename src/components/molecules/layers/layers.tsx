@@ -1,9 +1,10 @@
+import { Fragment, useState } from "react";
+import clsx from "clsx";
 import Button from "@/components/atoms/button/button";
 import Text from "@/components/atoms/text/text";
 import Cross from "@/components/icons/cross";
-import { useDrawingContext } from "@/hooks/use-drawing-context";
-import clsx from "clsx";
-import { Fragment, useState } from "react";
+import LayerIcon from "@/components/icons/layer";
+import useDrawingContext from "@/hooks/use-drawing-context";
 
 const Layers = () => {
   const { activeLayerIndex, layers } = useDrawingContext();
@@ -34,9 +35,9 @@ const Layer = ({ active, index }: { active: boolean; index: number }) => {
       <Button
         variant="unstyled"
         onPress={() => switchActiveLayer(index)}
-        className="flex flex-1 items-center justify-center border-l border-black py-2"
+        className="flex flex-1 items-center justify-evenly border-l border-black py-2"
       >
-        <Text.Small>L {index + 1}</Text.Small>
+        <LayerIcon size={16} /> <Text.Small>{index + 1}</Text.Small>
       </Button>
       {isTooltipOpen && (
         <Button
@@ -45,7 +46,7 @@ const Layer = ({ active, index }: { active: boolean; index: number }) => {
           isDisabled={layers.length === 1}
           className="absolute right-0 top-0 z-10 flex aspect-square h-4 w-4 flex-1 items-center justify-center border border-black bg-white"
         >
-          <Cross width={8} height={8} />
+          <Cross size={8} />
         </Button>
       )}
     </div>

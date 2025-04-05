@@ -13,7 +13,7 @@ const variantStyles: Record<Variant, string> = {
     "bg-white dark:bg-black border border-black dark:border-white p-2 rounded-md",
   circle:
     "h-10 w-10 rounded-full flex justify-center items-center hover:opacity-50 border dark:border-white border-black",
-  unstyled: "hover:opacity-50",
+  unstyled: "",
 };
 
 type ButtonProps = {

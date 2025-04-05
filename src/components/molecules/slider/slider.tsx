@@ -6,7 +6,7 @@ type SliderProps = {
   showNumericValue?: boolean;
   value: number;
   onChange: ChangeEventHandler<HTMLInputElement>;
-  onBlur: FocusEventHandler<HTMLInputElement>;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
   min?: number;
   max?: number;
 };
