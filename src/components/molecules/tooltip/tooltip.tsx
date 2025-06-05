@@ -16,7 +16,7 @@ const Tooltip = ({
   useEffect(
     function closeTooltip() {
       if (openTip) {
-        setTimeout(() => setOpenTip(false), 2000);
+        setTimeout(() => setOpenTip(false), 1000);
       }
     },
     [openTip],

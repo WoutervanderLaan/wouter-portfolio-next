@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Slider from "../slider/slider";
 import useDrawingContext from "@/hooks/use-drawing-context";
 import { Zoom } from "@/hooks/use-zoom";
-import { ToolType } from "@/types/tool-type";
+import { ToolType } from "@/lib/types/tool-type";
 import ModalTrigger from "../modal-trigger/modal-trigger";
 import ZoomIn from "@/components/icons/zoom-in";
 import ZoomOut from "@/components/icons/zoom-out";
@@ -19,6 +19,7 @@ import Redo from "@/components/icons/redo";
 import Opacity from "@/components/icons/opacity";
 import Diameter from "@/components/icons/diameter";
 import useSaveCanvas from "@/hooks/use-save-canvas";
+import ResponsiveContainer from "@/components/atoms/responsive-container/responsive-container";
 
 const STANDARD_BUTTON_STYLING =
   "h-9 flex aspect-square items-center justify-center self-start overflow-hidden";
@@ -31,7 +32,7 @@ const PaintButton = () => {
       onPress={() => setType(ToolType.BRUSH)}
       variant="secondary"
       className={clsx(STANDARD_BUTTON_STYLING, {
-        "bg-gray-200": type === ToolType.BRUSH,
+        "ring-2 ring-blue-400 ring-offset-2": type === ToolType.BRUSH,
       })}
     >
       <Paint />
@@ -47,7 +48,7 @@ const EraserButton = () => {
       onPress={() => setType(ToolType.ERASER)}
       variant="secondary"
       className={clsx(STANDARD_BUTTON_STYLING, {
-        "bg-gray-200": type === ToolType.ERASER,
+        "ring-2 ring-blue-400 ring-offset-2": type === ToolType.ERASER,
       })}
     >
       <Eraser />
@@ -60,7 +61,11 @@ const SizeButton = () => {
   const { size, setSize } = useDrawingContext();
 
   return (
-    <div className="relative w-fit">
+    <ResponsiveContainer
+      className="relative w-fit"
+      isActive={isSliderOpen}
+      callback={() => setIsSliderOpen(false)}
+    >
       <Button
         onPress={() => setIsSliderOpen((prev) => !prev)}
         variant="secondary"
@@ -81,7 +86,7 @@ const SizeButton = () => {
           />
         </div>
       )}
-    </div>
+    </ResponsiveContainer>
   );
 };
 
@@ -90,7 +95,11 @@ const OpacityButton = ({}) => {
   const { opacity, setOpacity } = useDrawingContext();
 
   return (
-    <div className="relative w-fit">
+    <ResponsiveContainer
+      className="relative w-fit"
+      isActive={isSliderOpen}
+      callback={() => setIsSliderOpen(false)}
+    >
       <Button
         onPress={() => setIsSliderOpen((prev) => !prev)}
         variant="secondary"
@@ -111,7 +120,7 @@ const OpacityButton = ({}) => {
           />
         </div>
       )}
-    </div>
+    </ResponsiveContainer>
   );
 };
 
@@ -162,7 +171,7 @@ const ZoomButton = () => {
       }}
       variant="secondary"
       className={clsx(STANDARD_BUTTON_STYLING, {
-        "bg-gray-200": type === ToolType.ZOOM,
+        "ring-2 ring-blue-400 ring-offset-2": type === ToolType.ZOOM,
       })}
     >
       {zoomType === Zoom.IN ? <ZoomIn /> : <ZoomOut />}
@@ -178,7 +187,7 @@ const DragButton = () => {
       onPress={() => setType(ToolType.DRAG)}
       variant="secondary"
       className={clsx(STANDARD_BUTTON_STYLING, {
-        "bg-gray-200": type === ToolType.DRAG,
+        "ring-2 ring-blue-400 ring-offset-2": type === ToolType.DRAG,
       })}
     >
       <Move />

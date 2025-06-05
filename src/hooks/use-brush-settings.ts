@@ -1,4 +1,4 @@
-import { ToolType } from "@/types/tool-type";
+import { ToolType } from "@/lib/types/tool-type";
 import { useRef, useState } from "react";
 
 export const MAX_COLOR_HISTORY = 8;

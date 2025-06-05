@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import useKeyPressContext from "./use-key-press-context";
 import useDrawingContext from "./use-drawing-context";
-import { ToolType } from "@/types/tool-type";
+import { ToolType } from "@/lib/types/tool-type";
 import { Zoom } from "./use-zoom";
 
 const KEY_PRESS_MAP = [["b"], ["e"], ["m"], ["z"], ["shift"]] as const;

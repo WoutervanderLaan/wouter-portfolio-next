@@ -1,7 +1,7 @@
 import Konva from "konva";
 import useDrawingContext from "./use-drawing-context";
 import { extractPoint } from "@/utils/drawing-helpers";
-import { TLine } from "@/types/line";
+import { TLine } from "@/lib/types/line";
 import { MAX_COLOR_HISTORY } from "./use-brush-settings";
 
 const useDrawingEvents = () => {

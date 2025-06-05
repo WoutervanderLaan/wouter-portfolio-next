@@ -5,7 +5,6 @@ import DrawingButtons from "@/components/molecules/drawing-buttons/drawing-butto
 import { MAX_COLOR_HISTORY } from "@/hooks/use-brush-settings";
 import useDrawingContext from "@/hooks/use-drawing-context";
 import Sidebar from "../sidebar/sidebar";
-import Layers from "@/components/molecules/layers/layers";
 import Tooltip from "@/components/molecules/tooltip/tooltip";
 
 const DrawingSettings = () => {
@@ -68,12 +67,7 @@ const DrawingSettings = () => {
         <Tooltip tooltipText="Save">
           <DrawingButtons.Save />
         </Tooltip>
-
-        <Tooltip tooltipText="Add layer">
-          <DrawingButtons.AddLayer />
-        </Tooltip>
       </div>
-      <Layers />
     </Sidebar>
   );
 };

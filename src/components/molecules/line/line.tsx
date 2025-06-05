@@ -1,5 +1,5 @@
-import { TLine } from "@/types/line";
-import { ToolType } from "@/types/tool-type";
+import { TLine } from "@/lib/types/line";
+import { ToolType } from "@/lib/types/tool-type";
 import { Line as KonvaLine } from "react-konva";
 
 const Line = ({ size, points, color, opacity, type }: TLine) => (

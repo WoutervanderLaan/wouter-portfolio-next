@@ -1,4 +1,14 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wouter van der Laan – Portfolio & Drawing App
+
+This repository contains the personal website of artist Wouter van der Laan, built with [Next.js](https://nextjs.org). The site serves two main purposes:
+
+- **Portfolio Website:**  
+  Showcases Wouter's artistic work, including exhibitions, installations, paintings, and other projects. Each portfolio entry features images, descriptions, and contextual information, providing a comprehensive overview of the artist's practice.
+
+- **Drawing App:**  
+  An interactive, browser-based drawing application that allows users to create digital artworks. The app supports multiple tools, layers, and collaborative features, making it suitable for both solo and group drawing sessions.
+
+---
 
 ## Getting Started
 
@@ -16,21 +26,49 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- The **Portfolio** is accessible from the main navigation and displays a curated selection of works.
+- The **Drawing App** can be found under the `/canvas` route, offering a creative playground for visitors.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
+
+## Features
+
+### Portfolio
+
+- Detailed project pages with images and descriptions
+- Resume and exhibition history
+- Responsive, accessible design
+
+### Drawing App
+
+- Real-time drawing with various brushes and tools
+- Layer management and undo/redo
+- Collaborative drawing sessions (multi-user support)
+- Save and export your creations
+
+---
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+- [Wouter van der Laan – Instagram](https://www.instagram.com/wvanderlaan/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Folder Structure & Atomic Design
 
-## Deploy on Vercel
+This project follows the Atomic Design methodology for organizing UI components:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Atoms:** Basic building blocks such as buttons, icons, and text elements. Found in `src/components/atoms/`.
+- **Molecules:** Combinations of atoms that form more complex UI elements, like color pickers or close buttons. Found in `src/components/molecules/`.
+- **Organisms:** Groups of molecules and/or atoms that form distinct sections of the interface. Found in `src/components/organisms/`.
+- **Templates:** Page-level layouts that arrange organisms, molecules, and atoms. Found in `src/components/templates/`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Other notable folders:
+
+- **app/**: Contains the main application routes and layout files.
+- **context/**: React context providers for state management (e.g., drawing, theme, authentication).
+- **hooks/**: Custom React hooks for drawing, layers, theme, and more.
+- **lib/** and **utils/**: Utility functions and network logic.
+- **public/**: Static assets such as images and icons.
+
+This structure promotes reusability, scalability, and maintainability throughout the codebase.

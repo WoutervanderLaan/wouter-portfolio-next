@@ -1,6 +1,6 @@
 "use client";
 
-import { TLayer } from "@/types/layer";
+import { TLayer } from "@/lib/types/layer";
 import { useCallback, useState } from "react";
 
 const EMPTY_LAYER = { lines: [] };

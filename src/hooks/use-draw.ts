@@ -1,7 +1,7 @@
 "use client";
 
-import { TLayer } from "@/types/layer";
-import { TLine } from "@/types/line";
+import { TLayer } from "@/lib/types/layer";
+import { TLine } from "@/lib/types/line";
 import { Dispatch, SetStateAction, useCallback } from "react";
 
 type UseDrawProps = {

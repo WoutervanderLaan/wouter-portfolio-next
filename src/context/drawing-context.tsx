@@ -9,15 +9,15 @@ import {
   useRef,
 } from "react";
 
-import { TLayer } from "@/types/layer";
+import { TLayer } from "@/lib/types/layer";
 import useBrushSettings from "@/hooks/use-brush-settings";
 import useLayers from "@/hooks/use-layers";
 import useHistory from "@/hooks/use-history";
 import useDraw from "@/hooks/use-draw";
-import { TLine } from "@/types/line";
-import { ToolType } from "@/types/tool-type";
+import { TLine } from "@/lib/types/line";
+import { ToolType } from "@/lib/types/tool-type";
 import useZoom, { Zoom } from "@/hooks/use-zoom";
-import { Position } from "@/types/position";
+import { Position } from "@/lib/types/position";
 import { Stage } from "konva/lib/Stage";
 
 type T = {
@@ -82,8 +82,6 @@ const DrawingContextProvider = ({ children }: { children: ReactNode }) => {
   const drawActions = useDraw({ ...layerActions, ...brushSettings });
   const isDrawing = useRef(false);
   const stageRef = useRef<Stage>(null);
-
-  //TODO: make adding and removing layers part of historyStack
 
   return (
     <DrawingContext.Provider
