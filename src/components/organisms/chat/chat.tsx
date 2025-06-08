@@ -113,7 +113,7 @@ export default function Chat({
                                 <MessageBalloon.ERROR text="Unable to retrieve chat history" />
                             )}
 
-                            {messages.slice(0, 1).map((message) => (
+                            {messages.map((message) => (
                                 <MessageBalloon.CHAT
                                     key={message.id}
                                     {...message}
