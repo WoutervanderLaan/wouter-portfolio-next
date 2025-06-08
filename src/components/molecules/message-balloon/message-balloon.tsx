@@ -1,0 +1,86 @@
+import Text from "@/components/atoms/text/text";
+import { Message } from "@/lib/types/message";
+import clsx from "clsx";
+
+const ChatBalloon = (message: Message) => (
+    <div
+        key={message.id}
+        className={clsx(
+            "flex flex-col",
+            {
+                "translate-x-2 rounded-bl-xl": message.from === "user",
+            },
+            {
+                "-translate-x-2 rounded-br-xl": message.from === "assistant",
+            },
+        )}
+    >
+        <div
+            className={clsx("flex flex-row justify-between", {
+                "flex-row-reverse": message.from === "user",
+            })}
+        >
+            <Text.Small>
+                {message.from === "user" ? "You" : "Assistant"}
+            </Text.Small>
+        </div>
+        <div className="flex h-fit w-full flex-col rounded-t-xl border border-black bg-white p-2">
+            <Text.Paragraph>{message.text}</Text.Paragraph>
+
+            {"timestamp" in message && (
+                <Text.Small className="self-end">
+                    {new Date(message.timestamp).toLocaleTimeString(undefined, {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    })}
+                </Text.Small>
+            )}
+        </div>
+    </div>
+);
+
+const SystemBalloon = ({
+    text,
+    variant = "info",
+}: {
+    text: string;
+    variant?: "info" | "error";
+}) => (
+    <div
+        className={clsx(
+            "cursor-pointer self-center rounded-xl border px-4 py-2 text-center",
+            { "border-red-500 bg-red-50": variant === "error" },
+            {
+                "border-yellow-600 bg-yellow-50": variant === "info",
+            },
+        )}
+    >
+        <Text.Small
+            className={clsx(
+                {
+                    "text-red-500": variant === "error",
+                },
+                {
+                    "text-yellow-600": variant === "info",
+                },
+            )}
+        >
+            {text}
+        </Text.Small>
+    </div>
+);
+
+const MessageBalloon = {
+    CHAT: (message: Message) => <ChatBalloon {...message} />,
+    INFO: ({ text }: { text: string }) => (
+        <SystemBalloon variant="info" text={text} />
+    ),
+    ERROR: ({ text }: { text: string }) => (
+        <SystemBalloon variant="error" text={text} />
+    ),
+};
+
+export default MessageBalloon;
