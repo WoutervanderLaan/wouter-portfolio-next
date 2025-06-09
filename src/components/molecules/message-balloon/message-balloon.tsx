@@ -8,10 +8,10 @@ const ChatBalloon = (message: Message) => (
         className={clsx(
             "flex flex-col",
             {
-                "translate-x-2 rounded-bl-xl": message.role === "user",
+                "translate-x-2": message.role === "user",
             },
             {
-                "-translate-x-2 rounded-br-xl": message.role === "assistant",
+                "-translate-x-2": message.role === "assistant",
             },
         )}
     >
@@ -24,7 +24,17 @@ const ChatBalloon = (message: Message) => (
                 {message.role === "user" ? "You" : "Assistant"}
             </Text.Small>
         </div>
-        <div className="flex h-fit w-full flex-col rounded-t-xl border border-black bg-white p-2">
+        <div
+            className={clsx(
+                "flex h-fit w-full flex-col rounded-t-xl border border-black bg-white p-2",
+                {
+                    "rounded-bl-xl": message.role === "user",
+                },
+                {
+                    "rounded-br-xl": message.role === "assistant",
+                },
+            )}
+        >
             <Text.Paragraph>{message.content}</Text.Paragraph>
 
             {"timestamp" in message && (
