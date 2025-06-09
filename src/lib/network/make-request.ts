@@ -1,4 +1,4 @@
-type ENDPOINTS_GET = "/auth/refresh" | "/history/db";
+type ENDPOINTS_GET = "/auth/refresh" | "/history";
 
 type ENDPOINTS_POST = "/auth/login";
 

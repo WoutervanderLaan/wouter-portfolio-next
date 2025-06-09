@@ -3,13 +3,7 @@ import DrawingSettings from "@/components/organisms/drawing-settings/drawing-set
 import { AuthProvider } from "@/context/auth-context";
 import DrawingContextProvider from "@/context/drawing-context";
 import makeServerRequest from "@/lib/network/make-server-request";
-
-export type TMessageDB = {
-    timestamp: string;
-    user_input: string;
-    id: string;
-    model_input: string;
-};
+import { StoredMessage } from "@/lib/types/message";
 
 export default async function CanvasLayout({
     children,
@@ -17,10 +11,10 @@ export default async function CanvasLayout({
     children: React.ReactNode;
 }>) {
     const { data: history, error } = await makeServerRequest<
-        Array<TMessageDB>,
+        Array<StoredMessage>,
         { detail: string }
     >({
-        endpoint: "/history/db",
+        endpoint: "/history",
         method: "GET",
     });
 

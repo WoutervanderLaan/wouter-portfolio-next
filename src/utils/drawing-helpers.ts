@@ -1,3 +1,4 @@
+import { TLine } from "@/lib/types/line";
 import Konva from "konva";
 
 export const smoothPoints = (points: Array<number>, iterations = 2) => {
@@ -46,4 +47,44 @@ export const extractPoint = (
   const adjustedY = (pointer.y - stageY) / scale;
 
   return [adjustedX, adjustedY];
+};
+
+export const generateSvg = (
+  lines: TLine[],
+  erasers: TLine[],
+  width: number,
+  height: number,
+): string => {
+  const svgLines = lines
+    .map((line) => {
+      const d = `M ${line.points[0]} ${line.points[1]} ${line.points
+        .slice(2)
+        .map((p, i) => (i % 2 ? p : `L ${p}`))
+        .join(" ")}`;
+      return `<path d="${d}" stroke="${line.color}" stroke-width="${line.size}" fill="none" />`;
+    })
+    .join("\n");
+
+  const eraserPaths = erasers
+    .map((line) => {
+      const d = `M ${line.points[0]} ${line.points[1]} ${line.points
+        .slice(2)
+        .map((p, i) => (i % 2 ? p : `L ${p}`))
+        .join(" ")}`;
+      return `<path d="${d}" stroke="black" stroke-width="${line.size}" fill="none" stroke-linecap="round" stroke-linejoin="round" />`;
+    })
+    .join("\n");
+
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <defs>
+    <mask id="eraserMask">
+      <rect x="0" y="0" width="${width}" height="${height}" fill="white"/>
+      ${eraserPaths}
+    </mask>
+  </defs>
+  <g mask="url(#eraserMask)">
+    ${svgLines}
+  </g>
+</svg>`;
 };

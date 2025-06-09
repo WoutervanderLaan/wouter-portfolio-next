@@ -8,24 +8,24 @@ const ChatBalloon = (message: Message) => (
         className={clsx(
             "flex flex-col",
             {
-                "translate-x-2 rounded-bl-xl": message.from === "user",
+                "translate-x-2 rounded-bl-xl": message.role === "user",
             },
             {
-                "-translate-x-2 rounded-br-xl": message.from === "assistant",
+                "-translate-x-2 rounded-br-xl": message.role === "assistant",
             },
         )}
     >
         <div
             className={clsx("flex flex-row justify-between", {
-                "flex-row-reverse": message.from === "user",
+                "flex-row-reverse": message.role === "user",
             })}
         >
             <Text.Small>
-                {message.from === "user" ? "You" : "Assistant"}
+                {message.role === "user" ? "You" : "Assistant"}
             </Text.Small>
         </div>
         <div className="flex h-fit w-full flex-col rounded-t-xl border border-black bg-white p-2">
-            <Text.Paragraph>{message.text}</Text.Paragraph>
+            <Text.Paragraph>{message.content}</Text.Paragraph>
 
             {"timestamp" in message && (
                 <Text.Small className="self-end">
@@ -51,7 +51,7 @@ const SystemBalloon = ({
 }) => (
     <div
         className={clsx(
-            "cursor-pointer self-center rounded-xl border px-4 py-2 text-center",
+            "self-center rounded-xl border px-4 py-2 text-center",
             { "border-red-500 bg-red-50": variant === "error" },
             {
                 "border-yellow-600 bg-yellow-50": variant === "info",

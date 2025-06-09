@@ -10,26 +10,15 @@ import MessageBalloon from "@/components/molecules/message-balloon/message-ballo
 import AuthLayout from "@/components/templates/auth-layout/auth-layout";
 import ChatForm from "../forms/chat-form";
 import Text from "@/components/atoms/text/text";
-import { TMessageDB } from "@/app/(canvas)/canvas/layout";
 
 export default function Chat({
     history = [],
     error: historyError,
 }: {
-    history?: Array<TMessageDB>;
+    history?: Array<StoredMessage>;
     error?: { detail: string };
 }) {
-    const [messages, setMessages] = useState<Array<StoredMessage>>(
-        history.flatMap(({ timestamp, user_input, model_input, id }) => [
-            { timestamp, from: "user", text: user_input, id: `user_${id}` },
-            {
-                timestamp,
-                from: "assistant",
-                text: model_input,
-                id: `assistant_${id}`,
-            },
-        ]),
-    );
+    const [messages, setMessages] = useState<Array<StoredMessage>>(history);
     const [incomingMessage, setIncomingMessage] = useState("");
     const incomingMessageRef = useRef("");
 
@@ -38,8 +27,8 @@ export default function Chat({
         (e) => {
             if (e.data === "[END]") {
                 addMessage({
-                    from: "assistant",
-                    text: incomingMessageRef.current,
+                    role: "assistant",
+                    content: incomingMessageRef.current,
                 });
                 setIncomingMessage("");
                 incomingMessageRef.current = "";
@@ -56,7 +45,7 @@ export default function Chat({
             {
                 ...message,
                 timestamp: new Date(Date.now()).toISOString(),
-                id: Math.random(),
+                id: String(Math.random()),
             },
         ]);
     };
@@ -121,10 +110,10 @@ export default function Chat({
                             ))}
                             {Boolean(incomingMessage.length) && (
                                 <MessageBalloon.CHAT
-                                    from="assistant"
-                                    text={incomingMessage}
+                                    role="assistant"
+                                    content={incomingMessage}
                                     stream
-                                    id={Math.random()}
+                                    id={String(Math.random())}
                                 />
                             )}
                             {!isConnected && (
@@ -135,7 +124,7 @@ export default function Chat({
                         <ChatForm
                             isDisabled={!isConnected}
                             onSubmit={(text) => {
-                                addMessage({ from: "user", text });
+                                addMessage({ role: "user", content: text });
                                 sendText(text);
                             }}
                         />

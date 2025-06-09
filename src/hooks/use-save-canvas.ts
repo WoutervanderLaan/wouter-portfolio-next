@@ -1,8 +1,9 @@
-import { exportStageSVG } from "react-konva-to-svg";
+// import { exportStageSVG } from "react-konva-to-svg";
 import useDrawingContext from "./use-drawing-context";
+import { generateSvg } from "@/utils/drawing-helpers";
 
 const useSaveCanvas = () => {
-  const { stageRef } = useDrawingContext();
+  const { stageRef, layers } = useDrawingContext();
 
   const saveCanvas = async (format: "png" | "jpg" | "svg") => {
     if (!stageRef.current) return;
@@ -16,7 +17,15 @@ const useSaveCanvas = () => {
         pixelRatio: 2,
       });
     } else {
-      const svgString = await exportStageSVG(stageRef.current, false);
+      const lines = layers[0].lines;
+      const eraserLines = layers[1].lines;
+
+      const svgString = generateSvg(
+        lines,
+        eraserLines,
+        stageRef.current.width(),
+        stageRef.current.height(),
+      );
       const blob = new Blob([svgString], { type: "image/svg+xml" });
       dataURL = URL.createObjectURL(blob);
     }

@@ -1,7 +1,7 @@
 export type MessageBase = {
-    id: number | string;
-    from: "user" | "assistant";
-    text: string;
+    id: string;
+    role: "user" | "assistant";
+    content: string;
 };
 
 export type StreamedMessage = MessageBase & {
@@ -10,6 +10,7 @@ export type StreamedMessage = MessageBase & {
 
 export type StoredMessage = MessageBase & {
     timestamp: string;
+    user_id?: string;
 };
 
 export type Message = StreamedMessage | StoredMessage;
