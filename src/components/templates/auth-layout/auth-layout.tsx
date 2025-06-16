@@ -7,7 +7,7 @@ const AuthLayout = ({
     children,
     className,
 }: {
-    children: (logout: () => Promise<void>) => ReactNode;
+    children: ReactNode | ((logout: () => Promise<void>) => ReactNode);
     className?: HTMLAttributes<HTMLElement>["className"];
 }) => {
     const { logout, isAuthenticated } = useAuth();
@@ -16,7 +16,8 @@ const AuthLayout = ({
         <section className={clsx("flex flex-1 flex-col", className)}>
             {!isAuthenticated && <LoginForm />}
 
-            {isAuthenticated && children(logout)}
+            {isAuthenticated &&
+                (typeof children === "function" ? children(logout) : children)}
         </section>
     );
 };

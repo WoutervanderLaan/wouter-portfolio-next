@@ -5,68 +5,68 @@ import { TLine } from "@/lib/types/line";
 import { MAX_COLOR_HISTORY } from "./use-brush-settings";
 
 const useDrawingEvents = () => {
-  const {
-    color,
-    opacity,
-    type,
-    size,
-    isDrawing,
-    startLine,
-    updateLine,
-    resetHistory,
-    colorHistoryRef,
-  } = useDrawingContext();
+    const {
+        color,
+        opacity,
+        type,
+        size,
+        isDrawing,
+        startLine,
+        updateLine,
+        resetHistory,
+        colorHistoryRef,
+    } = useDrawingContext();
 
-  const handleEventStart = (
-    e: Konva.KonvaEventObject<PointerEvent | TouchEvent | MouseEvent>,
-  ) => {
-    isDrawing.current = true;
-    e.evt.preventDefault();
-    const point = extractPoint(e);
+    const handleEventStart = (
+        e: Konva.KonvaEventObject<PointerEvent | TouchEvent | MouseEvent>,
+    ) => {
+        isDrawing.current = true;
+        e.evt.preventDefault();
+        const point = extractPoint(e);
 
-    const newLine: TLine = {
-      points: [...point, ...point],
-      color,
-      size,
-      opacity: opacity / 100,
-      type,
-      timeStamp: new Date().getTime(),
+        const newLine: TLine = {
+            points: [...point, ...point],
+            color,
+            size,
+            opacity: opacity / 100,
+            type,
+            timestamp: new Date().getTime(),
+        };
+
+        if (!colorHistoryRef.current.includes(color))
+            colorHistoryRef.current = [color, ...colorHistoryRef.current].slice(
+                0,
+                MAX_COLOR_HISTORY,
+            );
+
+        startLine(newLine);
     };
 
-    if (!colorHistoryRef.current.includes(color))
-      colorHistoryRef.current = [color, ...colorHistoryRef.current].slice(
-        0,
-        MAX_COLOR_HISTORY,
-      );
+    const handleEventMove = (
+        e: Konva.KonvaEventObject<TouchEvent | MouseEvent>,
+    ) => {
+        if (!isDrawing.current) return;
+        e.evt.preventDefault();
+        const point = extractPoint(e);
 
-    startLine(newLine);
-  };
+        updateLine(point);
+    };
 
-  const handleEventMove = (
-    e: Konva.KonvaEventObject<TouchEvent | MouseEvent>,
-  ) => {
-    if (!isDrawing.current) return;
-    e.evt.preventDefault();
-    const point = extractPoint(e);
+    const handleEventEnd = () => {
+        isDrawing.current = false;
+        resetHistory();
+    };
 
-    updateLine(point);
-  };
+    const handleEventLeave = () => {
+        isDrawing.current = false;
+    };
 
-  const handleEventEnd = () => {
-    isDrawing.current = false;
-    resetHistory();
-  };
-
-  const handleEventLeave = () => {
-    isDrawing.current = false;
-  };
-
-  return {
-    handleEventStart,
-    handleEventMove,
-    handleEventEnd,
-    handleEventLeave,
-  };
+    return {
+        handleEventStart,
+        handleEventMove,
+        handleEventEnd,
+        handleEventLeave,
+    };
 };
 
 export default useDrawingEvents;

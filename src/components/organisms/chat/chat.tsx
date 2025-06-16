@@ -4,12 +4,16 @@ import Button from "@/components/atoms/button/button";
 import Sidebar from "@/components/molecules/sidebar/sidebar";
 import useWebSocket from "@/hooks/use-web-socket";
 import clsx from "clsx";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MessageBase, StoredMessage } from "@/lib/types/message";
 import MessageBalloon from "@/components/molecules/message-balloon/message-balloon";
 import AuthLayout from "@/components/templates/auth-layout/auth-layout";
 import ChatForm from "../forms/chat-form";
 import Text from "@/components/atoms/text/text";
+import useDrawingContext from "@/hooks/use-drawing-context";
+import makeRequest from "@/lib/network/make-request";
+import { useAuth } from "@/context/auth-context";
+import { calculateBoundingBox } from "@/utils/drawing-helpers";
 
 export default function Chat({
     history = [],
@@ -21,9 +25,11 @@ export default function Chat({
     const [messages, setMessages] = useState<Array<StoredMessage>>(history);
     const [incomingMessage, setIncomingMessage] = useState("");
     const incomingMessageRef = useRef("");
+    const { stageRef, layers } = useDrawingContext();
+    const { token } = useAuth();
 
     const { isConnected, sendText, reconnect, error } = useWebSocket(
-        "ws://localhost:8000/responder/ws/respond",
+        "ws://localhost:8000/chat/",
         (e) => {
             if (e.data === "[END]") {
                 addMessage({
@@ -49,6 +55,42 @@ export default function Chat({
             },
         ]);
     };
+
+    const sendSnapshotForCritique = async () => {
+        if (!stageRef.current) return;
+        const { lines } = layers[0];
+        const { width, height, minX, minY } = calculateBoundingBox(lines);
+
+        const blob = (await stageRef.current.toBlob({
+            quality: 1,
+            pixelRatio: 2,
+            mimeType: "image/png",
+            width,
+            height,
+            x: minX,
+            y: minY,
+        })) as Blob;
+
+        const formData = new FormData();
+
+        formData.append("file", blob);
+
+        const res = await makeRequest({
+            method: "POST",
+            endpoint: "/chat/image-critique",
+            body: formData,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        console.log(res); // TODO: refine call and move to seperate file
+    };
+
+    useEffect(() => {
+        const amountOfLines = layers[0].lines.length;
+        if (amountOfLines % 10 === 0) sendSnapshotForCritique();
+    }, [layers[0].lines.length]);
 
     return (
         <Sidebar side="right" className="h-full">

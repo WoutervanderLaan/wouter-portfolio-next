@@ -8,6 +8,17 @@ const nextConfig: NextConfig = {
         };
         return config;
     },
+
+    images: {
+        remotePatterns: [
+            {
+                protocol: "http",
+                hostname: "localhost",
+                port: "8000",
+            },
+        ],
+    },
+    logging: { fetches: { fullUrl: true } },
 };
 
 export default nextConfig;

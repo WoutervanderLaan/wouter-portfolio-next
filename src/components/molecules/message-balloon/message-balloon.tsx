@@ -1,6 +1,7 @@
 import Text from "@/components/atoms/text/text";
 import { Message } from "@/lib/types/message";
 import clsx from "clsx";
+import Image from "next/image";
 
 const ChatBalloon = (message: Message) => (
     <div
@@ -35,6 +36,14 @@ const ChatBalloon = (message: Message) => (
                 },
             )}
         >
+            {"image_filename" in message && message.image_filename && (
+                <Image
+                    alt=""
+                    width={100}
+                    height={100}
+                    src={`http://localhost:8000/history/image/${message.image_filename}`}
+                />
+            )}
             <Text.Paragraph>{message.content}</Text.Paragraph>
 
             {"timestamp" in message && (

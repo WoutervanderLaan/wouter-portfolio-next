@@ -11,6 +11,7 @@ export type StreamedMessage = MessageBase & {
 export type StoredMessage = MessageBase & {
     timestamp: string;
     user_id?: string;
+    image_filename?: string;
 };
 
 export type Message = StreamedMessage | StoredMessage;

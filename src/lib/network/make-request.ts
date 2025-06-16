@@ -1,6 +1,6 @@
 type ENDPOINTS_GET = "/auth/refresh" | "/history";
 
-type ENDPOINTS_POST = "/auth/login";
+type ENDPOINTS_POST = "/auth/login" | "/chat/image-critique" | "/chat/draw";
 
 type ENDPOINTS_DELETE = "/auth/logout";
 
@@ -13,7 +13,7 @@ type TGetRequest = {
 type TPostRequest = {
     endpoint: ENDPOINTS_POST;
     method: "POST";
-    body: BodyInit;
+    body: RequestInit["body"];
 };
 
 type TDeleteRequest = {
