@@ -89,7 +89,8 @@ export default function Chat({
 
     useEffect(() => {
         const amountOfLines = layers[0].lines.length;
-        if (amountOfLines % 10 === 0) sendSnapshotForCritique();
+        if (amountOfLines > 0 && amountOfLines % 10 === 0)
+            sendSnapshotForCritique();
     }, [layers[0].lines.length]);
 
     return (

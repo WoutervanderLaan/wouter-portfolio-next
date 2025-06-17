@@ -27,7 +27,7 @@ const ChatBalloon = (message: Message) => (
         </div>
         <div
             className={clsx(
-                "flex h-fit w-full flex-col rounded-t-xl border border-black bg-white p-2",
+                "flex h-fit w-full flex-col gap-4 rounded-t-xl border border-black bg-white p-2",
                 {
                     "rounded-bl-xl": message.role === "user",
                 },
@@ -41,6 +41,8 @@ const ChatBalloon = (message: Message) => (
                     alt=""
                     width={100}
                     height={100}
+                    objectFit="contain"
+                    className="self-center bg-gray-100 p-2"
                     src={`http://localhost:8000/history/image/${message.image_filename}`}
                 />
             )}
