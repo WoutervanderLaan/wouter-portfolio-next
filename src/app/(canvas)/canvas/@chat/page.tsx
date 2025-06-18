@@ -7,7 +7,7 @@ export default async function ChatPage() {
         Array<StoredMessage>,
         { detail: string }
     >({
-        endpoint: "/history",
+        endpoint: "/history/",
         method: "GET",
     });
 

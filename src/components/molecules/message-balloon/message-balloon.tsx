@@ -41,7 +41,6 @@ const ChatBalloon = (message: Message) => (
                     alt=""
                     width={100}
                     height={100}
-                    objectFit="contain"
                     className="self-center bg-gray-100 p-2"
                     src={`http://localhost:8000/history/image/${message.image_filename}`}
                 />

@@ -14,6 +14,7 @@ import useDrawingContext from "@/hooks/use-drawing-context";
 import makeRequest from "@/lib/network/make-request";
 import { useAuth } from "@/context/auth-context";
 import { calculateBoundingBox } from "@/utils/drawing-helpers";
+import { useSession } from "@/context/session-context";
 
 export default function Chat({
     history = [],
@@ -26,10 +27,11 @@ export default function Chat({
     const [incomingMessage, setIncomingMessage] = useState("");
     const incomingMessageRef = useRef("");
     const { stageRef, layers } = useDrawingContext();
+    const { sessionId } = useSession();
     const { token } = useAuth();
 
     const { isConnected, sendText, reconnect, error } = useWebSocket(
-        "ws://localhost:8000/chat/",
+        `ws://localhost:8000/chat/ws`,
         (e) => {
             if (e.data === "[END]") {
                 addMessage({
@@ -98,6 +100,7 @@ export default function Chat({
             <AuthLayout className="flex h-full w-80 flex-col border-l border-black bg-white p-4 pt-2">
                 {(logout) => (
                     <div className="flex h-full flex-col gap-4">
+                        <Text.Small>{sessionId}</Text.Small>
                         <div className="flex w-full flex-row items-center gap-2">
                             <div
                                 className={clsx(

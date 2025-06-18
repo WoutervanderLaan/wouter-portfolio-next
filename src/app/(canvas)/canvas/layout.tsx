@@ -1,6 +1,7 @@
 import DrawingSettings from "@/components/organisms/drawing-settings/drawing-settings";
 import { AuthProvider } from "@/context/auth-context";
 import DrawingContextProvider from "@/context/drawing-context";
+import { SessionProvider } from "@/context/session-context";
 
 export default async function CanvasLayout({
     children,
@@ -11,13 +12,15 @@ export default async function CanvasLayout({
 }>) {
     return (
         <AuthProvider>
-            <DrawingContextProvider>
-                <main className="h-screen w-screen overflow-hidden">
-                    <DrawingSettings />
-                    {children}
-                    {chat}
-                </main>
-            </DrawingContextProvider>
+            <SessionProvider>
+                <DrawingContextProvider>
+                    <main className="h-screen w-screen overflow-hidden">
+                        <DrawingSettings />
+                        {children}
+                        {chat}
+                    </main>
+                </DrawingContextProvider>
+            </SessionProvider>
         </AuthProvider>
     );
 }

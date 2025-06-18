@@ -21,6 +21,7 @@ import Diameter from "@/components/icons/diameter";
 import useSaveCanvas from "@/hooks/use-save-canvas";
 import ResponsiveContainer from "@/components/atoms/responsive-container/responsive-container";
 import Text from "@/components/atoms/text/text";
+import { useSession } from "@/context/session-context";
 
 const STANDARD_BUTTON_STYLING =
     "h-9 flex aspect-square items-center justify-center self-start overflow-hidden";
@@ -200,17 +201,19 @@ const DragButton = () => {
 
 const ClearButton = () => {
     const { noHistory, resetHistory, resetLayers } = useDrawingContext();
+    const session = useSession();
 
-    const clearCanvas = () => {
+    const clearCanvas = async () => {
         resetLayers();
         resetHistory();
+        await session.reset();
     };
 
     return (
         <Button
             onPress={clearCanvas}
             variant="secondary"
-            isDisabled={noHistory}
+            isDisabled={noHistory || session.isLoading}
             className={clsx(STANDARD_BUTTON_STYLING)}
         >
             <Bin />

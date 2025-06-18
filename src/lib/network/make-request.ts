@@ -1,4 +1,8 @@
-type ENDPOINTS_GET = "/auth/refresh" | "/history";
+type ENDPOINTS_GET =
+    | "/auth/refresh"
+    | "/history/"
+    | "/session/retrieve"
+    | "/session/reset";
 
 type ENDPOINTS_POST = "/auth/login" | "/chat/image-critique" | "/chat/draw";
 
