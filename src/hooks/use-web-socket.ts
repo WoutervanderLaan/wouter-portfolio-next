@@ -1,16 +1,23 @@
 "use client";
 
 import { useAuth } from "@/context/auth-context";
-import { useState, useEffect, useRef, useCallback } from "react";
+import {
+    useState,
+    useEffect,
+    useRef,
+    useCallback,
+    DependencyList,
+} from "react";
 
 const useWebSocket = (
     url: string,
     onMessage: (event: MessageEvent<string>) => void,
+    deps: DependencyList = [],
 ) => {
     const socketRef = useRef<WebSocket | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { token } = useAuth();
+    const { token, checkAuth } = useAuth();
 
     const [reconnectCount, setReconnectCount] = useState(0);
 
@@ -25,17 +32,24 @@ const useWebSocket = (
             setIsConnected(true);
         };
 
+        socket.onerror = (e) => {
+            console.warn("ERROR", e);
+            setError("Refreshing...");
+            checkAuth();
+        };
+
         socket.onmessage = (event: MessageEvent<string>) => onMessage(event);
 
         socket.onclose = (e) => {
             if (e.reason) setError(e.reason);
+            setReconnectCount(0);
             setIsConnected(false);
         };
 
         return () => {
             socket.close();
         };
-    }, [url, token, reconnectCount]);
+    }, [url, token, reconnectCount, checkAuth, ...deps]);
 
     const sendText = useCallback((text: string) => {
         if (socketRef.current?.readyState === WebSocket.OPEN) {

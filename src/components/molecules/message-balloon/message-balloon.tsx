@@ -62,20 +62,28 @@ const ChatBalloon = (message: Message) => (
     </div>
 );
 
+type SystemBalloonProps = {
+    text: string;
+    variant?: "info" | "warn" | "error";
+    className?: HTMLElement["className"];
+};
+
 const SystemBalloon = ({
     text,
     variant = "info",
-}: {
-    text: string;
-    variant?: "info" | "error";
-}) => (
+    className,
+}: SystemBalloonProps) => (
     <div
         className={clsx(
             "self-center rounded-xl border px-4 py-2 text-center",
             { "border-red-500 bg-red-50": variant === "error" },
             {
-                "border-yellow-600 bg-yellow-50": variant === "info",
+                "border-yellow-600 bg-yellow-50": variant === "warn",
             },
+            {
+                "border-green-600 bg-green-50": variant === "info",
+            },
+            className,
         )}
     >
         <Text.Small
@@ -84,7 +92,10 @@ const SystemBalloon = ({
                     "text-red-500": variant === "error",
                 },
                 {
-                    "text-yellow-600": variant === "info",
+                    "text-yellow-600": variant === "warn",
+                },
+                {
+                    "text-green-600": variant === "info",
                 },
             )}
         >
@@ -95,11 +106,14 @@ const SystemBalloon = ({
 
 const MessageBalloon = {
     CHAT: (message: Message) => <ChatBalloon {...message} />,
-    INFO: ({ text }: { text: string }) => (
-        <SystemBalloon variant="info" text={text} />
+    INFO: (props: Omit<SystemBalloonProps, "variant">) => (
+        <SystemBalloon variant="info" {...props} />
     ),
-    ERROR: ({ text }: { text: string }) => (
-        <SystemBalloon variant="error" text={text} />
+    WARN: (props: Omit<SystemBalloonProps, "variant">) => (
+        <SystemBalloon variant="warn" {...props} />
+    ),
+    ERROR: (props: Omit<SystemBalloonProps, "variant">) => (
+        <SystemBalloon variant="error" {...props} />
     ),
 };
 

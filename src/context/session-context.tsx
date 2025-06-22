@@ -35,7 +35,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
         try {
             const response = await makeRequest<{ visit_id: string }>({
                 method: "GET",
-                endpoint: "/session/retrieve",
+                endpoint: "/visit/retrieve",
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -64,7 +64,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
                 visit_id: string;
             }>({
                 method: "GET",
-                endpoint: "/session/reset",
+                endpoint: "/visit/reset",
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

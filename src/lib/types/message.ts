@@ -10,8 +10,10 @@ export type StreamedMessage = MessageBase & {
 
 export type StoredMessage = MessageBase & {
     timestamp: string;
-    user_id?: string;
+    user_id: string;
     image_filename?: string;
+    session_id: string;
+    stream?: never;
 };
 
 export type Message = StreamedMessage | StoredMessage;

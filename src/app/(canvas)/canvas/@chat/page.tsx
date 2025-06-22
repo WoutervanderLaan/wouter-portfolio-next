@@ -3,7 +3,7 @@ import makeServerRequest from "@/lib/network/make-server-request";
 import { StoredMessage } from "@/lib/types/message";
 
 export default async function ChatPage() {
-    const { data: history, error } = await makeServerRequest<
+    const { data: history = [], error } = await makeServerRequest<
         Array<StoredMessage>,
         { detail: string }
     >({

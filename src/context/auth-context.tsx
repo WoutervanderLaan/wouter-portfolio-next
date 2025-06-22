@@ -4,6 +4,7 @@ import makeRequest from "@/lib/network/make-request";
 import {
     ReactNode,
     createContext,
+    useCallback,
     useContext,
     useEffect,
     useState,
@@ -14,6 +15,7 @@ type TAuthContext = {
     token: string | null;
     logout: () => Promise<void>;
     login: (data: FormData) => Promise<void>;
+    checkAuth: () => Promise<void>;
 };
 
 const AuthContext = createContext<TAuthContext | null>(null);
@@ -23,33 +25,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                const response = await makeRequest<
-                    {
-                        status: number;
-                        access_token: string;
-                        token_type: string;
-                    },
-                    { detail: string }
-                >({
-                    endpoint: "/auth/refresh",
-                    method: "GET",
-                });
-
-                if (response.data) {
-                    setIsAuthenticated(true);
-                    setToken(response.data.access_token);
-                }
-            } catch (error) {
-                console.error("[AUTH]", error);
-            }
-        };
-
         checkAuth();
     }, []);
 
-    const logout = async () => {
+    const checkAuth = useCallback(async () => {
+        try {
+            const response = await makeRequest<
+                {
+                    status: number;
+                    access_token: string;
+                    token_type: string;
+                },
+                { detail: string }
+            >({
+                endpoint: "/auth/refresh",
+                method: "GET",
+            });
+
+            if (response.data) {
+                setIsAuthenticated(true);
+                setToken(response.data.access_token);
+            }
+        } catch (error) {
+            console.error("[AUTH]", error);
+        }
+    }, []);
+
+    const logout = useCallback(async () => {
         try {
             const response = await makeRequest<{
                 status: number;
@@ -65,9 +67,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } catch (error) {
             console.error("[LOGOUT]", error);
         }
-    };
+    }, []);
 
-    const login = async (data: FormData) => {
+    const login = useCallback(async (data: FormData) => {
         try {
             const password = data.get("password");
             const username = data.get("username");
@@ -98,10 +100,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } catch (error) {
             console.error("[LOGIN]", error);
         }
-    };
+    }, []);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, token, logout, login }}>
+        <AuthContext.Provider
+            value={{ isAuthenticated, token, logout, login, checkAuth }}
+        >
             {children}
         </AuthContext.Provider>
     );

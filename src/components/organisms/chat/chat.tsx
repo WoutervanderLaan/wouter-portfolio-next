@@ -4,7 +4,7 @@ import Button from "@/components/atoms/button/button";
 import Sidebar from "@/components/molecules/sidebar/sidebar";
 import useWebSocket from "@/hooks/use-web-socket";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { MessageBase, StoredMessage } from "@/lib/types/message";
 import MessageBalloon from "@/components/molecules/message-balloon/message-balloon";
 import AuthLayout from "@/components/templates/auth-layout/auth-layout";
@@ -17,13 +17,21 @@ import { calculateBoundingBox } from "@/utils/drawing-helpers";
 import { useSession } from "@/context/session-context";
 
 export default function Chat({
-    history = [],
+    history,
     error: historyError,
 }: {
-    history?: Array<StoredMessage>;
+    history: Array<StoredMessage>;
     error?: { detail: string };
 }) {
-    const [messages, setMessages] = useState<Array<StoredMessage>>(history);
+    const [messages, setMessages] = useState<{
+        [key: string]: Array<StoredMessage>;
+    }>(
+        history.reduce((acc: { [key: string]: Array<StoredMessage> }, msg) => {
+            if (!acc[msg.session_id]) acc[msg.session_id] = [];
+            acc[msg.session_id] = [...acc[msg.session_id], msg];
+            return acc;
+        }, {}),
+    );
     const [incomingMessage, setIncomingMessage] = useState("");
     const incomingMessageRef = useRef("");
     const { stageRef, layers } = useDrawingContext();
@@ -45,17 +53,35 @@ export default function Chat({
             setIncomingMessage((prev) => (prev += e.data));
             incomingMessageRef.current += e.data;
         },
+        [sessionId],
     );
 
     const addMessage = (message: Omit<MessageBase, "id">) => {
-        setMessages((prev) => [
-            ...prev,
-            {
+        if (!sessionId) {
+            console.error("Cannot add message: No active session");
+            return;
+        }
+
+        setMessages((prev) => {
+            const newMessage: StoredMessage = {
                 ...message,
+                session_id: sessionId,
                 timestamp: new Date(Date.now()).toISOString(),
-                id: String(Math.random()),
-            },
-        ]);
+                id: String(Math.random()), // local placeholder id
+                user_id: String(Math.random()), // local placeholder id
+            };
+
+            const hasSessionMessages = Object.hasOwn(prev, sessionId);
+
+            const newMessages = {
+                ...prev,
+                [sessionId]: hasSessionMessages
+                    ? [...prev[sessionId], newMessage]
+                    : [newMessage],
+            };
+
+            return newMessages;
+        });
     };
 
     const sendSnapshotForCritique = async () => {
@@ -100,7 +126,6 @@ export default function Chat({
             <AuthLayout className="flex h-full w-80 flex-col border-l border-black bg-white p-4 pt-2">
                 {(logout) => (
                     <div className="flex h-full flex-col gap-4">
-                        <Text.Small>{sessionId}</Text.Small>
                         <div className="flex w-full flex-row items-center gap-2">
                             <div
                                 className={clsx(
@@ -136,7 +161,7 @@ export default function Chat({
                             </Button>
                         </div>
                         <div
-                            className="flex w-full flex-1 flex-col gap-2 overflow-x-hidden overflow-y-scroll border border-black bg-gray-50 p-4"
+                            className="flex w-full flex-1 flex-col overflow-x-hidden overflow-y-scroll border border-black bg-gray-50 pb-2"
                             ref={(messagesEndRef) => {
                                 if (messagesEndRef) {
                                     messagesEndRef.scrollTop =
@@ -148,12 +173,29 @@ export default function Chat({
                                 <MessageBalloon.ERROR text="Unable to retrieve chat history" />
                             )}
 
-                            {messages.map((message) => (
-                                <MessageBalloon.CHAT
-                                    key={message.id}
-                                    {...message}
-                                />
-                            ))}
+                            {Object.entries(messages).map(
+                                ([session, msgArray]) => (
+                                    <Fragment key={session}>
+                                        <div className="flex flex-col gap-2 p-4">
+                                            {msgArray.map((message) => (
+                                                <MessageBalloon.CHAT
+                                                    key={message.id}
+                                                    {...message}
+                                                />
+                                            ))}
+                                        </div>
+                                        {session !== sessionId && (
+                                            <div className="relative mb-4 mt-6 w-full border-t border-dashed border-green-500">
+                                                <MessageBalloon.INFO
+                                                    text="Visit reset"
+                                                    className="absolute left-[50%] top-0 z-10 translate-x-[-50%] translate-y-[-50%]"
+                                                />
+                                            </div>
+                                        )}
+                                    </Fragment>
+                                ),
+                            )}
+
                             {Boolean(incomingMessage.length) && (
                                 <MessageBalloon.CHAT
                                     role="assistant"
@@ -163,7 +205,7 @@ export default function Chat({
                                 />
                             )}
                             {!isConnected && (
-                                <MessageBalloon.INFO text="Disconnected" />
+                                <MessageBalloon.WARN text="Disconnected" />
                             )}
                         </div>
 
