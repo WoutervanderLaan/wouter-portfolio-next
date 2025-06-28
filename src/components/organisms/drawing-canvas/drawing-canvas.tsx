@@ -101,7 +101,7 @@ const DrawingCanvas = () => {
                     </Layer>
                 ))}
 
-                <Layer>{!!cursor && <Cursor position={cursor} />}</Layer>
+                <Layer>{cursor && <Cursor position={cursor} />}</Layer>
             </Stage>
         </MotionDiv>
     );

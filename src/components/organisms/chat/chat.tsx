@@ -161,7 +161,7 @@ export default function Chat({
                             </Button>
                         </div>
                         <div
-                            className="flex w-full flex-1 flex-col overflow-x-hidden overflow-y-scroll border border-black bg-gray-50 pb-2"
+                            className="flex w-full flex-1 flex-col gap-2 overflow-x-hidden overflow-y-scroll border border-black bg-gray-50 pb-2"
                             ref={(messagesEndRef) => {
                                 if (messagesEndRef) {
                                     messagesEndRef.scrollTop =
@@ -197,12 +197,14 @@ export default function Chat({
                             )}
 
                             {Boolean(incomingMessage.length) && (
-                                <MessageBalloon.CHAT
-                                    role="assistant"
-                                    content={incomingMessage}
-                                    stream
-                                    id={String(Math.random())}
-                                />
+                                <div className="p-4">
+                                    <MessageBalloon.CHAT
+                                        role="assistant"
+                                        content={incomingMessage}
+                                        stream
+                                        id={String(Math.random())}
+                                    />
+                                </div>
                             )}
                             {!isConnected && (
                                 <MessageBalloon.WARN text="Disconnected" />
