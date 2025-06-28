@@ -1,38 +1,39 @@
 {
-  "name": "wouter-portfolio-next",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@next/third-parties": "^15.1.5",
-    "clsx": "^2.1.1",
-    "konva": "^9.3.18",
-    "motion": "^11.16.4",
-    "next": "15.1.0",
-    "react": "^19.0.0",
-    "react-aria": "^3.36.0",
-    "react-dom": "^19.0.0",
-    "react-konva": "^19.0.2",
-    "react-konva-to-svg": "^1.0.2",
-    "react-stately": "^3.34.0",
-    "schema-dts": "^1.1.2"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.1.0",
-    "postcss": "^8",
-    "prettier": "^3.4.2",
-    "prettier-plugin-tailwindcss": "^0.6.9",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
-  }
+    "name": "wouter-portfolio-next",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev --turbopack",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@next/third-parties": "^15.1.5",
+        "@sentry/nextjs": "^9.31.0",
+        "clsx": "^2.1.1",
+        "konva": "^9.3.18",
+        "motion": "^11.16.4",
+        "next": "^15.3.4",
+        "react": "^19.1.0",
+        "react-aria": "^3.36.0",
+        "react-dom": "^19.1.0",
+        "react-konva": "^19.0.2",
+        "react-konva-to-svg": "^1.0.2",
+        "react-stately": "^3.34.0",
+        "schema-dts": "^1.1.2"
+    },
+    "devDependencies": {
+        "@eslint/eslintrc": "^3",
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9",
+        "eslint-config-next": "^15.3.4",
+        "postcss": "^8",
+        "prettier": "^3.4.2",
+        "prettier-plugin-tailwindcss": "^0.6.9",
+        "tailwindcss": "^3.4.1",
+        "typescript": "^5"
+    }
 }
