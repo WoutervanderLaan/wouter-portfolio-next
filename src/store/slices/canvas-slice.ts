@@ -140,14 +140,25 @@ export const createCanvasSlice: StateCreator<
                 (_, index) => index !== layerIndex,
             );
 
+            if (layers.length === 0) {
+                return {
+                    layers: [EMPTY_LAYER],
+                    activeLayerIndex: 0,
+                };
+            }
+
             return {
                 layers,
-                activeLayerIndex: layers.length - 1,
+                activeLayerIndex: Math.min(
+                    state.activeLayerIndex,
+                    layers.length - 1,
+                ),
             };
         }),
     resetLayers: () =>
         set(() => ({
             layers: DEFAULT_STATE.layers,
+            activeLayerIndex: DEFAULT_STATE.activeLayerIndex,
         })),
     resetHistory: () =>
         set(() => ({

@@ -7,10 +7,6 @@ import useAuthStore from "./store-hooks/use-auth-store";
 const useAuth = () => {
     const { isAuthenticated, clearAuth, token, setToken } = useAuthStore();
 
-    useEffect(() => {
-        checkAuth();
-    }, []);
-
     const checkAuth = useCallback(async () => {
         try {
             const response = await makeRequest<
@@ -33,6 +29,10 @@ const useAuth = () => {
         }
     }, []);
 
+    useEffect(() => {
+        checkAuth();
+    }, [checkAuth]);
+
     const logout = useCallback(async () => {
         try {
             const response = await makeRequest<{
@@ -50,37 +50,40 @@ const useAuth = () => {
         }
     }, []);
 
-    const login = useCallback(async (data: FormData) => {
-        try {
-            const password = data.get("password");
-            const username = data.get("username");
+    const login = useCallback(
+        async (data: FormData) => {
+            try {
+                const password = data.get("password");
+                const username = data.get("username");
 
-            if (!password || !username) throw Error("Missing credentials");
+                if (!password || !username) throw Error("Missing credentials");
 
-            const formBody = new URLSearchParams();
-            formBody.append("username", username.toString());
-            formBody.append("password", password.toString());
+                const formBody = new URLSearchParams();
+                formBody.append("username", username.toString());
+                formBody.append("password", password.toString());
 
-            const response = await makeRequest<{
-                status: number;
-                access_token: string;
-                token_type: string;
-            }>({
-                endpoint: "/auth/login",
-                method: "POST",
-                body: formBody,
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-            });
+                const response = await makeRequest<{
+                    status: number;
+                    access_token: string;
+                    token_type: string;
+                }>({
+                    endpoint: "/auth/login",
+                    method: "POST",
+                    body: formBody,
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                });
 
-            if (!response.data) throw Error("Error logging in");
+                if (!response.data) throw Error("Error logging in");
 
-            setToken(response.data.access_token);
-        } catch (error) {
-            console.error("[LOGIN]", error);
-        }
-    }, []);
+                setToken(response.data.access_token);
+            } catch (error) {
+                console.error("[LOGIN]", error);
+            }
+        },
+        [setToken],
+    );
 
     return { token, isAuthenticated, logout, login, checkAuth };
 };

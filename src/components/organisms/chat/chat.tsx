@@ -132,7 +132,7 @@ export default function Chat({
         if (amountOfLines > 0 && amountOfLines % 10 === 0) {
             sendSnapshotForCritique();
         }
-    }, [layers[0].lines.length]);
+    }, [layers[0].lines.length, sendSnapshotForCritique]);
 
     return (
         <Sidebar side="right" className="h-full">

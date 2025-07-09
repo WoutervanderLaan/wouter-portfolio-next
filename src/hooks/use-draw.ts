@@ -26,7 +26,10 @@ const useDraw = () => {
         (point: number[]) => {
             const activeLayerLines = layers[activeLayerIndex].lines;
             const lastLine = activeLayerLines[activeLayerLines.length - 1];
-            // if (!lastLine) return;
+            if (!lastLine) {
+                console.warn("No line to update");
+                return;
+            }
 
             const updatedLine = {
                 ...lastLine,

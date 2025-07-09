@@ -10,12 +10,6 @@ const useSession = () => {
     const { sessionId, setSessionId } = useSessionStore();
     const { token, isAuthenticated } = useAuth();
 
-    useEffect(() => {
-        if (!isAuthenticated) return;
-
-        retrieveSession();
-    }, [isAuthenticated]);
-
     const retrieveSession = async () => {
         setIsLoading(true);
 
@@ -41,6 +35,12 @@ const useSession = () => {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+
+        retrieveSession();
+    }, [isAuthenticated, retrieveSession]);
 
     const resetSession = async () => {
         if (!sessionId) return;

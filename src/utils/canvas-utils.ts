@@ -1,3 +1,5 @@
+import { randomUUID } from "crypto";
+
 export type CanvasElementType =
     | "image"
     | "sticky"
@@ -33,7 +35,7 @@ export const addImage = (
     src: string,
     position: { x: number; y: number },
 ): CanvasElement => ({
-    id: Math.random().toString(),
+    id: randomUUID(),
     type: "image",
     src,
     x: position.x,
@@ -46,7 +48,7 @@ export const addStickyNote = (
     content: string,
     position: { x: number; y: number },
 ): CanvasElement => ({
-    id: Math.random().toString(),
+    id: randomUUID(),
     type: "sticky",
     content,
     x: position.x,
@@ -59,7 +61,7 @@ export const addText = (
     content: string,
     position: { x: number; y: number },
 ): CanvasElement => ({
-    id: Math.random().toString(),
+    id: randomUUID(),
     type: "text",
     content,
     x: position.x,
@@ -81,7 +83,7 @@ export const updateElement = (
     elements.map((el) => (el.id === id ? { ...el, ...updates } : el));
 
 export const createRelation = (fromId: string, toId: string): Relation => ({
-    id: Math.random().toString(),
+    id: randomUUID(),
     type: "relation",
     from: fromId,
     to: toId,
@@ -93,7 +95,7 @@ export const createRelation = (fromId: string, toId: string): Relation => ({
 });
 
 export const groupElements = (ids: string[]): CanvasElement => ({
-    id: Math.random().toString(),
+    id: randomUUID(),
     type: "group",
     x: 0,
     y: 0,
@@ -128,7 +130,7 @@ export const generateSemanticGroupingPrompt = (
 ): string => {
     const lines = elements
         .filter((el) => el.content)
-        .map((el) => -`${el.content}`)
+        .map((el) => `- ${el.content}`)
         .join("\n");
 
     return `Group the following ideas into conceptual clusters:\n${lines}`;
