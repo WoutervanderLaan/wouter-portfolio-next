@@ -16,6 +16,7 @@ import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
 import { useStage } from "@/hooks/use-stage";
 import useSession from "@/hooks/use-session";
 import useAuth from "@/hooks/use-auth";
+import Tooltip from "@/components/molecules/tooltip/tooltip";
 
 export default function Chat({
     history,
@@ -140,15 +141,19 @@ export default function Chat({
                 {(logout) => (
                     <div className="flex h-full flex-col gap-4">
                         <div className="flex w-full flex-row items-center gap-2">
-                            <div
-                                className={clsx(
-                                    "h-2 w-2 rounded-full bg-gray-400",
-                                    {
-                                        "bg-green-300 ring-1 ring-green-300 ring-offset-2":
-                                            isConnected,
-                                    },
-                                )}
-                            />
+                            <Tooltip
+                                tooltipText={sessionId || "No active session"}
+                            >
+                                <div
+                                    className={clsx(
+                                        "h-2 w-2 rounded-full bg-gray-400",
+                                        {
+                                            "bg-green-300 ring-1 ring-green-300 ring-offset-2":
+                                                isConnected,
+                                        },
+                                    )}
+                                />
+                            </Tooltip>
                             {!isConnected && (
                                 <Button
                                     variant="link"
@@ -165,6 +170,7 @@ export default function Chat({
                                     {`[${error}]`}
                                 </Text.Small>
                             )}
+
                             <Button
                                 variant="secondary"
                                 className="ml-auto"

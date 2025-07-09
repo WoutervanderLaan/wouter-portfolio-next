@@ -19,7 +19,7 @@ const useDraw = () => {
             });
             setLayers(newLayers);
         },
-        [activeLayerIndex, setLayers],
+        [activeLayerIndex, setLayers, layers],
     );
 
     const updateLine = useCallback(
