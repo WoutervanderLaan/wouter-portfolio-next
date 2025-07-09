@@ -1,5 +1,5 @@
 import LoginForm from "@/components/organisms/forms/login-form";
-import { useAuth } from "@/context/auth-context";
+import useAuth from "@/hooks/use-auth";
 import clsx from "clsx";
 import { HTMLAttributes, ReactNode } from "react";
 

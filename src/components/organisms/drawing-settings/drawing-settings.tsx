@@ -2,13 +2,13 @@
 
 import ColorPicker from "@/components/molecules/color-picker/color-picker";
 import DrawingButtons from "@/components/molecules/drawing-buttons/drawing-buttons";
-import { MAX_COLOR_HISTORY } from "@/hooks/use-brush-settings";
-import useDrawingContext from "@/hooks/use-drawing-context";
 import Sidebar from "../../molecules/sidebar/sidebar";
 import Tooltip from "@/components/molecules/tooltip/tooltip";
+import { MAX_COLOR_HISTORY } from "@/store/slices/canvas-slice";
+import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
 
 const DrawingSettings = () => {
-    const { color, setColor, colorHistoryRef } = useDrawingContext();
+    const { color, setColor, colorHistory } = useCanvasStore();
 
     return (
         <Sidebar className="h-full">
@@ -22,9 +22,9 @@ const DrawingSettings = () => {
                         {Array.from({ length: MAX_COLOR_HISTORY }).map(
                             (_, i) => (
                                 <DrawingButtons.PrevColor
-                                    key={`${colorHistoryRef.current[i]}_${i}`}
+                                    key={`${colorHistory[i]}_${i}`}
                                     setColor={setColor}
-                                    color={colorHistoryRef.current[i]}
+                                    color={colorHistory[i]}
                                 />
                             ),
                         )}

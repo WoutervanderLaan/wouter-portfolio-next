@@ -1,28 +1,11 @@
 "use client";
 
 import makeRequest from "@/lib/network/make-request";
-import {
-    ReactNode,
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+import { useCallback, useEffect } from "react";
+import useAuthStore from "./store-hooks/use-auth-store";
 
-type TAuthContext = {
-    isAuthenticated: boolean;
-    token: string | null;
-    logout: () => Promise<void>;
-    login: (data: FormData) => Promise<void>;
-    checkAuth: () => Promise<void>;
-};
-
-const AuthContext = createContext<TAuthContext | null>(null);
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [token, setToken] = useState<string | null>(null);
+const useAuth = () => {
+    const { isAuthenticated, clearAuth, token, setToken } = useAuthStore();
 
     useEffect(() => {
         checkAuth();
@@ -43,7 +26,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             });
 
             if (response.data) {
-                setIsAuthenticated(true);
                 setToken(response.data.access_token);
             }
         } catch (error) {
@@ -62,8 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             });
 
             if (response.status !== 200) throw new Error("Error logging out");
-            setToken(null);
-            setIsAuthenticated(false);
+            clearAuth();
         } catch (error) {
             console.error("[LOGOUT]", error);
         }
@@ -96,24 +77,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             if (!response.data) throw Error("Error logging in");
 
             setToken(response.data.access_token);
-            setIsAuthenticated(true);
         } catch (error) {
             console.error("[LOGIN]", error);
         }
     }, []);
 
-    return (
-        <AuthContext.Provider
-            value={{ isAuthenticated, token, logout, login, checkAuth }}
-        >
-            {children}
-        </AuthContext.Provider>
-    );
+    return { token, isAuthenticated, logout, login, checkAuth };
 };
 
-export const useAuth = () => {
-    const authContext = useContext(AuthContext);
-    if (!authContext) throw Error("AuthContext used outside Provider");
-
-    return authContext;
-};
+export default useAuth;

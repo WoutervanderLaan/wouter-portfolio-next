@@ -1,8 +1,9 @@
 import Konva from "konva";
-import useDrawingContext from "./use-drawing-context";
+import useCanvasStore from "./store-hooks/use-canvas-store";
 import { extractPoint } from "@/utils/drawing-helpers";
 import { TLine } from "@/lib/types/line";
-import { MAX_COLOR_HISTORY } from "./use-brush-settings";
+import useDraw from "./use-draw";
+import { useRef } from "react";
 
 const useDrawingEvents = () => {
     const {
@@ -10,12 +11,14 @@ const useDrawingEvents = () => {
         opacity,
         type,
         size,
-        isDrawing,
-        startLine,
-        updateLine,
         resetHistory,
-        colorHistoryRef,
-    } = useDrawingContext();
+        colorHistory,
+        addColorToHistory,
+    } = useCanvasStore();
+
+    const { startLine, updateLine } = useDraw();
+
+    const isDrawing = useRef(false);
 
     const handleEventStart = (
         e: Konva.KonvaEventObject<PointerEvent | TouchEvent | MouseEvent>,
@@ -33,11 +36,7 @@ const useDrawingEvents = () => {
             timestamp: new Date().getTime(),
         };
 
-        if (!colorHistoryRef.current.includes(color))
-            colorHistoryRef.current = [color, ...colorHistoryRef.current].slice(
-                0,
-                MAX_COLOR_HISTORY,
-            );
+        if (!colorHistory.includes(color)) addColorToHistory(color);
 
         startLine(newLine);
     };

@@ -1,21 +1,25 @@
 "use client";
 
 import useCursor from "@/hooks/use-cursor";
-import useDrawingContext from "@/hooks/use-drawing-context";
 import clsx from "clsx";
 import { Stage, Layer } from "react-konva";
 import Cursor from "@/components/molecules/cursor/cursor";
 import Line from "@/components/molecules/line/line";
 import useDrawingEvents from "@/hooks/use-drawing-events";
 import { smoothPoints } from "@/utils/drawing-helpers";
-import { Zoom } from "@/hooks/use-zoom";
 import { ToolType } from "@/lib/types/tool-type";
 import useDrag from "@/hooks/use-drag";
 import { MotionDiv } from "@/components/atoms/motion-element/motion-element";
+import { Zoom } from "@/store/slices/canvas-slice";
+import useZoom from "@/hooks/use-zoom";
+import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
+import { useStage } from "@/hooks/use-stage";
 
 const DrawingCanvas = () => {
-    const { layers, type, scale, position, zoomType, zoom, stageRef } =
-        useDrawingContext();
+    const { layers, type, scale, position, zoomType } = useCanvasStore();
+    const { stageRef } = useStage();
+
+    const { zoom } = useZoom();
 
     const dragProperties = useDrag();
 

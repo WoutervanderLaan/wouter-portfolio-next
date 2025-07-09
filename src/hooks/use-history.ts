@@ -1,27 +1,13 @@
-import { TLayer } from "@/lib/types/layer";
 import { TLine } from "@/lib/types/line";
-import {
-    Dispatch,
-    SetStateAction,
-    useCallback,
-    useMemo,
-    useState,
-} from "react";
+import { useCallback, useMemo, useState } from "react";
+import useCanvasStore from "./store-hooks/use-canvas-store";
 
-type UseHistoryProps = {
-    layers: Array<TLayer>;
-    setLayers: Dispatch<SetStateAction<TLayer[]>>;
-    switchActiveLayer: (index: number) => void;
-};
-
-const useHistory = ({
-    layers,
-    setLayers,
-    switchActiveLayer,
-}: UseHistoryProps) => {
+const useHistory = () => {
     const [redoStack, setRedoStack] = useState<
         Array<TLine & { index: number }>
     >([]);
+
+    const { layers, setLayers, switchActiveLayer } = useCanvasStore();
 
     const noHistory = useMemo(
         () => layers.every((layer) => !layer.lines.length),
@@ -44,32 +30,30 @@ const useHistory = ({
 
         setRedoStack((prev) => [...prev, mostRecentLine]);
 
-        setLayers((prev) =>
-            prev.map((layer, index) => {
-                if (index === mostRecentLine.index)
-                    return {
-                        lines: layer.lines.slice(0, -1),
-                    };
+        const newLayers = layers.map((layer, index) => {
+            if (index === mostRecentLine.index)
+                return {
+                    lines: layer.lines.slice(0, -1),
+                };
 
-                return layer;
-            }),
-        );
+            return layer;
+        });
+        setLayers(newLayers);
     };
 
     const redo = () => {
         if (redoStack.length > 0) {
             const lineToAdd = redoStack[redoStack.length - 1];
 
-            setLayers((prev) =>
-                prev.map((layer, index) => {
-                    if (index === lineToAdd.index)
-                        return {
-                            lines: layer.lines.concat(lineToAdd),
-                        };
+            const newLayers = layers.map((layer, index) => {
+                if (index === lineToAdd.index)
+                    return {
+                        lines: layer.lines.concat(lineToAdd),
+                    };
 
-                    return layer;
-                }),
-            );
+                return layer;
+            });
+            setLayers(newLayers);
 
             switchActiveLayer(lineToAdd.index);
 

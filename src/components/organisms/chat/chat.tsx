@@ -10,11 +10,12 @@ import MessageBalloon from "@/components/molecules/message-balloon/message-ballo
 import AuthLayout from "@/components/templates/auth-layout/auth-layout";
 import ChatForm from "../forms/chat-form";
 import Text from "@/components/atoms/text/text";
-import useDrawingContext from "@/hooks/use-drawing-context";
 import makeRequest from "@/lib/network/make-request";
-import { useAuth } from "@/context/auth-context";
 import { calculateBoundingBox } from "@/utils/drawing-helpers";
-import { useSession } from "@/context/session-context";
+import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
+import { useStage } from "@/hooks/use-stage";
+import useSession from "@/hooks/use-session";
+import useAuth from "@/hooks/use-auth";
 
 export default function Chat({
     history,
@@ -34,13 +35,23 @@ export default function Chat({
     );
     const [incomingMessage, setIncomingMessage] = useState("");
     const incomingMessageRef = useRef("");
-    const { stageRef, layers } = useDrawingContext();
+    const { layers } = useCanvasStore();
+    const { stageRef } = useStage();
     const { sessionId } = useSession();
     const { token } = useAuth();
 
     const { isConnected, sendText, reconnect, error } = useWebSocket(
         `ws://localhost:8000/chat/ws`,
         (e) => {
+            // try {
+            //     const data = JSON.parse(e.data);
+            //     if (data.type === "audio_url") {
+            //         const audio = new Audio(
+            //             `http://localhost:8000/${data.url}`,
+            //         );
+            //         audio.play();
+            //     }
+            // } catch {
             if (e.data === "[END]") {
                 addMessage({
                     role: "assistant",
@@ -52,6 +63,7 @@ export default function Chat({
             }
             setIncomingMessage((prev) => (prev += e.data));
             incomingMessageRef.current += e.data;
+            // }
         },
         [sessionId],
     );
@@ -112,13 +124,14 @@ export default function Chat({
             },
         });
 
-        console.log(res); // TODO: refine call and move to seperate file
+        console.log(res); // TODO: refine call and move to separate file
     };
 
     useEffect(() => {
         const amountOfLines = layers[0].lines.length;
-        if (amountOfLines > 0 && amountOfLines % 10 === 0)
+        if (amountOfLines > 0 && amountOfLines % 10 === 0) {
             sendSnapshotForCritique();
+        }
     }, [layers[0].lines.length]);
 
     return (
