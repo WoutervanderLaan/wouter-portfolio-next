@@ -2,15 +2,15 @@
 
 import Button from "@/components/atoms/button/button";
 import Cross from "@/components/icons/cross";
+import { ClassName } from "@/lib/types/class-name";
 import clsx from "clsx";
-import { HTMLAttributes } from "react";
 
 const CloseButton = ({
     onPress,
     className,
 }: {
     onPress: () => void;
-    className?: HTMLAttributes<HTMLDivElement>["className"];
+    className?: ClassName<HTMLDivElement>;
 }) => (
     <div className={clsx("z-10", className)}>
         <div className="absolute -left-[10%] -top-[10%] -z-10 h-[120%] w-[120%] rounded-full bg-white opacity-70 blur-sm dark:bg-black" />

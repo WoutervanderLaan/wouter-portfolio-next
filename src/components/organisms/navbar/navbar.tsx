@@ -1,8 +1,9 @@
 import List from "@/components/atoms/list/list";
 import NavItem from "@/components/molecules/nav-item/nav-item";
+import { ClassName } from "@/lib/types/class-name";
 import clsx from "clsx";
 
-const Navbar = ({ className }: { className?: HTMLElement["className"] }) => {
+const Navbar = ({ className }: { className?: ClassName<HTMLDivElement> }) => {
     return (
         <nav className={clsx("relative flex flex-col self-start", className)}>
             <div className="absolute -left-[10%] -top-[10%] z-10 h-[120%] w-[120%] bg-white opacity-50 blur-lg dark:bg-black" />
