@@ -1,5 +1,3 @@
-import { randomUUID } from "crypto";
-
 export type CanvasElementType =
     | "image"
     | "sticky"
@@ -35,7 +33,7 @@ export const addImage = (
     src: string,
     position: { x: number; y: number },
 ): CanvasElement => ({
-    id: randomUUID(),
+    id: Math.random().toString(),
     type: "image",
     src,
     x: position.x,
@@ -48,7 +46,7 @@ export const addStickyNote = (
     content: string,
     position: { x: number; y: number },
 ): CanvasElement => ({
-    id: randomUUID(),
+    id: Math.random().toString(),
     type: "sticky",
     content,
     x: position.x,
@@ -61,7 +59,7 @@ export const addText = (
     content: string,
     position: { x: number; y: number },
 ): CanvasElement => ({
-    id: randomUUID(),
+    id: Math.random().toString(),
     type: "text",
     content,
     x: position.x,
@@ -83,7 +81,7 @@ export const updateElement = (
     elements.map((el) => (el.id === id ? { ...el, ...updates } : el));
 
 export const createRelation = (fromId: string, toId: string): Relation => ({
-    id: randomUUID(),
+    id: Math.random().toString(),
     type: "relation",
     from: fromId,
     to: toId,
@@ -95,7 +93,7 @@ export const createRelation = (fromId: string, toId: string): Relation => ({
 });
 
 export const groupElements = (ids: string[]): CanvasElement => ({
-    id: randomUUID(),
+    id: Math.random().toString(),
     type: "group",
     x: 0,
     y: 0,

@@ -26,8 +26,17 @@ const ResponsiveContainer = ({
         };
 
         window.addEventListener("pointerdown", handleClickOutside);
-        return () =>
+
+        document.querySelectorAll("button").forEach((button) => {
+            button.addEventListener("pointerdown", handleClickOutside);
+        });
+        return () => {
             window.removeEventListener("pointerdown", handleClickOutside);
+
+            document.querySelectorAll("button").forEach((button) => {
+                button.removeEventListener("pointerdown", handleClickOutside);
+            });
+        };
     }, [isActive]);
 
     return (

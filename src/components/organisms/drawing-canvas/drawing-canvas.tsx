@@ -14,9 +14,19 @@ import { Zoom } from "@/store/slices/canvas-slice";
 import useZoom from "@/hooks/use-zoom";
 import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
 import { useStage } from "@/hooks/use-stage";
+import CanvasImage from "@/components/molecules/canvas-image/canvas-image";
 
 const DrawingCanvas = () => {
-    const { layers, type, scale, position, zoomType } = useCanvasStore();
+    const {
+        layers,
+        type,
+        scale,
+        position,
+        zoomType,
+        images,
+        selectedImageId,
+        selectImage,
+    } = useCanvasStore();
     const { stageRef } = useStage();
 
     const { zoom } = useZoom();
@@ -43,7 +53,7 @@ const DrawingCanvas = () => {
                 className={clsx(
                     "border-1 absolute left-0 top-0 m-0 h-full w-full cursor-none overflow-hidden border bg-white",
                     {
-                        "cursor-move": type === ToolType.DRAG,
+                        "cursor-grab": type === ToolType.DRAG,
                     },
                     {
                         "cursor-zoom-in":
@@ -65,8 +75,11 @@ const DrawingCanvas = () => {
                 width={window.innerWidth}
                 height={window.innerHeight}
                 onTouchStart={(e) => {
-                    if (type === ToolType.DRAG) return;
+                    if (type === ToolType.DRAG || type === ToolType.IMAGE)
+                        return;
+
                     if (type === ToolType.ZOOM) return zoom(stageRef, zoomType);
+
                     handleEventStart(e);
                 }}
                 onTouchMove={handleEventMove}
@@ -76,8 +89,11 @@ const DrawingCanvas = () => {
                     resetCursor();
                 }}
                 onPointerDown={(e) => {
-                    if (type === ToolType.DRAG) return;
+                    if (type === ToolType.DRAG || type === ToolType.IMAGE)
+                        return;
+
                     if (type === ToolType.ZOOM) return zoom(stageRef, zoomType);
+
                     handleEventStart(e);
                 }}
                 onPointerMove={(e) => {
@@ -85,6 +101,9 @@ const DrawingCanvas = () => {
                     handleCursor(e);
                 }}
                 onPointerUp={handleEventEnd}
+                onClick={(e) => {
+                    if (e.target === e.target.getStage()) selectImage(null);
+                }}
                 scaleX={scale.x}
                 scaleY={scale.y}
                 {...position}
@@ -104,6 +123,17 @@ const DrawingCanvas = () => {
                         })}
                     </Layer>
                 ))}
+
+                <Layer>
+                    {images.map((imageElement) => (
+                        <CanvasImage
+                            key={imageElement.id}
+                            imageElement={imageElement}
+                            isSelected={selectedImageId === imageElement.id}
+                            onSelect={() => selectImage(imageElement.id)}
+                        />
+                    ))}
+                </Layer>
 
                 <Layer>{cursor && <Cursor position={cursor} />}</Layer>
             </Stage>

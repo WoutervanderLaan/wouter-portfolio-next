@@ -16,6 +16,7 @@ import Undo from "@/components/icons/undo";
 import Redo from "@/components/icons/redo";
 import Opacity from "@/components/icons/opacity";
 import Diameter from "@/components/icons/diameter";
+import ImageIcon from "@/components/icons/image";
 import useSaveCanvas from "@/hooks/use-save-canvas";
 import ResponsiveContainer from "@/components/atoms/responsive-container/responsive-container";
 import Text from "@/components/atoms/text/text";
@@ -23,6 +24,7 @@ import { Zoom } from "@/store/slices/canvas-slice";
 import useHistory from "@/hooks/use-history";
 import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
 import useSession from "@/hooks/use-session";
+import { addImage } from "@/utils/canvas-utils";
 
 const STANDARD_BUTTON_STYLING =
     "h-9 flex aspect-square items-center justify-center self-start overflow-hidden";
@@ -294,6 +296,49 @@ const AddLayerButton = () => {
     );
 };
 
+const ImageButton = () => {
+    const { type, setType, addImage: addImageToCanvas } = useCanvasStore();
+
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const src = e.target?.result as string;
+            if (src) {
+                const imageElement = addImage(src, { x: 100, y: 100 });
+                addImageToCanvas(imageElement);
+            }
+        };
+
+        reader.readAsDataURL(file);
+    };
+
+    return (
+        <div className="relative">
+            <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="absolute inset-0 cursor-pointer opacity-0"
+                style={{ zIndex: 10 }}
+            />
+            <Button
+                onPress={() => setType(ToolType.IMAGE)}
+                variant="secondary"
+                className={clsx(STANDARD_BUTTON_STYLING, {
+                    "ring-2 ring-blue-400 ring-offset-2":
+                        type === ToolType.IMAGE,
+                })}
+            >
+                <ImageIcon />
+            </Button>
+        </div>
+    );
+};
+
 const DrawingButtons = {
     Paint: PaintButton,
     Eraser: EraserButton,
@@ -307,6 +352,7 @@ const DrawingButtons = {
     Save: SaveButton,
     PrevColor: PrevColorButton,
     AddLayer: AddLayerButton,
+    Image: ImageButton,
 };
 
 export default DrawingButtons;

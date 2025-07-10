@@ -1,11 +1,11 @@
 "use client";
 
-import ColorPicker from "@/components/molecules/color-picker/color-picker";
 import DrawingButtons from "@/components/molecules/drawing-buttons/drawing-buttons";
 import Sidebar from "../../molecules/sidebar/sidebar";
 import Tooltip from "@/components/molecules/tooltip/tooltip";
 import { MAX_COLOR_HISTORY } from "@/store/slices/canvas-slice";
 import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
+import ColorPickerTrigger from "@/components/molecules/color-picker-trigger/color-picker-trigger";
 
 const DrawingSettings = () => {
     const { color, setColor, colorHistory } = useCanvasStore();
@@ -15,7 +15,7 @@ const DrawingSettings = () => {
             <div className="flex flex-col gap-2 p-2">
                 <div className="flex w-fit flex-col gap-1">
                     <Tooltip tooltipText="Color picker">
-                        <ColorPicker color={color} setColor={setColor} />
+                        <ColorPickerTrigger color={color} setColor={setColor} />
                     </Tooltip>
 
                     <div className="grid grid-cols-2 gap-1">
@@ -68,6 +68,10 @@ const DrawingSettings = () => {
 
                 <Tooltip tooltipText="Save">
                     <DrawingButtons.Save />
+                </Tooltip>
+
+                <Tooltip tooltipText="Add image">
+                    <DrawingButtons.Image />
                 </Tooltip>
             </div>
         </Sidebar>

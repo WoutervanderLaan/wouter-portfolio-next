@@ -4,6 +4,7 @@ import { Position } from "@/lib/types/position";
 import { ToolType } from "@/lib/types/tool-type";
 import { StateCreator } from "zustand";
 import { StoreState } from "..";
+import { CanvasElement } from "@/utils/canvas-utils";
 
 export const MAX_COLOR_HISTORY = 8;
 
@@ -62,9 +63,30 @@ type ZoomActions = {
     setPosition: (position: Position) => void;
 };
 
-type CanvasState = BrushState & LayerState & HistoryState & ZoomState;
+type ImageState = {
+    images: CanvasElement[];
+    selectedImageId: string | null;
+};
 
-type CanvasActions = BrushActions & LayerActions & HistoryActions & ZoomActions;
+type ImageActions = {
+    addImage: (image: CanvasElement) => void;
+    updateImage: (id: string, updates: Partial<CanvasElement>) => void;
+    removeImage: (id: string) => void;
+    selectImage: (id: string | null) => void;
+    resetImages: () => void;
+};
+
+type CanvasState = BrushState &
+    LayerState &
+    HistoryState &
+    ZoomState &
+    ImageState;
+
+type CanvasActions = BrushActions &
+    LayerActions &
+    HistoryActions &
+    ZoomActions &
+    ImageActions;
 
 export type CanvasSlice = CanvasState & CanvasActions;
 
@@ -82,6 +104,8 @@ const DEFAULT_STATE: CanvasState = {
     scale: { x: 1, y: 1 },
     position: { x: 0, y: 0 },
     zoomType: Zoom.OUT,
+    images: [],
+    selectedImageId: null,
 };
 
 export const createCanvasSlice: StateCreator<
@@ -175,5 +199,30 @@ export const createCanvasSlice: StateCreator<
     setPosition: (position) =>
         set(() => ({
             position,
+        })),
+    addImage: (image) =>
+        set((state) => ({
+            images: [...state.images, image],
+        })),
+    selectImage: (id) =>
+        set(() => ({
+            selectedImageId: id,
+        })),
+    updateImage: (id, updates) =>
+        set((state) => ({
+            images: state.images.map((img) =>
+                img.id === id ? { ...img, ...updates } : img,
+            ),
+        })),
+    removeImage: (id) =>
+        set((state) => ({
+            images: state.images.filter((img) => img.id !== id),
+            selectedImageId:
+                state.selectedImageId === id ? null : state.selectedImageId,
+        })),
+    resetImages: () =>
+        set(() => ({
+            images: DEFAULT_STATE.images,
+            selectedImageId: DEFAULT_STATE.selectedImageId,
         })),
 });
