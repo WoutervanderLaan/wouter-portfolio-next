@@ -73,6 +73,10 @@ const DrawingSettings = () => {
                 <Tooltip tooltipText="Add image">
                     <DrawingButtons.Image />
                 </Tooltip>
+
+                <Tooltip tooltipText="Add text">
+                    <DrawingButtons.Text />
+                </Tooltip>
             </div>
         </Sidebar>
     );

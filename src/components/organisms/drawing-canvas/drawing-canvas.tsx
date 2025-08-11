@@ -15,6 +15,8 @@ import useZoom from "@/hooks/use-zoom";
 import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
 import { useStage } from "@/hooks/use-stage";
 import CanvasImage from "@/components/molecules/canvas-image/canvas-image";
+import CanvasText from "@/components/molecules/canvas-text/canvas-text";
+import { addText } from "@/utils/canvas-utils";
 
 const DrawingCanvas = () => {
     const {
@@ -25,7 +27,10 @@ const DrawingCanvas = () => {
         zoomType,
         images,
         selectedImageId,
+        selectedTextId,
         selectImage,
+        selectText,
+        addText: addTextToCanvas,
     } = useCanvasStore();
     const { stageRef } = useStage();
 
@@ -56,6 +61,9 @@ const DrawingCanvas = () => {
                         "cursor-grab": type === ToolType.DRAG,
                     },
                     {
+                        "cursor-text": type === ToolType.TEXT,
+                    },
+                    {
                         "cursor-zoom-in":
                             type === ToolType.ZOOM && zoomType === Zoom.IN,
                     },
@@ -75,7 +83,11 @@ const DrawingCanvas = () => {
                 width={window.innerWidth}
                 height={window.innerHeight}
                 onTouchStart={(e) => {
-                    if (type === ToolType.DRAG || type === ToolType.IMAGE)
+                    if (
+                        type === ToolType.DRAG ||
+                        type === ToolType.IMAGE ||
+                        type === ToolType.TEXT
+                    )
                         return;
 
                     if (type === ToolType.ZOOM) return zoom(stageRef, zoomType);
@@ -89,7 +101,11 @@ const DrawingCanvas = () => {
                     resetCursor();
                 }}
                 onPointerDown={(e) => {
-                    if (type === ToolType.DRAG || type === ToolType.IMAGE)
+                    if (
+                        type === ToolType.DRAG ||
+                        type === ToolType.IMAGE ||
+                        type === ToolType.TEXT
+                    )
                         return;
 
                     if (type === ToolType.ZOOM) return zoom(stageRef, zoomType);
@@ -102,7 +118,24 @@ const DrawingCanvas = () => {
                 }}
                 onPointerUp={handleEventEnd}
                 onClick={(e) => {
-                    if (e.target === e.target.getStage()) selectImage(null);
+                    if (e.target === e.target.getStage()) {
+                        // Handle text placement when TEXT tool is active
+                        if (type === ToolType.TEXT) {
+                            const stage = e.target.getStage();
+                            const pointerPosition = stage.getPointerPosition();
+                            if (pointerPosition) {
+                                const textElement = addText("Text", {
+                                    x: pointerPosition.x,
+                                    y: pointerPosition.y,
+                                });
+                                addTextToCanvas(textElement);
+                                selectText(textElement.id);
+                            }
+                        } else {
+                            selectImage(null);
+                            selectText(null);
+                        }
+                    }
                 }}
                 scaleX={scale.x}
                 scaleY={scale.y}
@@ -125,14 +158,26 @@ const DrawingCanvas = () => {
                 ))}
 
                 <Layer>
-                    {images.map((imageElement) => (
-                        <CanvasImage
-                            key={imageElement.id}
-                            imageElement={imageElement}
-                            isSelected={selectedImageId === imageElement.id}
-                            onSelect={() => selectImage(imageElement.id)}
-                        />
-                    ))}
+                    {images
+                        .filter((element) => element.type === "image")
+                        .map((imageElement) => (
+                            <CanvasImage
+                                key={imageElement.id}
+                                imageElement={imageElement}
+                                isSelected={selectedImageId === imageElement.id}
+                                onSelect={() => selectImage(imageElement.id)}
+                            />
+                        ))}
+                    {images
+                        .filter((element) => element.type === "text")
+                        .map((textElement) => (
+                            <CanvasText
+                                key={textElement.id}
+                                textElement={textElement}
+                                isSelected={selectedTextId === textElement.id}
+                                onSelect={() => selectText(textElement.id)}
+                            />
+                        ))}
                 </Layer>
 
                 <Layer>{cursor && <Cursor position={cursor} />}</Layer>

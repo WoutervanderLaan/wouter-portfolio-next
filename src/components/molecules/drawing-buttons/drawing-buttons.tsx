@@ -17,6 +17,7 @@ import Redo from "@/components/icons/redo";
 import Opacity from "@/components/icons/opacity";
 import Diameter from "@/components/icons/diameter";
 import ImageIcon from "@/components/icons/image";
+import TextIcon from "@/components/icons/text";
 import useSaveCanvas from "@/hooks/use-save-canvas";
 import ResponsiveContainer from "@/components/atoms/responsive-container/responsive-container";
 import Text from "@/components/atoms/text/text";
@@ -339,6 +340,22 @@ const ImageButton = () => {
     );
 };
 
+const TextButton = () => {
+    const { type, setType } = useCanvasStore();
+
+    return (
+        <Button
+            onPress={() => setType(ToolType.TEXT)}
+            variant="secondary"
+            className={clsx(STANDARD_BUTTON_STYLING, {
+                "ring-2 ring-blue-400 ring-offset-2": type === ToolType.TEXT,
+            })}
+        >
+            <TextIcon />
+        </Button>
+    );
+};
+
 const DrawingButtons = {
     Paint: PaintButton,
     Eraser: EraserButton,
@@ -353,6 +370,7 @@ const DrawingButtons = {
     PrevColor: PrevColorButton,
     AddLayer: AddLayerButton,
     Image: ImageButton,
+    Text: TextButton,
 };
 
 export default DrawingButtons;

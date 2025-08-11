@@ -63,30 +63,35 @@ type ZoomActions = {
     setPosition: (position: Position) => void;
 };
 
-type ImageState = {
+type ElementState = {
     images: CanvasElement[];
     selectedImageId: string | null;
+    selectedTextId: string | null;
 };
 
-type ImageActions = {
+type ElementActions = {
     addImage: (image: CanvasElement) => void;
     updateImage: (id: string, updates: Partial<CanvasElement>) => void;
     removeImage: (id: string) => void;
     selectImage: (id: string | null) => void;
     resetImages: () => void;
+    addText: (text: CanvasElement) => void;
+    updateText: (id: string, updates: Partial<CanvasElement>) => void;
+    removeText: (id: string) => void;
+    selectText: (id: string | null) => void;
 };
 
 type CanvasState = BrushState &
     LayerState &
     HistoryState &
     ZoomState &
-    ImageState;
+    ElementState;
 
 type CanvasActions = BrushActions &
     LayerActions &
     HistoryActions &
     ZoomActions &
-    ImageActions;
+    ElementActions;
 
 export type CanvasSlice = CanvasState & CanvasActions;
 
@@ -106,6 +111,7 @@ const DEFAULT_STATE: CanvasState = {
     zoomType: Zoom.OUT,
     images: [],
     selectedImageId: null,
+    selectedTextId: null,
 };
 
 export const createCanvasSlice: StateCreator<
@@ -224,5 +230,25 @@ export const createCanvasSlice: StateCreator<
         set(() => ({
             images: DEFAULT_STATE.images,
             selectedImageId: DEFAULT_STATE.selectedImageId,
+        })),
+    addText: (text) =>
+        set((state) => ({
+            images: [...state.images, text],
+        })),
+    updateText: (id, updates) =>
+        set((state) => ({
+            images: state.images.map((element) =>
+                element.id === id ? { ...element, ...updates } : element,
+            ),
+        })),
+    removeText: (id) =>
+        set((state) => ({
+            images: state.images.filter((element) => element.id !== id),
+            selectedTextId:
+                state.selectedTextId === id ? null : state.selectedTextId,
+        })),
+    selectText: (id) =>
+        set(() => ({
+            selectedTextId: id,
         })),
 });

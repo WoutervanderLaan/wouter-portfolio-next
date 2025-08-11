@@ -20,6 +20,7 @@ const useCanvasStore = () => {
             zoomType: state.zoomType,
             images: state.images,
             selectedImageId: state.selectedImageId,
+            selectedTextId: state.selectedTextId,
             setColor: state.setColor,
             addColorToHistory: state.addColorToHistory,
             setSize: state.setSize,
@@ -40,6 +41,10 @@ const useCanvasStore = () => {
             removeImage: state.removeImage,
             selectImage: state.selectImage,
             resetImages: state.resetImages,
+            addText: state.addText,
+            updateText: state.updateText,
+            removeText: state.removeText,
+            selectText: state.selectText,
         })),
     );
 
