@@ -32,7 +32,7 @@ const ColorPickerTrigger = ({
 
             {isOpen && (
                 <ResponsiveContainer
-                    className="absolute left-12 top-0 z-10 bg-red-500"
+                    className="absolute left-12 top-0 z-10"
                     isActive={isOpen}
                     callback={() => setIsOpen(false)}
                 >

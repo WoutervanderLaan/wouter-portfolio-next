@@ -32,6 +32,7 @@ const DrawingCanvas = () => {
         selectText,
         addText: addTextToCanvas,
     } = useCanvasStore();
+    
     const { stageRef } = useStage();
 
     const { zoom } = useZoom();
@@ -58,7 +59,7 @@ const DrawingCanvas = () => {
                 className={clsx(
                     "border-1 absolute left-0 top-0 m-0 h-full w-full cursor-none overflow-hidden border bg-white",
                     {
-                        "cursor-grab": type === ToolType.DRAG,
+                        "cursor-default": type === ToolType.DRAG,
                     },
                     {
                         "cursor-text": type === ToolType.TEXT,
