@@ -16,6 +16,10 @@ export async function POST(req: Request) {
 
     const signature = req.headers.get("x-trello-webhook");
 
+    if (!signature) {
+        return new Response("Missing Trello signature", { status: 400 });
+    }
+
     const isValid = verifyTrelloSignature(
         rawBody,
         TRELLO_CALLBACK_URL,
@@ -55,12 +59,17 @@ function verifyTrelloSignature(
 ) {
     const hmac = crypto.createHmac("sha1", secret);
 
-    hmac.update(Buffer.from(rawBody + callbackUrl, "utf8"));
+    hmac.update(rawBody + callbackUrl, "utf8");
 
-    const expected = hmac.digest("hex");
+    const expected = hmac.digest("base64");
 
-    return crypto.timingSafeEqual(
-        Buffer.from(expected),
-        Buffer.from(receivedSig),
-    );
+    const expectedBuf = Buffer.from(expected, "base64");
+    const receivedBuf = Buffer.from(receivedSig, "base64");
+
+    if (expectedBuf.length !== receivedBuf.length) {
+        console.warn("Signature length mismatch");
+        return false;
+    }
+
+    return crypto.timingSafeEqual(expectedBuf, receivedBuf);
 }
