@@ -15,6 +15,7 @@ export async function POST(req: Request) {
     const rawBody = await req.text();
 
     const signature = req.headers.get("x-trello-webhook");
+    console.log("Trello Signature:", signature);
 
     if (!signature) {
         return new Response("Missing Trello signature", { status: 400 });
