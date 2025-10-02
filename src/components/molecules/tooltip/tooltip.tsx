@@ -27,7 +27,7 @@ const Tooltip = ({
 
     return (
         <div
-            className={clsx("relative w-fit", className)}
+            className="relative w-fit"
             onMouseEnter={() => setOpenTip(true)}
             onMouseLeave={() => setOpenTip(false)}
         >
@@ -39,7 +39,10 @@ const Tooltip = ({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="pointer-events-none absolute -right-[84px] -top-2 z-10 flex h-6 min-w-20 items-center justify-center rounded-md rounded-bl-none border border-black bg-white"
+                        className={clsx(
+                            "pointer-events-none absolute -right-[84px] -top-2 z-10 flex h-6 min-w-20 items-center justify-center rounded-md rounded-bl-none border border-black bg-white",
+                            className,
+                        )}
                     >
                         <Text.Small>{tooltipText}</Text.Small>
                     </MotionLabel>

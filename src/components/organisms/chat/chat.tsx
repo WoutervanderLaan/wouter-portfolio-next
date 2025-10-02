@@ -143,6 +143,7 @@ export default function Chat({
                         <div className="flex w-full flex-row items-center gap-2">
                             <Tooltip
                                 tooltipText={sessionId || "No active session"}
+                                className="w-max px-2"
                             >
                                 <div
                                     className={clsx(
