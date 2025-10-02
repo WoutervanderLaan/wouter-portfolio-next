@@ -1,5 +1,6 @@
-import React, { HTMLAttributes, PropsWithChildren } from "react";
+import React, { PropsWithChildren } from "react";
 import clsx from "clsx";
+import { ClassName } from "@/lib/types/class-name";
 
 type Variant = "Heading" | "Paragraph" | "Small";
 type TextElements = "p" | "span" | "h1" | "h2" | "h3";
@@ -12,7 +13,7 @@ const variantStyles: Record<Variant, string> = {
 
 type TextProps = {
     as?: TextElements;
-    className?: HTMLAttributes<HTMLParagraphElement>["className"];
+    className?: ClassName<HTMLParagraphElement>;
     variant?: Variant;
 };
 

@@ -1,14 +1,15 @@
 "use client";
 
+import { ClassName } from "@/lib/types/class-name";
 import clsx from "clsx";
 import NextLink from "next/link";
-import { HTMLAttributes, PropsWithChildren, useRef } from "react";
+import { PropsWithChildren, useRef } from "react";
 import { AriaLinkOptions, useFocusRing, useLink } from "react-aria";
 
 const Link = (
     props: PropsWithChildren<
         AriaLinkOptions & {
-            className?: HTMLAttributes<typeof NextLink>["className"];
+            className?: ClassName<typeof NextLink>;
             href: string;
         }
     >,

@@ -4,6 +4,7 @@ import { Position } from "@/lib/types/position";
 import { ToolType } from "@/lib/types/tool-type";
 import { StateCreator } from "zustand";
 import { StoreState } from "..";
+import { CanvasElement } from "@/utils/canvas-utils";
 
 export const MAX_COLOR_HISTORY = 8;
 
@@ -62,9 +63,35 @@ type ZoomActions = {
     setPosition: (position: Position) => void;
 };
 
-type CanvasState = BrushState & LayerState & HistoryState & ZoomState;
+type ElementState = {
+    images: CanvasElement[];
+    selectedImageId: string | null;
+    selectedTextId: string | null;
+};
 
-type CanvasActions = BrushActions & LayerActions & HistoryActions & ZoomActions;
+type ElementActions = {
+    addImage: (image: CanvasElement) => void;
+    updateImage: (id: string, updates: Partial<CanvasElement>) => void;
+    removeImage: (id: string) => void;
+    selectImage: (id: string | null) => void;
+    resetImages: () => void;
+    addText: (text: CanvasElement) => void;
+    updateText: (id: string, updates: Partial<CanvasElement>) => void;
+    removeText: (id: string) => void;
+    selectText: (id: string | null) => void;
+};
+
+type CanvasState = BrushState &
+    LayerState &
+    HistoryState &
+    ZoomState &
+    ElementState;
+
+type CanvasActions = BrushActions &
+    LayerActions &
+    HistoryActions &
+    ZoomActions &
+    ElementActions;
 
 export type CanvasSlice = CanvasState & CanvasActions;
 
@@ -82,6 +109,9 @@ const DEFAULT_STATE: CanvasState = {
     scale: { x: 1, y: 1 },
     position: { x: 0, y: 0 },
     zoomType: Zoom.OUT,
+    images: [],
+    selectedImageId: null,
+    selectedTextId: null,
 };
 
 export const createCanvasSlice: StateCreator<
@@ -175,5 +205,50 @@ export const createCanvasSlice: StateCreator<
     setPosition: (position) =>
         set(() => ({
             position,
+        })),
+    addImage: (image) =>
+        set((state) => ({
+            images: [...state.images, image],
+        })),
+    selectImage: (id) =>
+        set(() => ({
+            selectedImageId: id,
+        })),
+    updateImage: (id, updates) =>
+        set((state) => ({
+            images: state.images.map((img) =>
+                img.id === id ? { ...img, ...updates } : img,
+            ),
+        })),
+    removeImage: (id) =>
+        set((state) => ({
+            images: state.images.filter((img) => img.id !== id),
+            selectedImageId:
+                state.selectedImageId === id ? null : state.selectedImageId,
+        })),
+    resetImages: () =>
+        set(() => ({
+            images: DEFAULT_STATE.images,
+            selectedImageId: DEFAULT_STATE.selectedImageId,
+        })),
+    addText: (text) =>
+        set((state) => ({
+            images: [...state.images, text],
+        })),
+    updateText: (id, updates) =>
+        set((state) => ({
+            images: state.images.map((element) =>
+                element.id === id ? { ...element, ...updates } : element,
+            ),
+        })),
+    removeText: (id) =>
+        set((state) => ({
+            images: state.images.filter((element) => element.id !== id),
+            selectedTextId:
+                state.selectedTextId === id ? null : state.selectedTextId,
+        })),
+    selectText: (id) =>
+        set(() => ({
+            selectedTextId: id,
         })),
 });

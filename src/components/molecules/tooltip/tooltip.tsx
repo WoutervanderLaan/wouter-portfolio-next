@@ -1,12 +1,13 @@
 import { MotionLabel } from "@/components/atoms/motion-element/motion-element";
 import Text from "@/components/atoms/text/text";
+import { ClassName } from "@/lib/types/class-name";
 import clsx from "clsx";
 import { AnimatePresence } from "motion/react";
-import { HTMLAttributes, PropsWithChildren, useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 
 type TooltipProps = {
     tooltipText: string;
-    className?: HTMLAttributes<HTMLDivElement>["className"];
+    className?: ClassName<HTMLDivElement>;
 };
 
 const Tooltip = ({

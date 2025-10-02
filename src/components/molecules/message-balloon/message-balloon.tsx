@@ -1,4 +1,5 @@
 import Text from "@/components/atoms/text/text";
+import { ClassName } from "@/lib/types/class-name";
 import { Message } from "@/lib/types/message";
 import clsx from "clsx";
 import Image from "next/image";
@@ -65,7 +66,7 @@ const ChatBalloon = (message: Message) => (
 type SystemBalloonProps = {
     text: string;
     variant?: "info" | "warn" | "error";
-    className?: HTMLElement["className"];
+    className?: ClassName<HTMLDivElement>;
 };
 
 const SystemBalloon = ({
