@@ -27,17 +27,12 @@ export async function POST(req: Request) {
         TRELLO_SECRET,
     );
 
-    // const isValid = verifyTrelloWebhookRequest(
-    //     req,
-    //     TRELLO_SECRET,
-    //     TRELLO_CALLBACK_URL,
-    // );
-
     if (!isValid) {
         return new Response("Invalid Trello signature", { status: 403 });
     }
 
     const payload = JSON.parse(rawBody);
+    console.log("Trello payload received:", payload);
 
     const action = payload.action;
     const card = action?.data?.card;
@@ -76,24 +71,6 @@ function verifyTrelloSignature(
         console.warn("Signature length mismatch");
         return false;
     }
-    console.log("expected3", expected);
-    console.log("received3", receivedSig);
+
     return crypto.timingSafeEqual(expectedBuf, receivedBuf);
 }
-
-// function verifyTrelloWebhookRequest(
-//     request: Request,
-//     secret: string,
-//     callbackURL: string,
-// ) {
-//     const base64Digest = function (s: crypto.BinaryLike) {
-//         return crypto.createHmac("sha1", secret).update(s).digest("base64");
-//     };
-
-//     const content = JSON.stringify(request.body) + callbackURL;
-//     const expected = base64Digest(content);
-//     const received = request.headers.get("x-trello-webhook");
-//     console.log("expected2", expected);
-//     console.log("received2", received);
-//     return expected === received;
-// }
