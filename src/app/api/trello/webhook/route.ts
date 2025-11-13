@@ -34,11 +34,16 @@ export async function POST(req: Request) {
     }
 
     const payload: TrelloWebhookPayload = JSON.parse(rawBody);
-    console.log("Trello payload received:", payload);
+    console.log("Trello payload received");
 
     const action = payload.action;
+    const project = payload.model.name;
     const card = action?.data?.card;
     const listAfter = action?.data?.listAfter?.name;
+
+    console.log("Project", project);
+    console.log("Card", card);
+    console.log("List after", listAfter);
 
     let task = "";
 
@@ -49,24 +54,30 @@ export async function POST(req: Request) {
         task = `Trello card (${trelloCardId}), Task: ${title}, \n\nDescription: ${description}`;
         console.log(task);
 
-        await fetch(
-            "https://api.github.com/repos/WoutervanderLaan/AudioTour/actions/workflows/ai-agent.yml/dispatches", //TODO: dynamic repo
-            {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${GITHUB_TOKEN}`,
-                    Accept: "application/vnd.github+json",
-                },
-                body: JSON.stringify({
-                    ref: "main",
-                    inputs: {
-                        trelloCardId,
-                        title,
-                        description,
+        try {
+            console.log("Triggering GitHub Actions workflow...");
+            await fetch(
+                `https://api.github.com/repos/WoutervanderLaan/${project}/actions/workflows/ai-agent.yml/dispatches`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${GITHUB_TOKEN}`,
+                        Accept: "application/vnd.github+json",
                     },
-                }),
-            },
-        );
+                    body: JSON.stringify({
+                        ref: "main",
+                        inputs: {
+                            trelloCardId,
+                            title,
+                            description,
+                        },
+                    }),
+                },
+            );
+            console.log("GitHub Actions workflow triggered successfully.");
+        } catch (error) {
+            console.error("Error triggering GitHub Actions workflow:", error);
+        }
     }
 
     return new Response(JSON.stringify({ ok: true, task }), {
