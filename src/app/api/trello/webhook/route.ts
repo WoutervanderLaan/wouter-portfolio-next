@@ -1,7 +1,9 @@
-import crypto from "crypto";
+import { TrelloWebhookPayload } from "./types";
+import { verifyTrelloSignature } from "./utils";
 
 const TRELLO_SECRET = process.env.TRELLO_SECRET!;
 const TRELLO_CALLBACK_URL = process.env.TRELLO_CALLBACK_URL!;
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN!;
 
 export async function GET() {
     return new Response("OK", { status: 200 });
@@ -31,7 +33,7 @@ export async function POST(req: Request) {
         return new Response("Invalid Trello signature", { status: 403 });
     }
 
-    const payload = JSON.parse(rawBody);
+    const payload: TrelloWebhookPayload = JSON.parse(rawBody);
     console.log("Trello payload received:", payload);
 
     const action = payload.action;
@@ -42,35 +44,32 @@ export async function POST(req: Request) {
 
     if (listAfter === "🟢 Ready for Agents") {
         const title = card?.name ?? "";
-        const desc = card?.desc ?? "";
-        task = `Trello Task: ${title}, \n\nDescription: ${desc}`;
+        const description = card?.desc ?? "";
+        const trelloCardId = card?.id ?? "";
+        task = `Trello card (${trelloCardId}), Task: ${title}, \n\nDescription: ${description}`;
         console.log(task);
+
+        await fetch(
+            "https://api.github.com/repos/WoutervanderLaan/AudioTour/actions/workflows/ai-agent.yml/dispatches", //TODO: dynamic repo
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${GITHUB_TOKEN}`,
+                    Accept: "application/vnd.github+json",
+                },
+                body: JSON.stringify({
+                    ref: "main",
+                    inputs: {
+                        trelloCardId,
+                        title,
+                        description,
+                    },
+                }),
+            },
+        );
     }
 
     return new Response(JSON.stringify({ ok: true, task }), {
         headers: { "Content-Type": "application/json" },
     });
-}
-
-function verifyTrelloSignature(
-    rawBody: string,
-    callbackUrl: string,
-    receivedSig: string,
-    secret: string,
-) {
-    const hmac = crypto.createHmac("sha1", secret);
-
-    hmac.update(rawBody + callbackUrl, "utf8");
-
-    const expected = hmac.digest("base64");
-
-    const expectedBuf = Buffer.from(expected, "base64");
-    const receivedBuf = Buffer.from(receivedSig, "base64");
-
-    if (expectedBuf.length !== receivedBuf.length) {
-        console.warn("Signature length mismatch");
-        return false;
-    }
-
-    return crypto.timingSafeEqual(expectedBuf, receivedBuf);
 }
