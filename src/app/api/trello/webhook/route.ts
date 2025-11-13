@@ -56,7 +56,7 @@ export async function POST(req: Request) {
 
         try {
             console.log("Triggering GitHub Actions workflow...");
-            await fetch(
+            const res = await fetch(
                 `https://api.github.com/repos/WoutervanderLaan/${project}/actions/workflows/ai-agent.yml/dispatches`,
                 {
                     method: "POST",
@@ -74,6 +74,15 @@ export async function POST(req: Request) {
                     }),
                 },
             );
+
+            const payload = await res.text();
+            console.log("GitHub API response:", payload);
+
+            if (!res.ok) {
+                throw new Error(
+                    `GitHub API responded with status ${res.status}: ${payload}`,
+                );
+            }
             console.log("GitHub Actions workflow triggered successfully.");
         } catch (error) {
             console.error("Error triggering GitHub Actions workflow:", error);
