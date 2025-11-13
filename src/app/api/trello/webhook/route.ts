@@ -48,9 +48,9 @@ export async function POST(req: Request) {
     let task = "";
 
     if (listAfter === "🟢 Ready for Agents") {
-        const title = card?.name ?? "";
-        const description = card?.desc ?? "";
-        const trelloCardId = card?.id ?? "";
+        const title = card?.name || "No Title";
+        const description = card?.desc || "No Description";
+        const trelloCardId = card?.id || "No ID";
         task = `Trello card (${trelloCardId}), Task: ${title}, \n\nDescription: ${description}`;
         console.log(task);
 
