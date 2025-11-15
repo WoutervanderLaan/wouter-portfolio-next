@@ -1,5 +1,3 @@
-"use server";
-
 import { tryCatchFetch } from "@/utils/try-catch";
 import { TrelloWebhookPayload } from "./types";
 
