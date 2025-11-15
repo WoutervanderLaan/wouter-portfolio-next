@@ -21,7 +21,7 @@ export class TrelloClient {
         this.model = model;
 
         this.defaultParams = new URLSearchParams({
-            key: process.env.TRELLO_KEY!,
+            key: process.env.TRELLO_API_KEY!,
             token: process.env.TRELLO_TOKEN!,
         });
     }
