@@ -1,14 +1,12 @@
 import crypto from "node:crypto";
 
-export const verifyTrelloSignature = (
-    rawBody: string,
-    callbackUrl: string,
-    receivedSig: string,
-    secret: string,
-) => {
-    const hmac = crypto.createHmac("sha1", secret);
+const TRELLO_SECRET = process.env.TRELLO_SECRET!;
+const TRELLO_CALLBACK_URL = process.env.TRELLO_CALLBACK_URL!;
 
-    hmac.update(rawBody + callbackUrl, "utf8");
+export const verifyTrelloSignature = (rawBody: string, receivedSig: string) => {
+    const hmac = crypto.createHmac("sha1", TRELLO_SECRET);
+
+    hmac.update(rawBody + TRELLO_CALLBACK_URL, "utf8");
 
     const expected = hmac.digest("base64");
 

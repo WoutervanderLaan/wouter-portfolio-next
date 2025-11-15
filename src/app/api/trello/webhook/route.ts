@@ -1,9 +1,7 @@
-import { TrelloWebhookPayload } from "./types";
+import { TRELLO_LISTS, TrelloWebhookPayload } from "./types";
 import { verifyTrelloSignature } from "./utils";
-
-const TRELLO_SECRET = process.env.TRELLO_SECRET!;
-const TRELLO_CALLBACK_URL = process.env.TRELLO_CALLBACK_URL!;
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN!;
+import { TrelloClient } from "./trello-client";
+import { GithubClient } from "./github-client";
 
 export async function GET() {
     return new Response("OK", { status: 200 });
@@ -13,21 +11,27 @@ export async function HEAD() {
     return new Response(null, { status: 200 });
 }
 
+/**
+ *
+ * @param req
+ * Webhook endpoint to process trello board changes
+ * 1. Checks signatures
+ * 2. Checks if trello card was moved to relevant list ('🟢 Ready for Agents')
+ * 3. If so, fetches card and board details
+ * 4. Moves card to 'In Progress'
+ * 5. Triggers GitHub Actions workflow with card details
+ * 6. If any step fails, logs error and moved card to 'Backlog', adding comment with error details
+ * @returns
+ */
 export async function POST(req: Request) {
     const rawBody = await req.text();
-
     const signature = req.headers.get("x-trello-webhook");
 
     if (!signature) {
         return new Response("Missing Trello signature", { status: 400 });
     }
 
-    const isValid = verifyTrelloSignature(
-        rawBody,
-        TRELLO_CALLBACK_URL,
-        signature ?? "",
-        TRELLO_SECRET,
-    );
+    const isValid = verifyTrelloSignature(rawBody, signature ?? "");
 
     if (!isValid) {
         return new Response("Invalid Trello signature", { status: 403 });
@@ -36,60 +40,79 @@ export async function POST(req: Request) {
     const payload: TrelloWebhookPayload = JSON.parse(rawBody);
     console.log("Trello payload received");
 
-    const action = payload.action;
-    const project = payload.model.name;
-    const card = action?.data?.card;
-    const listAfter = action?.data?.listAfter?.name;
-
-    console.log("Project", project);
-    console.log("Card", card);
-    console.log("List after", listAfter);
-
-    let task = "";
+    const model = payload.model;
+    const card = payload.action?.data?.card;
+    const listAfter = payload.action?.data?.listAfter?.name;
 
     if (listAfter === "🟢 Ready for Agents") {
-        const title = card?.name || "No Title";
-        const description = card?.desc || "No Description";
-        const trelloCardId = card?.id || "No ID";
-        task = `Trello card (${trelloCardId}), Task: ${title}, \n\nDescription: ${description}`;
-        console.log(task);
+        console.log('Card moved to "Ready for Agents", processing...');
+
+        const trello = new TrelloClient(card?.id, model);
+        const github = new GithubClient(model);
 
         try {
+            const cardDetails = await trello.getCardDetails();
+
+            console.log("Processing task:", {
+                trelloCardId: cardDetails.id,
+                title: cardDetails.name || "No Title",
+                description: cardDetails.desc || "No Description",
+            });
+
             console.log("Triggering GitHub Actions workflow...");
-            const res = await fetch(
-                `https://api.github.com/repos/WoutervanderLaan/${project}/actions/workflows/ai-agent.yml/dispatches`,
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${GITHUB_TOKEN}`,
-                        Accept: "application/vnd.github+json",
-                    },
-                    body: JSON.stringify({
-                        ref: "main",
-                        inputs: {
-                            trelloCardId,
-                            title,
-                            description,
-                        },
-                    }),
-                },
+
+            await github.triggerWorkflow({
+                trelloCardId: cardDetails.id,
+                title: cardDetails.name || "No Title",
+                description: cardDetails.desc || "No Description",
+            });
+
+            console.log("GitHub Actions workflow triggered successfully.");
+
+            await trello.moveCard(TRELLO_LISTS.IN_PROGRESS);
+            await trello.addComment(
+                `🚀 Task processing started by GitHub Actions workflow.`,
             );
 
-            const payload = await res.text();
-            console.log("GitHub API response:", payload);
+            return new Response(
+                JSON.stringify({
+                    status: 200,
+                    ok: true,
+                    detail: "Workflow triggered successfully",
+                }),
+                {
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        } catch (error) {
+            console.error("Error processing trello request", error);
 
-            if (!res.ok) {
-                throw new Error(
-                    `GitHub API responded with status ${res.status}: ${payload}`,
+            try {
+                await trello.moveCard(TRELLO_LISTS.BACKLOG);
+                await trello.addComment(
+                    `⚠️ An error occurred while processing this card: ${error}`,
+                );
+            } catch (moveError) {
+                console.error(
+                    "Additionally, failed to move card to Backlog:",
+                    moveError,
                 );
             }
-            console.log("GitHub Actions workflow triggered successfully.");
-        } catch (error) {
-            console.error("Error triggering GitHub Actions workflow:", error);
+
+            return new Response(
+                JSON.stringify({
+                    status: 500,
+                    ok: false,
+                    detail: error,
+                }),
+                {
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
         }
     }
 
-    return new Response(JSON.stringify({ ok: true, task }), {
-        headers: { "Content-Type": "application/json" },
-    });
+    console.log("Card moved to irrelevant list, no action taken.");
+
+    return new Response("OK", { status: 200 });
 }
