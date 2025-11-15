@@ -11,22 +11,18 @@ import {
  * Handles requests to Trello API
  */
 export class TrelloClient {
-    private readonly key: string;
-    private readonly token: string;
     private readonly baseUrl = "https://api.trello.com/1";
     private readonly cardId: string | null;
     private readonly model: TrelloWebhookPayload["model"];
     private readonly defaultParams: URLSearchParams;
 
     constructor(cardId: string | null, model: TrelloWebhookPayload["model"]) {
-        this.key = process.env.TRELLO_KEY!;
-        this.token = process.env.TRELLO_TOKEN!;
         this.cardId = cardId;
         this.model = model;
 
         this.defaultParams = new URLSearchParams({
-            key: this.key,
-            token: this.token,
+            key: process.env.TRELLO_KEY!,
+            token: process.env.TRELLO_TOKEN!,
         });
     }
 
@@ -60,6 +56,8 @@ export class TrelloClient {
         const [response, error] = await tryCatchFetch<T>(fetch(url, init));
 
         if (error || !response) {
+            console.error("Trello API request error for url", url, init);
+            console.error("Error details:", error);
             throw new Error(`Trello API request to ${path} failed: ${error}`);
         }
 
