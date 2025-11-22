@@ -4,8 +4,6 @@ import Paint from "@/components/icons/paint";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import Slider from "../slider/slider";
-import useDrawingContext from "@/hooks/use-drawing-context";
-import { Zoom } from "@/hooks/use-zoom";
 import { ToolType } from "@/lib/types/tool-type";
 import ModalTrigger from "../modal-trigger/modal-trigger";
 import ZoomIn from "@/components/icons/zoom-in";
@@ -18,16 +16,22 @@ import Undo from "@/components/icons/undo";
 import Redo from "@/components/icons/redo";
 import Opacity from "@/components/icons/opacity";
 import Diameter from "@/components/icons/diameter";
+import ImageIcon from "@/components/icons/image";
+import TextIcon from "@/components/icons/text";
 import useSaveCanvas from "@/hooks/use-save-canvas";
 import ResponsiveContainer from "@/components/atoms/responsive-container/responsive-container";
 import Text from "@/components/atoms/text/text";
-import { useSession } from "@/context/session-context";
+import { Zoom } from "@/store/slices/canvas-slice";
+import useHistory from "@/hooks/use-history";
+import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
+import useSession from "@/hooks/use-session";
+import { addImage } from "@/utils/canvas-utils";
 
 const STANDARD_BUTTON_STYLING =
     "h-9 flex aspect-square items-center justify-center self-start overflow-hidden";
 
 const PaintButton = () => {
-    const { type, setType } = useDrawingContext();
+    const { type, setType } = useCanvasStore();
 
     return (
         <Button
@@ -43,7 +47,7 @@ const PaintButton = () => {
 };
 
 const EraserButton = () => {
-    const { type, setType } = useDrawingContext();
+    const { type, setType } = useCanvasStore();
 
     return (
         <Button
@@ -60,7 +64,7 @@ const EraserButton = () => {
 
 const SizeButton = () => {
     const [isSliderOpen, setIsSliderOpen] = useState(false);
-    const { size, setSize } = useDrawingContext();
+    const { size, setSize } = useCanvasStore();
 
     return (
         <ResponsiveContainer
@@ -94,7 +98,7 @@ const SizeButton = () => {
 
 const OpacityButton = ({}) => {
     const [isSliderOpen, setIsSliderOpen] = useState(false);
-    const { opacity, setOpacity } = useDrawingContext();
+    const { opacity, setOpacity } = useCanvasStore();
 
     return (
         <ResponsiveContainer
@@ -127,7 +131,7 @@ const OpacityButton = ({}) => {
 };
 
 const UndoButton = () => {
-    const { undo, noHistory } = useDrawingContext();
+    const { undo, noHistory } = useHistory();
 
     return (
         <Button
@@ -142,7 +146,7 @@ const UndoButton = () => {
 };
 
 const RedoButton = () => {
-    const { redo, redoStack } = useDrawingContext();
+    const { redo, redoStack } = useHistory();
 
     return (
         <Button
@@ -157,7 +161,7 @@ const RedoButton = () => {
 };
 
 const ZoomButton = () => {
-    const { setType, type, setZoomType, zoomType } = useDrawingContext();
+    const { setType, type, setZoomType, zoomType } = useCanvasStore();
 
     useEffect(() => {
         if (type !== ToolType.ZOOM) setZoomType(Zoom.IN);
@@ -184,7 +188,7 @@ const ZoomButton = () => {
 };
 
 const DragButton = () => {
-    const { setType, type } = useDrawingContext();
+    const { setType, type } = useCanvasStore();
 
     return (
         <Button
@@ -200,7 +204,8 @@ const DragButton = () => {
 };
 
 const ClearButton = () => {
-    const { noHistory, resetHistory, resetLayers } = useDrawingContext();
+    const { resetHistory, resetLayers } = useCanvasStore();
+    const { noHistory } = useHistory();
     const session = useSession();
 
     const clearCanvas = async () => {
@@ -222,7 +227,7 @@ const ClearButton = () => {
 };
 
 const SaveButton = () => {
-    const { noHistory } = useDrawingContext();
+    const { noHistory } = useHistory();
     const saveCanvas = useSaveCanvas();
 
     return (
@@ -279,7 +284,7 @@ const PrevColorButton = ({ setColor, color }: PrevColorButtonProps) => (
 );
 
 const AddLayerButton = () => {
-    const { addLayer } = useDrawingContext();
+    const { addLayer } = useCanvasStore();
 
     return (
         <Button
@@ -288,6 +293,65 @@ const AddLayerButton = () => {
             className={clsx(STANDARD_BUTTON_STYLING)}
         >
             <Layer />
+        </Button>
+    );
+};
+
+const ImageButton = () => {
+    const { type, setType, addImage: addImageToCanvas } = useCanvasStore();
+
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const src = e.target?.result as string;
+            if (src) {
+                const imageElement = addImage(src, { x: 100, y: 100 });
+                addImageToCanvas(imageElement);
+            }
+        };
+
+        reader.readAsDataURL(file);
+    };
+
+    return (
+        <div className="relative">
+            <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="absolute inset-0 cursor-pointer opacity-0"
+                style={{ zIndex: 10 }}
+            />
+            <Button
+                onPress={() => setType(ToolType.IMAGE)}
+                variant="secondary"
+                className={clsx(STANDARD_BUTTON_STYLING, {
+                    "ring-2 ring-blue-400 ring-offset-2":
+                        type === ToolType.IMAGE,
+                })}
+            >
+                <ImageIcon />
+            </Button>
+        </div>
+    );
+};
+
+const TextButton = () => {
+    const { type, setType } = useCanvasStore();
+
+    return (
+        <Button
+            onPress={() => setType(ToolType.TEXT)}
+            variant="secondary"
+            className={clsx(STANDARD_BUTTON_STYLING, {
+                "ring-2 ring-blue-400 ring-offset-2": type === ToolType.TEXT,
+            })}
+        >
+            <TextIcon />
         </Button>
     );
 };
@@ -305,6 +369,8 @@ const DrawingButtons = {
     Save: SaveButton,
     PrevColor: PrevColorButton,
     AddLayer: AddLayerButton,
+    Image: ImageButton,
+    Text: TextButton,
 };
 
 export default DrawingButtons;

@@ -1,21 +1,41 @@
 "use client";
 
 import useCursor from "@/hooks/use-cursor";
-import useDrawingContext from "@/hooks/use-drawing-context";
 import clsx from "clsx";
 import { Stage, Layer } from "react-konva";
 import Cursor from "@/components/molecules/cursor/cursor";
 import Line from "@/components/molecules/line/line";
 import useDrawingEvents from "@/hooks/use-drawing-events";
 import { smoothPoints } from "@/utils/drawing-helpers";
-import { Zoom } from "@/hooks/use-zoom";
 import { ToolType } from "@/lib/types/tool-type";
 import useDrag from "@/hooks/use-drag";
 import { MotionDiv } from "@/components/atoms/motion-element/motion-element";
+import { Zoom } from "@/store/slices/canvas-slice";
+import useZoom from "@/hooks/use-zoom";
+import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
+import { useStage } from "@/hooks/use-stage";
+import CanvasImage from "@/components/molecules/canvas-image/canvas-image";
+import CanvasText from "@/components/molecules/canvas-text/canvas-text";
+import { addText } from "@/utils/canvas-utils";
 
 const DrawingCanvas = () => {
-    const { layers, type, scale, position, zoomType, zoom, stageRef } =
-        useDrawingContext();
+    const {
+        layers,
+        type,
+        scale,
+        position,
+        zoomType,
+        images,
+        selectedImageId,
+        selectedTextId,
+        selectImage,
+        selectText,
+        addText: addTextToCanvas,
+    } = useCanvasStore();
+    
+    const { stageRef } = useStage();
+
+    const { zoom } = useZoom();
 
     const dragProperties = useDrag();
 
@@ -39,7 +59,10 @@ const DrawingCanvas = () => {
                 className={clsx(
                     "border-1 absolute left-0 top-0 m-0 h-full w-full cursor-none overflow-hidden border bg-white",
                     {
-                        "cursor-move": type === ToolType.DRAG,
+                        "cursor-default": type === ToolType.DRAG,
+                    },
+                    {
+                        "cursor-text": type === ToolType.TEXT,
                     },
                     {
                         "cursor-zoom-in":
@@ -61,8 +84,15 @@ const DrawingCanvas = () => {
                 width={window.innerWidth}
                 height={window.innerHeight}
                 onTouchStart={(e) => {
-                    if (type === ToolType.DRAG) return;
+                    if (
+                        type === ToolType.DRAG ||
+                        type === ToolType.IMAGE ||
+                        type === ToolType.TEXT
+                    )
+                        return;
+
                     if (type === ToolType.ZOOM) return zoom(stageRef, zoomType);
+
                     handleEventStart(e);
                 }}
                 onTouchMove={handleEventMove}
@@ -72,8 +102,15 @@ const DrawingCanvas = () => {
                     resetCursor();
                 }}
                 onPointerDown={(e) => {
-                    if (type === ToolType.DRAG) return;
+                    if (
+                        type === ToolType.DRAG ||
+                        type === ToolType.IMAGE ||
+                        type === ToolType.TEXT
+                    )
+                        return;
+
                     if (type === ToolType.ZOOM) return zoom(stageRef, zoomType);
+
                     handleEventStart(e);
                 }}
                 onPointerMove={(e) => {
@@ -81,6 +118,26 @@ const DrawingCanvas = () => {
                     handleCursor(e);
                 }}
                 onPointerUp={handleEventEnd}
+                onClick={(e) => {
+                    if (e.target === e.target.getStage()) {
+                        // Handle text placement when TEXT tool is active
+                        if (type === ToolType.TEXT) {
+                            const stage = e.target.getStage();
+                            const pointerPosition = stage.getPointerPosition();
+                            if (pointerPosition) {
+                                const textElement = addText("Text", {
+                                    x: pointerPosition.x,
+                                    y: pointerPosition.y,
+                                });
+                                addTextToCanvas(textElement);
+                                selectText(textElement.id);
+                            }
+                        } else {
+                            selectImage(null);
+                            selectText(null);
+                        }
+                    }
+                }}
                 scaleX={scale.x}
                 scaleY={scale.y}
                 {...position}
@@ -100,6 +157,29 @@ const DrawingCanvas = () => {
                         })}
                     </Layer>
                 ))}
+
+                <Layer>
+                    {images
+                        .filter((element) => element.type === "image")
+                        .map((imageElement) => (
+                            <CanvasImage
+                                key={imageElement.id}
+                                imageElement={imageElement}
+                                isSelected={selectedImageId === imageElement.id}
+                                onSelect={() => selectImage(imageElement.id)}
+                            />
+                        ))}
+                    {images
+                        .filter((element) => element.type === "text")
+                        .map((textElement) => (
+                            <CanvasText
+                                key={textElement.id}
+                                textElement={textElement}
+                                isSelected={selectedTextId === textElement.id}
+                                onSelect={() => selectText(textElement.id)}
+                            />
+                        ))}
+                </Layer>
 
                 <Layer>{cursor && <Cursor position={cursor} />}</Layer>
             </Stage>

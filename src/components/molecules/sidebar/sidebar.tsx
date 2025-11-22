@@ -1,8 +1,9 @@
 import Button from "@/components/atoms/button/button";
 import { MotionAside } from "@/components/atoms/motion-element/motion-element";
 import Arrow from "@/components/icons/arrow";
+import { ClassName } from "@/lib/types/class-name";
 import clsx from "clsx";
-import { HTMLAttributes, PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useState } from "react";
 
 const Sidebar = ({
     children,
@@ -10,7 +11,7 @@ const Sidebar = ({
     className,
 }: PropsWithChildren<{
     side?: "left" | "right";
-    className?: HTMLAttributes<HTMLElement>["className"];
+    className?: ClassName<HTMLDivElement>;
 }>) => {
     const [isExpanded, setIsExpanded] = useState(true);
 

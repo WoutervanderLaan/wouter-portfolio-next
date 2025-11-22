@@ -1,30 +1,30 @@
 "use client";
 
-import ColorPicker from "@/components/molecules/color-picker/color-picker";
 import DrawingButtons from "@/components/molecules/drawing-buttons/drawing-buttons";
-import { MAX_COLOR_HISTORY } from "@/hooks/use-brush-settings";
-import useDrawingContext from "@/hooks/use-drawing-context";
 import Sidebar from "../../molecules/sidebar/sidebar";
 import Tooltip from "@/components/molecules/tooltip/tooltip";
+import { MAX_COLOR_HISTORY } from "@/store/slices/canvas-slice";
+import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
+import ColorPickerTrigger from "@/components/molecules/color-picker-trigger/color-picker-trigger";
 
 const DrawingSettings = () => {
-    const { color, setColor, colorHistoryRef } = useDrawingContext();
+    const { color, setColor, colorHistory } = useCanvasStore();
 
     return (
         <Sidebar className="h-full">
             <div className="flex flex-col gap-2 p-2">
                 <div className="flex w-fit flex-col gap-1">
                     <Tooltip tooltipText="Color picker">
-                        <ColorPicker color={color} setColor={setColor} />
+                        <ColorPickerTrigger color={color} setColor={setColor} />
                     </Tooltip>
 
                     <div className="grid grid-cols-2 gap-1">
                         {Array.from({ length: MAX_COLOR_HISTORY }).map(
                             (_, i) => (
                                 <DrawingButtons.PrevColor
-                                    key={`${colorHistoryRef.current[i]}_${i}`}
+                                    key={`${colorHistory[i]}_${i}`}
                                     setColor={setColor}
-                                    color={colorHistoryRef.current[i]}
+                                    color={colorHistory[i]}
                                 />
                             ),
                         )}
@@ -68,6 +68,14 @@ const DrawingSettings = () => {
 
                 <Tooltip tooltipText="Save">
                     <DrawingButtons.Save />
+                </Tooltip>
+
+                <Tooltip tooltipText="Add image">
+                    <DrawingButtons.Image />
+                </Tooltip>
+
+                <Tooltip tooltipText="Add text">
+                    <DrawingButtons.Text />
                 </Tooltip>
             </div>
         </Sidebar>

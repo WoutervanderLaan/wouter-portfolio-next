@@ -1,5 +1,6 @@
 "use client";
 
+import { ClassName } from "@/lib/types/class-name";
 import clsx from "clsx";
 import { ElementType, ReactNode, useRef } from "react";
 import { AriaButtonOptions, useButton, useFocusRing } from "react-aria";
@@ -25,7 +26,7 @@ const variantStyles: Record<Variant, string> = {
 
 type ButtonProps = {
     children: ReactNode;
-    className?: string;
+    className?: ClassName<HTMLButtonElement>;
     variant?: Variant;
 };
 

@@ -1,26 +1,13 @@
 "use client";
 
 import makeRequest from "@/lib/network/make-request";
-import {
-    ReactNode,
-    createContext,
-    useContext,
-    useEffect,
-    useState,
-} from "react";
-import { useAuth } from "./auth-context";
+import { useEffect, useState } from "react";
+import useAuth from "./use-auth";
+import useSessionStore from "./store-hooks/use-session-store";
 
-type TSessionContext = {
-    isLoading: boolean;
-    sessionId: string | null;
-    reset: () => Promise<string | undefined>;
-};
-
-const SessionContext = createContext<TSessionContext | null>(null);
-
-export const SessionProvider = ({ children }: { children: ReactNode }) => {
-    const [sessionId, setSessionId] = useState<string | null>(null);
+const useSession = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { sessionId, setSessionId } = useSessionStore();
     const { token, isAuthenticated } = useAuth();
 
     useEffect(() => {
@@ -84,22 +71,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    return (
-        <SessionContext.Provider
-            value={{
-                isLoading,
-                sessionId,
-                reset: resetSession,
-            }}
-        >
-            {children}
-        </SessionContext.Provider>
-    );
+    return { sessionId, isLoading, reset: resetSession };
 };
 
-export const useSession = () => {
-    const sessionContext = useContext(SessionContext);
-    if (!sessionContext) throw Error("SessionContext used outside Provider");
-
-    return sessionContext;
-};
+export default useSession;

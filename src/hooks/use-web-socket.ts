@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/context/auth-context";
 import {
     useState,
     useEffect,
@@ -8,6 +7,7 @@ import {
     useCallback,
     DependencyList,
 } from "react";
+import useAuth from "./use-auth";
 
 const useWebSocket = (
     url: string,

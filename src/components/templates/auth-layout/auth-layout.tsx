@@ -1,14 +1,15 @@
 import LoginForm from "@/components/organisms/forms/login-form";
-import { useAuth } from "@/context/auth-context";
+import useAuth from "@/hooks/use-auth";
+import { ClassName } from "@/lib/types/class-name";
 import clsx from "clsx";
-import { HTMLAttributes, ReactNode } from "react";
+import { ReactNode } from "react";
 
 const AuthLayout = ({
     children,
     className,
 }: {
     children: ReactNode | ((logout: () => Promise<void>) => ReactNode);
-    className?: HTMLAttributes<HTMLElement>["className"];
+    className?: ClassName<HTMLDivElement>;
 }) => {
     const { logout, isAuthenticated } = useAuth();
 

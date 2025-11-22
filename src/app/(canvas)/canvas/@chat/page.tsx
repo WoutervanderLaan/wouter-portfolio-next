@@ -11,5 +11,5 @@ export default async function ChatPage() {
         method: "GET",
     });
 
-    return <Chat history={history} error={error} />;
+    return <Chat history={history.toReversed()} error={error} />;
 }

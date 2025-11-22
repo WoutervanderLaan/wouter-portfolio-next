@@ -1,7 +1,6 @@
 import DrawingSettings from "@/components/organisms/drawing-settings/drawing-settings";
-import { AuthProvider } from "@/context/auth-context";
-import DrawingContextProvider from "@/context/drawing-context";
-import { SessionProvider } from "@/context/session-context";
+import StageProvider from "@/context/stage-context";
+import StoreProvider from "@/context/store-context";
 
 export default async function CanvasLayout({
     children,
@@ -11,16 +10,14 @@ export default async function CanvasLayout({
     chat: React.ReactNode;
 }>) {
     return (
-        <AuthProvider>
-            <SessionProvider>
-                <DrawingContextProvider>
-                    <main className="h-screen w-screen overflow-hidden">
-                        <DrawingSettings />
-                        {children}
-                        {chat}
-                    </main>
-                </DrawingContextProvider>
-            </SessionProvider>
-        </AuthProvider>
+        <StoreProvider>
+            <StageProvider>
+                <main className="h-screen w-screen overflow-hidden">
+                    <DrawingSettings />
+                    {children}
+                    {chat}
+                </main>
+            </StageProvider>
+        </StoreProvider>
     );
 }
