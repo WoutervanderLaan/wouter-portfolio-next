@@ -26,7 +26,7 @@ export class GithubClient {
                     },
                     body: JSON.stringify({
                         ref: "main",
-                        inputs,
+                        inputs: { ...inputs, trelloModelId: this.model.id },
                     }),
                 },
             ),

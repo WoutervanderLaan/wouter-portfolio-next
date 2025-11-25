@@ -27,6 +27,8 @@ export async function POST(req: Request) {
     const { status, cardId, modelId, comment }: RequestBody = await req.json();
     const toList = getList(status);
 
+    console.log("REQUEST", req);
+
     if (!status || !toList || !cardId || !modelId) {
         return new Response("Invalid request. Missing data.", { status: 404 });
     }
