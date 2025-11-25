@@ -1,0 +1,48 @@
+POST https://api.github.com/repos/WoutervanderLaan/AudioTour/actions/workflows/ai-agent.yml/dispatches HTTP/1.1
+Accept: application/vnd.github+json
+Authorization: Bearer <GITHUB_TOKEN>
+
+{
+    "ref": "main",
+    "inputs": {
+        "trelloCardId": "1234567890",
+        "title": "Test Title",
+        "description": "This is a test description for the Trello card. "
+    }
+}
+
+###
+
+POST http://localhost:3000/api/trello/update-task HTTP/1.1
+Content-Type: application/json
+
+{
+    "status": "error",
+    "cardId": "692602b255c0f50a28430484",
+    "modelId": "68de18c443c3aff4c932f7df",
+    "comment": "❌ Something went wrong"
+}
+
+###
+
+POST http://localhost:3000/api/trello/update-task HTTP/1.1
+Content-Type: application/json
+
+{
+    "status": "review",
+    "cardId": "692602b255c0f50a28430484",
+    "modelId": "68de18c443c3aff4c932f7df",
+    "comment": "👀 PR is ready for review"
+}
+
+###
+
+POST http://localhost:3000/api/trello/update-task HTTP/1.1
+Content-Type: application/json
+
+{
+    "status": "done",
+    "cardId": "692602b255c0f50a28430484",
+    "modelId": "68de18c443c3aff4c932f7df",
+    "comment": "✅ Done"
+}

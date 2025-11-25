@@ -56,7 +56,6 @@ export type TrelloCardDetails = {
     id: string;
     badges: {
         attachments: number;
-        fogbugz: string;
         checkItems: number;
         checkItemsChecked: number;
         comments: number;
@@ -153,7 +152,7 @@ export type TrelloList = {
     };
 };
 
-export enum TRELLO_LISTS {
+export enum TrelloLists {
     BACKLOG = "Backlog",
     IN_PROGRESS = "In Progress",
     READY_FOR_AGENTS = "🟢 Ready for Agents",

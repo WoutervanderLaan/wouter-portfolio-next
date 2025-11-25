@@ -1,6 +1,6 @@
 import { tryCatchFetch } from "@/utils/try-catch";
 import {
-    TRELLO_LISTS,
+    TrelloLists,
     TrelloCardDetails,
     TrelloList,
     TrelloWebhookPayload,
@@ -13,10 +13,13 @@ import {
 export class TrelloClient {
     private readonly baseUrl = "https://api.trello.com/1";
     private readonly cardId: string | null;
-    private readonly model: TrelloWebhookPayload["model"];
+    private readonly model: TrelloWebhookPayload["model"]["id"];
     private readonly defaultParams: URLSearchParams;
 
-    constructor(cardId: string | null, model: TrelloWebhookPayload["model"]) {
+    constructor(
+        cardId: string | null,
+        model: TrelloWebhookPayload["model"]["id"],
+    ) {
         this.cardId = cardId;
         this.model = model;
 
@@ -78,7 +81,7 @@ export class TrelloClient {
      * @returns TrelloList[]
      */
     async getLists(): Promise<TrelloList[]> {
-        const boardId = this.model?.id;
+        const boardId = this.model;
 
         if (!boardId) throw new Error("Board ID missing from webhook model");
 
@@ -90,10 +93,10 @@ export class TrelloClient {
      * @param listName Name of the list to move the card to
      * @returns
      */
-    async moveCard(listName: TRELLO_LISTS) {
+    async moveCard(listName: TrelloLists) {
         if (!this.cardId) throw new Error("Card ID missing");
 
-        const boardId = this.model?.id;
+        const boardId = this.model;
 
         if (!boardId) throw new Error("Board ID missing from webhook model");
 

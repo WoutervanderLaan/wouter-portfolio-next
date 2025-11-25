@@ -1,7 +1,7 @@
-import { TRELLO_LISTS, TrelloWebhookPayload } from "./types";
-import { verifyTrelloSignature } from "./utils";
-import { TrelloClient } from "./trello-client";
-import { GithubClient } from "./github-client";
+import { GithubClient } from "../../../../../server/github-client";
+import { TrelloClient } from "../../../../../server/trello-client";
+import { TrelloLists, TrelloWebhookPayload } from "../../../../../server/types";
+import { verifyTrelloSignature } from "../../../../../server/utils";
 
 export async function GET() {
     return new Response("OK", { status: 200 });
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     if (listAfter === "🟢 Ready for Agents") {
         console.log('Card moved to "Ready for Agents", processing...');
 
-        const trello = new TrelloClient(card?.id, model);
+        const trello = new TrelloClient(card?.id, model.id);
         const github = new GithubClient(model);
 
         try {
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
 
             console.log("GitHub Actions workflow triggered successfully.");
 
-            await trello.moveCard(TRELLO_LISTS.IN_PROGRESS);
+            await trello.moveCard(TrelloLists.IN_PROGRESS);
             await trello.addComment(
                 `🚀 Task processing started by GitHub Actions workflow.`,
             );
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
             console.error("Error processing trello request", error);
 
             try {
-                await trello.moveCard(TRELLO_LISTS.BACKLOG);
+                await trello.moveCard(TrelloLists.BACKLOG);
                 await trello.addComment(
                     `⚠️ An error occurred while processing this card: ${error}`,
                 );
