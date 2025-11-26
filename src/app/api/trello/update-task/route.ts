@@ -1,7 +1,7 @@
 import { TrelloClient } from "../../../../../server/trello-client";
 import { TrelloLists } from "../../../../../server/types";
 
-const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
+const SERVER_WEBHOOK_SECRET = process.env.SERVER_WEBHOOK_SECRET;
 
 type RequestBody = {
     status: "error" | "done" | "review";
@@ -28,7 +28,7 @@ const getList = (
 export async function POST(req: Request) {
     const token = req.headers.get("Authorization")?.replace("Bearer ", "");
 
-    if (!token || token !== GITHUB_WEBHOOK_SECRET) {
+    if (!token || token !== SERVER_WEBHOOK_SECRET) {
         return new Response("Unauthorized", { status: 401 });
     }
 
