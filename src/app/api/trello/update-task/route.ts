@@ -1,6 +1,8 @@
 import { TrelloClient } from "../../../../../server/trello-client";
 import { TrelloLists } from "../../../../../server/types";
 
+const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
+
 type RequestBody = {
     status: "error" | "done" | "review";
     cardId: string;
@@ -24,10 +26,14 @@ const getList = (
 };
 
 export async function POST(req: Request) {
+    const token = req.headers.get("Authorization")?.replace("Bearer ", "");
+
+    if (!token || token !== GITHUB_WEBHOOK_SECRET) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
     const { status, cardId, modelId, comment }: RequestBody = await req.json();
     const toList = getList(status);
-
-    console.log("REQUEST", req);
 
     if (!status || !toList || !cardId || !modelId) {
         return new Response("Invalid request. Missing data.", { status: 404 });

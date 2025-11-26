@@ -15,6 +15,7 @@ Authorization: Bearer <GITHUB_TOKEN>
 
 POST http://localhost:3000/api/trello/update-task HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer <GITHUB_WEBHOOK_SECRET>
 
 {
     "status": "error",
@@ -27,6 +28,7 @@ Content-Type: application/json
 
 POST http://localhost:3000/api/trello/update-task HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer <GITHUB_WEBHOOK_SECRET>
 
 {
     "status": "review",
@@ -39,6 +41,7 @@ Content-Type: application/json
 
 POST http://localhost:3000/api/trello/update-task HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer <GITHUB_WEBHOOK_SECRET>
 
 {
     "status": "done",
