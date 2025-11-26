@@ -28,10 +28,6 @@ const getList = (
 export async function POST(req: Request) {
     const token = req.headers.get("Authorization")?.replace("Bearer ", "");
 
-    console.log("TOKEN:", !!token);
-    console.log("INTERNAL TOKEN:", !!SERVER_WEBHOOK_SECRET);
-    console.log("MATCHING TOKENS", token === SERVER_WEBHOOK_SECRET);
-
     if (!token || token !== SERVER_WEBHOOK_SECRET) {
         return new Response("Unauthorized", { status: 401 });
     }
