@@ -1,27 +1,27 @@
-import { useCallback, useMemo, useRef } from "react";
-import useDrawingContext from "./use-drawing-context";
+import { useCallback, useMemo, useState } from "react";
+import useCanvasStore from "./store-hooks/use-canvas-store";
 import { ToolType } from "@/lib/types/tool-type";
 
 const useDrag = () => {
-  const { type } = useDrawingContext();
+  const { type } = useCanvasStore();
 
-  const isDragging = useRef(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const draggable = useMemo(() => type === ToolType.DRAG, [type]);
 
   const onDragStart = useCallback(() => {
-    isDragging.current = true;
+    setIsDragging(true);
   }, []);
 
   const onDragEnd = useCallback(() => {
-    isDragging.current = false;
+    setIsDragging(false);
   }, []);
 
   return {
     draggable,
     onDragStart,
     onDragEnd,
-    isDragging: isDragging.current,
+    isDragging,
   };
 };
 

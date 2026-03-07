@@ -10,13 +10,14 @@ import {
 import { ReactNode, useRef } from "react";
 import { InputBase } from "@react-types/shared";
 import clsx from "clsx";
+import { ClassName } from "@/lib/types/class-name";
 
 type ToggleButtonProps = InputBase &
   AriaToggleButtonProps & {
     isSelected?: boolean;
     onChange?: (isSelected: boolean) => void;
     children?: ReactNode;
-    className?: string;
+    className?: ClassName<HTMLButtonElement>;
   };
 
 const ToggleButton = (props: ToggleButtonProps) => {

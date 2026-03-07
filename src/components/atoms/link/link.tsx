@@ -1,5 +1,6 @@
 "use client";
 
+import { ClassName } from "@/lib/types/class-name";
 import clsx from "clsx";
 import NextLink from "next/link";
 import { PropsWithChildren, useRef } from "react";
@@ -7,7 +8,10 @@ import { AriaLinkOptions, useFocusRing, useLink } from "react-aria";
 
 const Link = (
   props: PropsWithChildren<
-    AriaLinkOptions & { className?: string; href: string }
+    AriaLinkOptions & {
+      className?: ClassName<typeof NextLink>;
+      href: string;
+    }
   >,
 ) => {
   const ref = useRef(null);

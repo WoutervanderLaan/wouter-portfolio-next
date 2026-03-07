@@ -1,8 +1,9 @@
 import { PropsWithChildren } from "react";
 import clsx from "clsx";
+import { ClassName } from "@/lib/types/class-name";
 
 type ListProps = {
-  className?: string;
+  className?: ClassName<HTMLLIElement>;
 };
 
 const List = ({ children, className }: PropsWithChildren<ListProps>) => {

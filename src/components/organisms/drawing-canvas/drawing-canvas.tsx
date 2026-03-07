@@ -1,110 +1,182 @@
 "use client";
 
 import useCursor from "@/hooks/use-cursor";
-import useDrawingContext from "@/hooks/use-drawing-context";
 import clsx from "clsx";
 import { Stage, Layer } from "react-konva";
 import Cursor from "@/components/molecules/cursor/cursor";
 import Line from "@/components/molecules/line/line";
 import useDrawingEvents from "@/hooks/use-drawing-events";
 import { smoothPoints } from "@/utils/drawing-helpers";
-import { Zoom } from "@/hooks/use-zoom";
 import { ToolType } from "@/lib/types/tool-type";
 import useDrag from "@/hooks/use-drag";
 import { MotionDiv } from "@/components/atoms/motion-element/motion-element";
+import { Zoom } from "@/store/slices/canvas-slice";
+import useZoom from "@/hooks/use-zoom";
+import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
+import { useStage } from "@/hooks/use-stage";
+import CanvasImage from "@/components/molecules/canvas-image/canvas-image";
+import CanvasText from "@/components/molecules/canvas-text/canvas-text";
+import { addText } from "@/utils/canvas-utils";
 
 const DrawingCanvas = () => {
-    const { layers, type, scale, position, zoomType, zoom, stageRef } =
-        useDrawingContext();
+  const {
+    layers,
+    type,
+    scale,
+    position,
+    zoomType,
+    images,
+    selectedImageId,
+    selectedTextId,
+    selectImage,
+    selectText,
+    addText: addTextToCanvas,
+  } = useCanvasStore();
 
-    const dragProperties = useDrag();
+  const { stageRef } = useStage();
 
-    const { cursor, handleCursor, resetCursor } = useCursor();
+  const { zoom } = useZoom();
 
-    const {
-        handleEventStart,
-        handleEventMove,
-        handleEventEnd,
-        handleEventLeave,
-    } = useDrawingEvents();
+  const dragProperties = useDrag();
 
-    return (
-        <MotionDiv
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
-        >
-            <Stage
-                ref={stageRef}
-                className={clsx(
-                    "border-1 absolute left-0 top-0 m-0 h-full w-full cursor-none overflow-hidden border bg-white",
-                    {
-                        "cursor-move": type === ToolType.DRAG,
-                    },
-                    {
-                        "cursor-zoom-in":
-                            type === ToolType.ZOOM && zoomType === Zoom.IN,
-                    },
-                    {
-                        "cursor-zoom-out":
-                            type === ToolType.ZOOM && zoomType === Zoom.OUT,
-                    },
-                )}
-                style={{
-                    backgroundImage: `
+  const { cursor, handleCursor, resetCursor } = useCursor();
+
+  const {
+    handleEventStart,
+    handleEventMove,
+    handleEventEnd,
+    handleEventLeave,
+  } = useDrawingEvents();
+
+  return (
+    <MotionDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
+    >
+      <Stage
+        ref={stageRef}
+        className={clsx(
+          "border-1 absolute left-0 top-0 m-0 h-full w-full cursor-none overflow-hidden border bg-white",
+          {
+            "cursor-default": type === ToolType.DRAG,
+          },
+          {
+            "cursor-text": type === ToolType.TEXT,
+          },
+          {
+            "cursor-zoom-in": type === ToolType.ZOOM && zoomType === Zoom.IN,
+          },
+          {
+            "cursor-zoom-out": type === ToolType.ZOOM && zoomType === Zoom.OUT,
+          },
+        )}
+        style={{
+          backgroundImage: `
                   linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%),
                   linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%)
                 `,
-                    backgroundSize: "20px 20px",
-                    backgroundPosition: "0 0, 10px 10px",
-                }}
-                width={window.innerWidth}
-                height={window.innerHeight}
-                onTouchStart={(e) => {
-                    if (type === ToolType.DRAG) return;
-                    if (type === ToolType.ZOOM) return zoom(stageRef, zoomType);
-                    handleEventStart(e);
-                }}
-                onTouchMove={handleEventMove}
-                onTouchEnd={handleEventEnd}
-                onMouseLeave={() => {
-                    handleEventLeave();
-                    resetCursor();
-                }}
-                onPointerDown={(e) => {
-                    if (type === ToolType.DRAG) return;
-                    if (type === ToolType.ZOOM) return zoom(stageRef, zoomType);
-                    handleEventStart(e);
-                }}
-                onPointerMove={(e) => {
-                    handleEventMove(e);
-                    handleCursor(e);
-                }}
-                onPointerUp={handleEventEnd}
-                scaleX={scale.x}
-                scaleY={scale.y}
-                {...position}
-                {...dragProperties}
-            >
-                {layers.map(({ lines }, index) => (
-                    <Layer key={index}>
-                        {lines.map(({ points, ...rest }, i) => {
-                            const smoothedPoints = smoothPoints(points);
-                            return (
-                                <Line
-                                    key={i}
-                                    {...rest}
-                                    points={smoothedPoints}
-                                />
-                            );
-                        })}
-                    </Layer>
-                ))}
+          backgroundSize: "20px 20px",
+          backgroundPosition: "0 0, 10px 10px",
+        }}
+        width={window.innerWidth}
+        height={window.innerHeight}
+        onTouchStart={(e) => {
+          if (
+            type === ToolType.DRAG ||
+            type === ToolType.IMAGE ||
+            type === ToolType.TEXT
+          )
+            return;
 
-                <Layer>{cursor && <Cursor position={cursor} />}</Layer>
-            </Stage>
-        </MotionDiv>
-    );
+          if (type === ToolType.ZOOM) return zoom(stageRef, zoomType);
+
+          handleEventStart(e);
+        }}
+        onTouchMove={handleEventMove}
+        onTouchEnd={handleEventEnd}
+        onMouseLeave={() => {
+          handleEventLeave();
+          resetCursor();
+        }}
+        onPointerDown={(e) => {
+          if (
+            type === ToolType.DRAG ||
+            type === ToolType.IMAGE ||
+            type === ToolType.TEXT
+          )
+            return;
+
+          if (type === ToolType.ZOOM) return zoom(stageRef, zoomType);
+
+          handleEventStart(e);
+        }}
+        onPointerMove={(e) => {
+          handleEventMove(e);
+          handleCursor(e);
+        }}
+        onPointerUp={handleEventEnd}
+        onClick={(e) => {
+          if (e.target === e.target.getStage()) {
+            // Handle text placement when TEXT tool is active
+            if (type === ToolType.TEXT) {
+              const stage = e.target.getStage();
+              const pointerPosition = stage.getPointerPosition();
+              if (pointerPosition) {
+                const textElement = addText("Text", {
+                  x: pointerPosition.x,
+                  y: pointerPosition.y,
+                });
+                addTextToCanvas(textElement);
+                selectText(textElement.id);
+              }
+            } else {
+              selectImage(null);
+              selectText(null);
+            }
+          }
+        }}
+        scaleX={scale.x}
+        scaleY={scale.y}
+        {...position}
+        {...dragProperties}
+      >
+        {layers.map(({ lines }, index) => (
+          <Layer key={index}>
+            {lines.map(({ points, ...rest }, i) => {
+              const smoothedPoints = smoothPoints(points);
+              return <Line key={i} {...rest} points={smoothedPoints} />;
+            })}
+          </Layer>
+        ))}
+
+        <Layer>
+          {images
+            .filter((element) => element.type === "image")
+            .map((imageElement) => (
+              <CanvasImage
+                key={imageElement.id}
+                imageElement={imageElement}
+                isSelected={selectedImageId === imageElement.id}
+                onSelect={() => selectImage(imageElement.id)}
+              />
+            ))}
+          {images
+            .filter((element) => element.type === "text")
+            .map((textElement) => (
+              <CanvasText
+                key={textElement.id}
+                textElement={textElement}
+                isSelected={selectedTextId === textElement.id}
+                onSelect={() => selectText(textElement.id)}
+              />
+            ))}
+        </Layer>
+
+        <Layer>{cursor && <Cursor position={cursor} />}</Layer>
+      </Stage>
+    </MotionDiv>
+  );
 };
 
 export default DrawingCanvas;

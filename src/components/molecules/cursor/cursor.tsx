@@ -1,4 +1,4 @@
-import useDrawingContext from "@/hooks/use-drawing-context";
+import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
 import { Circle } from "react-konva";
 
 type CursorProps = {
@@ -6,7 +6,7 @@ type CursorProps = {
 };
 
 const Cursor = ({ position }: CursorProps) => {
-  const { size } = useDrawingContext();
+  const { size } = useCanvasStore();
 
   return (
     <Circle

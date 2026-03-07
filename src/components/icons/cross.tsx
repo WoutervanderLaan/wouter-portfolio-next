@@ -1,9 +1,10 @@
 import clsx from "clsx";
+import { SVGAttributes } from "react";
 
 type IconProps = {
   size?: number;
   strokeWidth?: number;
-  className?: string;
+  className?: SVGAttributes<SVGSVGElement>["className"];
 };
 
 const Cross = ({ size = 32, strokeWidth = 3, className }: IconProps) => (

@@ -1,51 +1,53 @@
 "use client";
 
-import { TLayer } from "@/lib/types/layer";
 import { TLine } from "@/lib/types/line";
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { useCallback } from "react";
+import useCanvasStore from "./store-hooks/use-canvas-store";
 
-type UseDrawProps = {
-  layers: Array<TLayer>;
-  activeLayerIndex: number;
-  setLayers: Dispatch<SetStateAction<Array<TLayer>>>;
-};
+const useDraw = () => {
+  const { layers, activeLayerIndex, setLayers } = useCanvasStore();
 
-const useDraw = ({ layers, activeLayerIndex, setLayers }: UseDrawProps) => {
   const startLine = useCallback(
     (newLine: TLine) => {
-      setLayers((prev) =>
-        prev.map((layer, index) => {
-          if (index === activeLayerIndex) {
-            return {
-              lines: [...layer.lines, newLine],
-            };
-          }
-          return layer;
-        }),
-      );
+      const newLayers = layers.map((layer, index) => {
+        if (index === activeLayerIndex) {
+          return {
+            lines: [...layer.lines, newLine],
+          };
+        }
+        return layer;
+      });
+      setLayers(newLayers);
     },
-    [activeLayerIndex, setLayers],
+    [activeLayerIndex, setLayers, layers],
   );
 
   const updateLine = useCallback(
     (point: number[]) => {
       const activeLayerLines = layers[activeLayerIndex].lines;
       const lastLine = activeLayerLines[activeLayerLines.length - 1];
+      if (!lastLine) {
+        console.warn("No line to update");
+        return;
+      }
 
-      lastLine.points = lastLine.points.concat(point);
+      const updatedLine = {
+        ...lastLine,
+        points: lastLine.points.concat(point),
+      };
 
-      const newLines = activeLayerLines.slice(0, -1).concat(lastLine);
+      const newLines = activeLayerLines.slice(0, -1).concat(updatedLine);
 
-      setLayers((prev) =>
-        prev.map((layer, index) => {
-          if (index === activeLayerIndex)
-            return {
-              lines: newLines,
-            };
+      const newLayers = layers.map((layer, index) => {
+        if (index === activeLayerIndex)
+          return {
+            lines: newLines,
+          };
 
-          return layer;
-        }),
-      );
+        return layer;
+      });
+
+      setLayers(newLayers);
     },
     [activeLayerIndex, layers, setLayers],
   );

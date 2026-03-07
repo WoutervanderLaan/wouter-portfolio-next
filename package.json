@@ -3,36 +3,45 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "typecheck": "NODE_OPTIONS=--max-old-space-size=8192 tsc --noEmit"
   },
   "dependencies": {
-    "@next/third-parties": "^15.1.5",
+    "@next/third-parties": "16.1.6",
     "clsx": "^2.1.1",
+    "immer": "^10.1.1",
     "konva": "^9.3.18",
     "motion": "^11.16.4",
-    "next": "15.1.0",
-    "react": "^19.0.0",
+    "next": "16.1.6",
+    "react": "19.2.4",
     "react-aria": "^3.36.0",
-    "react-dom": "^19.0.0",
+    "react-dom": "19.2.4",
     "react-konva": "^19.0.2",
     "react-konva-to-svg": "^1.0.2",
     "react-stately": "^3.34.0",
-    "schema-dts": "^1.1.2"
+    "schema-dts": "^1.1.2",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
     "eslint": "^9",
-    "eslint-config-next": "15.1.0",
+    "eslint-config-next": "16.1.6",
     "postcss": "^8",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3"
   }
 }

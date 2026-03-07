@@ -2,7 +2,7 @@ import { Position } from "@/lib/types/position";
 import { extractPoint } from "@/utils/drawing-helpers";
 import Konva from "konva";
 import { useCallback, useState } from "react";
-import useDrawingContext from "./use-drawing-context";
+import useCanvasStore from "./store-hooks/use-canvas-store";
 import { ToolType } from "@/lib/types/tool-type";
 
 const APPLICABLE_TOOLS = [ToolType.BRUSH, ToolType.ERASER];
@@ -10,7 +10,7 @@ const APPLICABLE_TOOLS = [ToolType.BRUSH, ToolType.ERASER];
 const useCursor = () => {
   const [cursor, setCursor] = useState<Position | null>(null);
 
-  const { type } = useDrawingContext();
+  const { type } = useCanvasStore();
 
   const handleCursor = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent | PointerEvent | TouchEvent>) => {

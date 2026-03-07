@@ -1,9 +1,11 @@
 // import { exportStageSVG } from "react-konva-to-svg";
-import useDrawingContext from "./use-drawing-context";
 import { generateSvg } from "@/utils/drawing-helpers";
+import { useStage } from "./use-stage";
+import useCanvasStore from "./store-hooks/use-canvas-store";
 
 const useSaveCanvas = () => {
-  const { stageRef, layers } = useDrawingContext();
+  const { layers } = useCanvasStore();
+  const { stageRef } = useStage();
 
   const saveCanvas = async (format: "png" | "jpg" | "svg") => {
     if (!stageRef.current) return;

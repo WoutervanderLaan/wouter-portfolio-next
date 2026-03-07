@@ -4,10 +4,10 @@ import Button from "@/components/atoms/button/button";
 import Text from "@/components/atoms/text/text";
 import Cross from "@/components/icons/cross";
 import LayerIcon from "@/components/icons/layer";
-import useDrawingContext from "@/hooks/use-drawing-context";
+import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
 
 const Layers = () => {
-  const { activeLayerIndex, layers } = useDrawingContext();
+  const { activeLayerIndex, layers } = useCanvasStore();
 
   return (
     <Fragment>
@@ -22,7 +22,7 @@ export default Layers;
 
 const Layer = ({ active, index }: { active: boolean; index: number }) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-  const { removeLayer, switchActiveLayer, layers } = useDrawingContext();
+  const { removeLayer, switchActiveLayer, layers } = useCanvasStore();
 
   return (
     <div

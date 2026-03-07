@@ -3,4 +3,6 @@ export enum ToolType {
   ERASER,
   ZOOM,
   DRAG,
+  IMAGE,
+  TEXT,
 }

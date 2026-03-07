@@ -1,21 +1,16 @@
 "use client";
 
+import { Zoom } from "@/store/slices/canvas-slice";
 import { Stage } from "konva/lib/Stage";
-import { RefObject, useState } from "react";
+import { RefObject } from "react";
+import useCanvasStore from "./store-hooks/use-canvas-store";
 
 const SCALE_FACTOR = 1.2;
 const MAX_ZOOM = 2;
 const MIN_ZOOM = 0.5;
 
-export enum Zoom {
-  IN,
-  OUT,
-}
-
 const useZoom = () => {
-  const [scale, setScale] = useState({ x: 1, y: 1 });
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [zoomType, setZoomType] = useState<Zoom>(Zoom.OUT);
+  const { setScale, setPosition } = useCanvasStore();
 
   const zoom = (stageRef: RefObject<Stage | null>, zoomType: Zoom) => {
     const stage = stageRef.current;
@@ -45,7 +40,7 @@ const useZoom = () => {
     });
   };
 
-  return { scale, position, zoomType, setZoomType, zoom };
+  return { zoom };
 };
 
 export default useZoom;
