@@ -8,18 +8,18 @@ import { SessionSlice, createSessionSlice } from "./slices/session-slice";
 export type StoreState = CanvasSlice & AuthSlice & SessionSlice;
 
 export const createCompoundStore = () =>
-    createStore<StoreState>()(
-        persist(
-            immer((...args) => ({
-                ...createCanvasSlice(...args),
-                ...createAuthSlice(...args),
-                ...createSessionSlice(...args),
-            })),
-            {
-                name: "Layers",
-                partialize: (state) => ({
-                    layers: state.layers,
-                }),
-            },
-        ),
-    );
+  createStore<StoreState>()(
+    persist(
+      immer((...args) => ({
+        ...createCanvasSlice(...args),
+        ...createAuthSlice(...args),
+        ...createSessionSlice(...args),
+      })),
+      {
+        name: "Layers",
+        partialize: (state) => ({
+          layers: state.layers,
+        }),
+      },
+    ),
+  );

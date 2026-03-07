@@ -5,20 +5,20 @@
  * @returns The resolved value of the original Promise.
  */
 export const withTimeout = <T>(
-    promise: Promise<T>,
-    durationMs: number,
+  promise: Promise<T>,
+  durationMs: number,
 ): Promise<T> => {
-    const timeoutPromise = new Promise<T>((_, reject) => {
-        const timeoutId = setTimeout(() => {
-            reject(new Error(`Operation timed out after ${durationMs}ms`));
-        }, durationMs);
+  const timeoutPromise = new Promise<T>((_, reject) => {
+    const timeoutId = setTimeout(() => {
+      reject(new Error(`Operation timed out after ${durationMs}ms`));
+    }, durationMs);
 
-        promise.finally(() => {
-            clearTimeout(timeoutId);
-        });
+    promise.finally(() => {
+      clearTimeout(timeoutId);
     });
+  });
 
-    return Promise.race([promise, timeoutPromise]);
+  return Promise.race([promise, timeoutPromise]);
 };
 
 /**
@@ -29,28 +29,28 @@ export const withTimeout = <T>(
  * @returns The Response object from the fetch request.
  */
 export const fetchWithTimeout = (
-    url: string,
-    durationMs: number,
-    options?: RequestInit,
+  url: string,
+  durationMs: number,
+  options?: RequestInit,
 ): Promise<Response> => {
-    const controller = new AbortController();
-    const signal = controller.signal;
+  const controller = new AbortController();
+  const signal = controller.signal;
 
-    const timeoutId = setTimeout(() => {
-        controller.abort();
-    }, durationMs);
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, durationMs);
 
-    const fetchPromise = fetch(url, {
-        ...options,
-        signal,
-    }).finally(() => {
-        clearTimeout(timeoutId);
-    });
+  const fetchPromise = fetch(url, {
+    ...options,
+    signal,
+  }).finally(() => {
+    clearTimeout(timeoutId);
+  });
 
-    return fetchPromise.catch((error) => {
-        if (error.name === "AbortError") {
-            throw new Error(`Fetch request timed out after ${durationMs}ms`);
-        }
-        throw error;
-    });
+  return fetchPromise.catch((error) => {
+    if (error.name === "AbortError") {
+      throw new Error(`Fetch request timed out after ${durationMs}ms`);
+    }
+    throw error;
+  });
 };

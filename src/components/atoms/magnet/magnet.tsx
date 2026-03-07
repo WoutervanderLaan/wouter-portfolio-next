@@ -53,19 +53,6 @@ const Magnet = ({
     useState<Coordinates>(DEFAULT_COORDINATES);
   const [isMouseOver, setIsMouseOver] = useState(false);
 
-  useEffect(() => {
-    const magnet = magneticAreaRef.current;
-    if (!magnet) return;
-
-    magnet.addEventListener("mousemove", magnetizeButton);
-    magnet.addEventListener("mouseleave", resetMagnet);
-
-    return () => {
-      magnet.removeEventListener("mousemove", magnetizeButton);
-      magnet.removeEventListener("mouseleave", resetMagnet);
-    };
-  }, [magneticAreaRef]);
-
   const resetMagnet = () => {
     setIsMouseOver(false);
     setMagnetCoordinates(DEFAULT_COORDINATES);
@@ -87,6 +74,19 @@ const Magnet = ({
 
     setMagnetCoordinates({ x, y });
   };
+
+  useEffect(() => {
+    const magnet = magneticAreaRef.current;
+    if (!magnet) return;
+
+    magnet.addEventListener("mousemove", magnetizeButton);
+    magnet.addEventListener("mouseleave", resetMagnet);
+
+    return () => {
+      magnet.removeEventListener("mousemove", magnetizeButton);
+      magnet.removeEventListener("mouseleave", resetMagnet);
+    };
+  }, [magneticAreaRef]);
 
   return (
     <div

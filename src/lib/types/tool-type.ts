@@ -1,8 +1,8 @@
 export enum ToolType {
-    BRUSH,
-    ERASER,
-    ZOOM,
-    DRAG,
-    IMAGE,
-    TEXT,
+  BRUSH,
+  ERASER,
+  ZOOM,
+  DRAG,
+  IMAGE,
+  TEXT,
 }

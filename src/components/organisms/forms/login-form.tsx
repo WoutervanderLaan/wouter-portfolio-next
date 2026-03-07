@@ -5,23 +5,18 @@ import Text from "@/components/atoms/text/text";
 import useAuth from "@/hooks/use-auth";
 
 const LoginForm = () => {
-    const { login } = useAuth();
+  const { login } = useAuth();
 
-    return (
-        <Form action={login} className="max-w-[400px]">
-            <TextInput name="username" type="email" label="Email" required />
-            <TextInput
-                name="password"
-                type="password"
-                label="Password"
-                required
-            />
+  return (
+    <Form action={login} className="max-w-[400px]">
+      <TextInput name="username" type="email" label="Email" required />
+      <TextInput name="password" type="password" label="Password" required />
 
-            <Button type="submit" variant="primary">
-                <Text.Paragraph className="text-white">Log in</Text.Paragraph>
-            </Button>
-        </Form>
-    );
+      <Button type="submit" variant="primary">
+        <Text.Paragraph className="text-white">Log in</Text.Paragraph>
+      </Button>
+    </Form>
+  );
 };
 
 export default LoginForm;

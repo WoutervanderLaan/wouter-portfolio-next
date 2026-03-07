@@ -5,22 +5,22 @@ import clsx from "clsx";
 import { ReactNode } from "react";
 
 const AuthLayout = ({
-    children,
-    className,
+  children,
+  className,
 }: {
-    children: ReactNode | ((logout: () => Promise<void>) => ReactNode);
-    className?: ClassName<HTMLDivElement>;
+  children: ReactNode | ((logout: () => Promise<void>) => ReactNode);
+  className?: ClassName<HTMLDivElement>;
 }) => {
-    const { logout, isAuthenticated } = useAuth();
+  const { logout, isAuthenticated } = useAuth();
 
-    return (
-        <section className={clsx("flex flex-1 flex-col", className)}>
-            {!isAuthenticated && <LoginForm />}
+  return (
+    <section className={clsx("flex flex-1 flex-col", className)}>
+      {!isAuthenticated && <LoginForm />}
 
-            {isAuthenticated &&
-                (typeof children === "function" ? children(logout) : children)}
-        </section>
-    );
+      {isAuthenticated &&
+        (typeof children === "function" ? children(logout) : children)}
+    </section>
+  );
 };
 
 export default AuthLayout;

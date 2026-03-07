@@ -7,23 +7,23 @@ import useThemeContext from "@/hooks/use-theme";
 import { ClassName } from "@/lib/types/class-name";
 
 const ThemeToggleButton = ({
-    className,
+  className,
 }: {
-    className?: ClassName<HTMLButtonElement>;
+  className?: ClassName<HTMLButtonElement>;
 }) => {
-    const { isDarkMode, setDarkMode } = useThemeContext();
+  const { isDarkMode, setDarkMode } = useThemeContext();
 
-    return (
-        <ToggleButton
-            onChange={() => setDarkMode(!isDarkMode)}
-            isSelected={isDarkMode}
-            className={className}
-            aria-label="dark/light mode toggle"
-        >
-            <Sun />
-            <Moon />
-        </ToggleButton>
-    );
+  return (
+    <ToggleButton
+      onChange={() => setDarkMode(!isDarkMode)}
+      isSelected={isDarkMode}
+      className={className}
+      aria-label="dark/light mode toggle"
+    >
+      <Sun />
+      <Moon />
+    </ToggleButton>
+  );
 };
 
 export default ThemeToggleButton;

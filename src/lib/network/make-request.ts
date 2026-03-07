@@ -1,47 +1,47 @@
 type ENDPOINTS_GET =
-    | "/auth/refresh"
-    | "/history/"
-    | "/visit/retrieve"
-    | "/visit/reset";
+  | "/auth/refresh"
+  | "/history/"
+  | "/visit/retrieve"
+  | "/visit/reset";
 
 type ENDPOINTS_POST = "/auth/login" | "/chat/image-critique" | "/chat/draw";
 
 type ENDPOINTS_DELETE = "/auth/logout";
 
 type TGetRequest = {
-    endpoint: ENDPOINTS_GET;
-    method: "GET";
-    body?: never;
+  endpoint: ENDPOINTS_GET;
+  method: "GET";
+  body?: never;
 };
 
 type TPostRequest = {
-    endpoint: ENDPOINTS_POST;
-    method: "POST";
-    body: RequestInit["body"];
+  endpoint: ENDPOINTS_POST;
+  method: "POST";
+  body: RequestInit["body"];
 };
 
 type TDeleteRequest = {
-    endpoint: ENDPOINTS_DELETE;
-    method: "DELETE";
-    body?: never;
+  endpoint: ENDPOINTS_DELETE;
+  method: "DELETE";
+  body?: never;
 };
 
 export type TMakeRequest = {
-    headers?: {
-        [key: string]: string;
-    };
+  headers?: {
+    [key: string]: string;
+  };
 } & (TGetRequest | TPostRequest | TDeleteRequest);
 
 export type SuccessResponse<T> = {
-    status: number;
-    data: T;
-    error?: never;
+  status: number;
+  data: T;
+  error?: never;
 };
 
 export type ErrorResponse<E> = {
-    status: number;
-    data?: never;
-    error: E;
+  status: number;
+  data?: never;
+  error: E;
 };
 
 /**
@@ -57,40 +57,37 @@ export type ErrorResponse<E> = {
  * @returns {Promise<SuccessResponse<T> | ErrorResponse<E>>} A promise that resolves to either a success or error response, depending on the HTTP status code.
  */
 export const makeRequest = async <T = unknown, E = unknown>({
-    endpoint,
-    method = "GET",
-    body,
-    headers = {},
+  endpoint,
+  method = "GET",
+  body,
+  headers = {},
 }: TMakeRequest): Promise<SuccessResponse<T> | ErrorResponse<E>> => {
-    const options: RequestInit = {
-        method,
-        mode: "cors",
-        credentials: "include",
-        headers: {
-            Accept: "application/json",
-            ...headers,
-        },
-        body,
-    };
+  const options: RequestInit = {
+    method,
+    mode: "cors",
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+      ...headers,
+    },
+    body,
+  };
 
-    try {
-        const response = await fetch(
-            `http://localhost:8000${endpoint}`,
-            options,
-        );
+  try {
+    const response = await fetch(`http://localhost:8000${endpoint}`, options);
 
-        const payload = await response.json();
-        if (response.status !== 200) {
-            return {
-                status: response.status,
-                error: payload,
-            } as ErrorResponse<E>;
-        }
-
-        return { status: response.status, data: payload } as SuccessResponse<T>;
-    } catch (error) {
-        return { status: 500, error } as ErrorResponse<E>;
+    const payload = await response.json();
+    if (response.status !== 200) {
+      return {
+        status: response.status,
+        error: payload,
+      } as ErrorResponse<E>;
     }
+
+    return { status: response.status, data: payload } as SuccessResponse<T>;
+  } catch (error) {
+    return { status: 500, error } as ErrorResponse<E>;
+  }
 };
 
 export default makeRequest;
