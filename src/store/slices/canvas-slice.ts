@@ -1,5 +1,6 @@
 import { TLayer } from "@/lib/types/layer";
 import { TLine } from "@/lib/types/line";
+import { CanvasAction } from "@/lib/types/canvas-action";
 import { Position } from "@/lib/types/position";
 import { ToolType } from "@/lib/types/tool-type";
 import { StateCreator } from "zustand";
@@ -44,11 +45,13 @@ type LayerActions = {
 };
 
 type HistoryState = {
-  redoStack: Array<TLine & { index: number }>;
+  redoStack: CanvasAction[];
 };
 
 type HistoryActions = {
-  resetHistory: () => void;
+  undo: () => void;
+  redo: () => void;
+  resetRedoStack: () => void;
 };
 
 type ZoomState = {
@@ -182,9 +185,117 @@ export const createCanvasSlice: StateCreator<
       layers: DEFAULT_STATE.layers,
       activeLayerIndex: DEFAULT_STATE.activeLayerIndex,
     })),
-  resetHistory: () =>
+  undo: () =>
+    set((state) => {
+      // Find the most recent line across all layers (by index tracking)
+      let mostRecentTimestamp = 0;
+      let mostRecentLineLayerIndex = -1;
+
+      state.layers.forEach((layer, index) => {
+        const lastLine = layer.lines[layer.lines.length - 1];
+        if (lastLine && lastLine.timestamp > mostRecentTimestamp) {
+          mostRecentTimestamp = lastLine.timestamp;
+          mostRecentLineLayerIndex = index;
+        }
+      });
+
+      // Find the most recent element
+      let mostRecentElementIndex = -1;
+      let mostRecentElementTimestamp = 0;
+      state.images.forEach((el, index) => {
+        if (el.timestamp > mostRecentElementTimestamp) {
+          mostRecentElementTimestamp = el.timestamp;
+          mostRecentElementIndex = index;
+        }
+      });
+
+      // Nothing to undo
+      if (mostRecentTimestamp === 0 && mostRecentElementTimestamp === 0)
+        return {};
+
+      if (
+        mostRecentTimestamp >= mostRecentElementTimestamp &&
+        mostRecentLineLayerIndex >= 0
+      ) {
+        // Undo the line
+        const targetLayer = state.layers[mostRecentLineLayerIndex];
+        const line = targetLayer.lines[targetLayer.lines.length - 1];
+
+        return {
+          layers: state.layers.map((layer, index) =>
+            index === mostRecentLineLayerIndex
+              ? { lines: layer.lines.slice(0, -1) }
+              : layer,
+          ),
+          redoStack: [
+            ...state.redoStack,
+            {
+              actionType: "line" as const,
+              line: { ...line } as TLine,
+              layerIndex: mostRecentLineLayerIndex,
+            },
+          ],
+        };
+      } else if (mostRecentElementIndex >= 0) {
+        // Undo the element
+        const element = state.images[mostRecentElementIndex];
+        const elementId = element.id;
+
+        return {
+          images: state.images.filter((el) => el.id !== elementId),
+          redoStack: [
+            ...state.redoStack,
+            {
+              actionType: "element" as const,
+              element: { ...element } as CanvasElement,
+            },
+          ],
+          selectedImageId:
+            state.selectedImageId === elementId
+              ? null
+              : state.selectedImageId,
+          selectedTextId:
+            state.selectedTextId === elementId
+              ? null
+              : state.selectedTextId,
+        };
+      }
+
+      return {};
+    }),
+  redo: () =>
+    set((state) => {
+      if (state.redoStack.length === 0) return {};
+
+      const action = state.redoStack[state.redoStack.length - 1];
+      const newRedoStack = state.redoStack.slice(0, -1);
+
+      if (action.actionType === "line") {
+        // Ensure the target layer exists
+        const layers = [...state.layers];
+        while (layers.length <= action.layerIndex) {
+          layers.push({ lines: [] });
+        }
+
+        return {
+          layers: layers.map((layer, index) =>
+            index === action.layerIndex
+              ? { lines: [...layer.lines, action.line] }
+              : layer,
+          ),
+          redoStack: newRedoStack,
+        };
+      } else {
+        // Redo the element
+        return {
+          images: [...state.images, action.element],
+          redoStack: newRedoStack,
+        };
+      }
+    }),
+  resetRedoStack: () =>
     set(() => ({
-      redoStack: DEFAULT_STATE.redoStack,
+      redoStack: [],
     })),
   setZoomType: (zoomType) =>
     set(() => ({
@@ -201,6 +312,7 @@ export const createCanvasSlice: StateCreator<
   addImage: (image) =>
     set((state) => ({
       images: [...state.images, image],
+      redoStack: [],
     })),
   selectImage: (id) =>
     set(() => ({
@@ -226,6 +338,7 @@ export const createCanvasSlice: StateCreator<
   addText: (text) =>
     set((state) => ({
       images: [...state.images, text],
+      redoStack: [],
     })),
   updateText: (id, updates) =>
     set((state) => ({

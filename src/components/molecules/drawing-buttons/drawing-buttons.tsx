@@ -202,13 +202,14 @@ const DragButton = () => {
 };
 
 const ClearButton = () => {
-  const { resetHistory, resetLayers } = useCanvasStore();
+  const { resetRedoStack, resetLayers, resetImages } = useCanvasStore();
   const { noHistory } = useHistory();
   const session = useSession();
 
   const clearCanvas = async () => {
     resetLayers();
-    resetHistory();
+    resetImages();
+    resetRedoStack();
     await session.reset();
   };
 

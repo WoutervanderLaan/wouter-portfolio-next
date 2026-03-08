@@ -16,7 +16,13 @@ import useCanvasStore from "@/hooks/store-hooks/use-canvas-store";
 import { useStage } from "@/hooks/use-stage";
 import CanvasImage from "@/components/molecules/canvas-image/canvas-image";
 import CanvasText from "@/components/molecules/canvas-text/canvas-text";
-import { addText } from "@/utils/canvas-utils";
+import { addText, CanvasElement } from "@/utils/canvas-utils";
+import { TLine } from "@/lib/types/line";
+import { useMemo } from "react";
+
+type RenderItem =
+  | { kind: "line"; line: TLine }
+  | { kind: "element"; element: CanvasElement };
 
 const DrawingCanvas = () => {
   const {
@@ -32,6 +38,28 @@ const DrawingCanvas = () => {
     selectText,
     addText: addTextToCanvas,
   } = useCanvasStore();
+
+  const renderItems = useMemo(() => {
+    const items: RenderItem[] = [];
+
+    layers.forEach((layer) => {
+      layer.lines.forEach((line) => {
+        items.push({ kind: "line", line });
+      });
+    });
+
+    images.forEach((element) => {
+      items.push({ kind: "element", element });
+    });
+
+    items.sort((a, b) => {
+      const tsA = a.kind === "line" ? a.line.timestamp : a.element.timestamp;
+      const tsB = b.kind === "line" ? b.line.timestamp : b.element.timestamp;
+      return tsA - tsB;
+    });
+
+    return items;
+  }, [layers, images]);
 
   const { stageRef } = useStage();
 
@@ -141,36 +169,40 @@ const DrawingCanvas = () => {
         {...position}
         {...dragProperties}
       >
-        {layers.map(({ lines }, index) => (
-          <Layer key={index}>
-            {lines.map(({ points, ...rest }, i) => {
-              const smoothedPoints = smoothPoints(points);
-              return <Line key={i} {...rest} points={smoothedPoints} />;
-            })}
-          </Layer>
-        ))}
-
         <Layer>
-          {images
-            .filter((element) => element.type === "image")
-            .map((imageElement) => (
-              <CanvasImage
-                key={imageElement.id}
-                imageElement={imageElement}
-                isSelected={selectedImageId === imageElement.id}
-                onSelect={() => selectImage(imageElement.id)}
-              />
-            ))}
-          {images
-            .filter((element) => element.type === "text")
-            .map((textElement) => (
-              <CanvasText
-                key={textElement.id}
-                textElement={textElement}
-                isSelected={selectedTextId === textElement.id}
-                onSelect={() => selectText(textElement.id)}
-              />
-            ))}
+          {renderItems.map((item, i) => {
+            if (item.kind === "line") {
+              const { points, ...rest } = item.line;
+              const smoothedPoints = smoothPoints(points);
+              return (
+                <Line key={`line-${i}`} {...rest} points={smoothedPoints} />
+              );
+            }
+
+            if (item.element.type === "image") {
+              return (
+                <CanvasImage
+                  key={item.element.id}
+                  imageElement={item.element}
+                  isSelected={selectedImageId === item.element.id}
+                  onSelect={() => selectImage(item.element.id)}
+                />
+              );
+            }
+
+            if (item.element.type === "text") {
+              return (
+                <CanvasText
+                  key={item.element.id}
+                  textElement={item.element}
+                  isSelected={selectedTextId === item.element.id}
+                  onSelect={() => selectText(item.element.id)}
+                />
+              );
+            }
+
+            return null;
+          })}
         </Layer>
 
         <Layer>{cursor && <Cursor position={cursor} />}</Layer>

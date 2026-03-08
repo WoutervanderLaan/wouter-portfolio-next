@@ -11,7 +11,7 @@ const useDrawingEvents = () => {
     opacity,
     type,
     size,
-    resetHistory,
+    resetRedoStack,
     colorHistory,
     addColorToHistory,
   } = useCanvasStore();
@@ -53,7 +53,7 @@ const useDrawingEvents = () => {
 
   const handleEventEnd = () => {
     isDrawing.current = false;
-    resetHistory();
+    resetRedoStack();
   };
 
   const handleEventLeave = () => {

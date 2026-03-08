@@ -2,6 +2,7 @@
 import { generateSvg } from "@/utils/drawing-helpers";
 import { useStage } from "./use-stage";
 import useCanvasStore from "./store-hooks/use-canvas-store";
+import { ToolType } from "@/lib/types/tool-type";
 
 const useSaveCanvas = () => {
   const { layers } = useCanvasStore();
@@ -19,11 +20,16 @@ const useSaveCanvas = () => {
         pixelRatio: 2,
       });
     } else {
-      const lines = layers[0].lines;
-      const eraserLines = layers[1].lines;
+      const allLines = layers.flatMap((layer) => layer.lines);
+      const brushLines = allLines.filter(
+        (l) => l.type !== ToolType.ERASER,
+      );
+      const eraserLines = allLines.filter(
+        (l) => l.type === ToolType.ERASER,
+      );
 
       const svgString = generateSvg(
-        lines,
+        brushLines,
         eraserLines,
         stageRef.current.width(),
         stageRef.current.height(),
