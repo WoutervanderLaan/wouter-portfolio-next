@@ -15,6 +15,7 @@ export interface CanvasElement {
   src?: string;
   content?: string;
   children?: string[];
+  timestamp: number;
 }
 
 export interface Relation {
@@ -40,6 +41,7 @@ export const addImage = (
   y: position.y,
   width: 300,
   height: 200,
+  timestamp: Date.now(),
 });
 
 export const addStickyNote = (
@@ -53,6 +55,7 @@ export const addStickyNote = (
   y: position.y,
   width: 200,
   height: 150,
+  timestamp: Date.now(),
 });
 
 export const addText = (
@@ -66,6 +69,7 @@ export const addText = (
   y: position.y,
   width: 200,
   height: 50,
+  timestamp: Date.now(),
 });
 
 export const removeElement = (
@@ -98,6 +102,7 @@ export const groupElements = (ids: string[]): CanvasElement => ({
   x: 0,
   y: 0,
   children: ids,
+  timestamp: Date.now(),
 });
 
 export const layoutMindMap = (

@@ -19,7 +19,19 @@ export const createCompoundStore = () =>
         name: "Layers",
         partialize: (state) => ({
           layers: state.layers,
+          images: state.images,
         }),
+        merge: (persisted, current) => {
+          const persistedState = persisted as Partial<StoreState>;
+          return {
+            ...(current as StoreState),
+            ...persistedState,
+            images: (persistedState.images ?? []).map((el) => ({
+              ...el,
+              timestamp: el.timestamp ?? 0,
+            })),
+          };
+        },
       },
     ),
   );
