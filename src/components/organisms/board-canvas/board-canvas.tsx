@@ -60,23 +60,103 @@ const ImageNodeContent = ({
 const TextNodeContent = ({
   node,
   data,
+  onUpdate,
 }: {
   node: BoardNodeType;
   data: TextNodeData;
-}) => (
-  <KonvaText
-    x={12}
-    y={12}
-    width={node.width - 24}
-    height={node.height - 24}
-    text={data.content}
-    fontSize={data.fontSize ?? 14}
-    fontFamily={data.fontFamily ?? "sans-serif"}
-    fill="#1F2937"
-    wrap="word"
-    listening={false}
-  />
-);
+  onUpdate: (content: string) => void;
+}) => {
+  const textRef = useRef<Konva.Text>(null);
+
+  const handleDoubleClick = () => {
+    const textNode = textRef.current;
+    const stage = textNode?.getStage();
+    if (!textNode || !stage) return;
+
+    textNode.hide();
+    textNode.getLayer()?.batchDraw();
+
+    const textPosition = textNode.absolutePosition();
+    const stageBox = stage.container().getBoundingClientRect();
+    const scale = stage.scaleX();
+
+    const textarea = document.createElement("textarea");
+    document.body.appendChild(textarea);
+
+    textarea.value = data.content;
+    textarea.style.position = "absolute";
+    textarea.style.top = stageBox.top + textPosition.y * scale + "px";
+    textarea.style.left = stageBox.left + textPosition.x * scale + "px";
+    textarea.style.width = (node.width - 24) * scale + "px";
+    textarea.style.height = (node.height - 24) * scale + "px";
+    textarea.style.fontSize = (data.fontSize ?? 14) * scale + "px";
+    textarea.style.fontFamily = data.fontFamily ?? "sans-serif";
+    textarea.style.border = "2px solid #3B82F6";
+    textarea.style.borderRadius = "4px";
+    textarea.style.padding = "4px";
+    textarea.style.margin = "0px";
+    textarea.style.overflow = "hidden";
+    textarea.style.background = "white";
+    textarea.style.outline = "none";
+    textarea.style.resize = "none";
+    textarea.style.color = "#1F2937";
+    textarea.style.lineHeight = "1.4";
+    textarea.style.zIndex = "1000";
+    textarea.focus();
+    textarea.select();
+
+    const removeTextarea = () => {
+      const newContent = textarea.value;
+      if (textarea.parentNode) {
+        textarea.parentNode.removeChild(textarea);
+      }
+      window.removeEventListener("mousedown", handleOutsideClick);
+      textNode.show();
+      textNode.getLayer()?.batchDraw();
+      if (newContent !== data.content) {
+        onUpdate(newContent);
+      }
+    };
+
+    textarea.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        removeTextarea();
+      }
+      if (e.key === "Escape") {
+        textarea.value = data.content;
+        removeTextarea();
+      }
+    });
+
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (e.target !== textarea) {
+        removeTextarea();
+      }
+    };
+
+    setTimeout(() => {
+      window.addEventListener("mousedown", handleOutsideClick);
+    }, 0);
+  };
+
+  return (
+    <KonvaText
+      ref={textRef}
+      x={12}
+      y={12}
+      width={node.width - 24}
+      height={node.height - 24}
+      text={data.content}
+      fontSize={data.fontSize ?? 14}
+      fontFamily={data.fontFamily ?? "sans-serif"}
+      fill="#1F2937"
+      wrap="word"
+      onDblClick={handleDoubleClick}
+      onDblTap={handleDoubleClick}
+    />
+  );
+};
 
 const BoardCanvas = () => {
   const {
@@ -133,6 +213,11 @@ const BoardCanvas = () => {
         return;
       }
 
+      // Exit doodle editing when clicking empty space
+      if (editingDoodleId) {
+        setEditingDoodleId(null);
+      }
+
       switch (boardTool) {
         case "text": {
           const node = createTextNode("Text", { x, y });
@@ -163,6 +248,7 @@ const BoardCanvas = () => {
     [
       boardTool,
       connectionDraft,
+      editingDoodleId,
       addNode,
       selectNode,
       selectEdge,
@@ -287,6 +373,17 @@ const BoardCanvas = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
+  const handleUpdateNodeData = useCallback(
+    (nodeId: string, dataUpdates: Record<string, unknown>) => {
+      const node = nodes.find((n) => n.id === nodeId);
+      if (!node) return;
+      updateNode(nodeId, {
+        data: { ...node.data, ...dataUpdates },
+      });
+    },
+    [nodes, updateNode],
+  );
+
   const isPannable = boardTool === "pan";
 
   return (
@@ -364,6 +461,7 @@ const BoardCanvas = () => {
                   node={node}
                   isSelected={selectedNodeId === node.id}
                   showAnchors={showAnchors}
+                  isContentEditing={editingDoodleId === node.id}
                   onSelect={() => selectNode(node.id)}
                   onDragEnd={(x, y) => handleNodeDragEnd(node.id, x, y)}
                   onTransformEnd={(w, h, x, y) =>
@@ -375,22 +473,32 @@ const BoardCanvas = () => {
                     <ImageNodeContent node={node} data={node.data} />
                   )}
                   {node.data.type === "text" && (
-                    <TextNodeContent node={node} data={node.data} />
+                    <TextNodeContent
+                      node={node}
+                      data={node.data}
+                      onUpdate={(content) =>
+                        handleUpdateNodeData(node.id, { content })
+                      }
+                    />
                   )}
                   {node.data.type === "sticky" && (
                     <StickyNode
-                      width={node.width}
-                      height={node.height}
+                      node={node}
                       data={node.data}
+                      onUpdate={(content) =>
+                        handleUpdateNodeData(node.id, { content })
+                      }
                     />
                   )}
                   {node.data.type === "doodle" && (
                     <DoodleNode
-                      width={node.width}
-                      height={node.height}
+                      node={node}
                       data={node.data}
                       isEditing={editingDoodleId === node.id}
-                      onDoubleClick={() => setEditingDoodleId(node.id)}
+                      onStartEdit={() => setEditingDoodleId(node.id)}
+                      onUpdateLines={(lines) =>
+                        handleUpdateNodeData(node.id, { lines })
+                      }
                     />
                   )}
                 </BoardNode>

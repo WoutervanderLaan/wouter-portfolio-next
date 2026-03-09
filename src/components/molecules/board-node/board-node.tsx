@@ -15,6 +15,7 @@ interface BoardNodeProps {
   node: BoardNodeType;
   isSelected: boolean;
   showAnchors: boolean;
+  isContentEditing?: boolean;
   onSelect: () => void;
   onDragEnd: (x: number, y: number) => void;
   onTransformEnd: (width: number, height: number, x: number, y: number) => void;
@@ -48,6 +49,7 @@ const BoardNode = ({
   node,
   isSelected,
   showAnchors,
+  isContentEditing = false,
   onSelect,
   onDragEnd,
   onTransformEnd,
@@ -94,7 +96,7 @@ const BoardNode = ({
         ref={groupRef}
         x={node.x}
         y={node.y}
-        draggable={!node.locked}
+        draggable={!node.locked && !isContentEditing}
         onClick={onSelect}
         onTap={onSelect}
         onDragEnd={handleDragEnd}
