@@ -4,8 +4,9 @@ import { persist } from "zustand/middleware";
 import { createCanvasSlice, CanvasSlice } from "./slices/canvas-slice";
 import { AuthSlice, createAuthSlice } from "./slices/auth-slice";
 import { SessionSlice, createSessionSlice } from "./slices/session-slice";
+import { BoardSlice, createBoardSlice } from "./slices/board-slice";
 
-export type StoreState = CanvasSlice & AuthSlice & SessionSlice;
+export type StoreState = CanvasSlice & AuthSlice & SessionSlice & BoardSlice;
 
 export const createCompoundStore = () =>
   createStore<StoreState>()(
@@ -14,10 +15,14 @@ export const createCompoundStore = () =>
         ...createCanvasSlice(...args),
         ...createAuthSlice(...args),
         ...createSessionSlice(...args),
+        ...createBoardSlice(...args),
       })),
       {
-        name: "Layers",
+        name: "StudioBoard",
         partialize: (state) => ({
+          nodes: state.nodes,
+          edges: state.edges,
+          boardViewport: state.boardViewport,
           layers: state.layers,
           images: state.images,
         }),
@@ -26,6 +31,8 @@ export const createCompoundStore = () =>
           return {
             ...(current as StoreState),
             ...persistedState,
+            nodes: persistedState.nodes ?? [],
+            edges: persistedState.edges ?? [],
             images: (persistedState.images ?? []).map((el) => ({
               ...el,
               timestamp: el.timestamp ?? 0,

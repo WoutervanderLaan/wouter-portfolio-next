@@ -1,4 +1,4 @@
-import DrawingSettings from "@/components/organisms/drawing-settings/drawing-settings";
+import BoardSettings from "@/components/organisms/board-settings/board-settings";
 import StageProvider from "@/context/stage-context";
 import StoreProvider from "@/context/store-context";
 
@@ -13,7 +13,7 @@ export default async function CanvasLayout({
     <StoreProvider>
       <StageProvider>
         <main className="h-screen w-screen overflow-hidden">
-          <DrawingSettings />
+          <BoardSettings />
           {children}
           {chat}
         </main>
